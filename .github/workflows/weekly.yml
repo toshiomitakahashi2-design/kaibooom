@@ -1,0 +1,42 @@
+name: KAIBO weekly
+
+on:
+  schedule:
+    - cron: "0 22 * * 0"   # 毎週月曜 朝7時（日本時間）
+  workflow_dispatch:        # 手動でも実行できる
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: ① 集める
+        run: python scripts/collect.py
+      - name: ② 下書き
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/draft.py
+      - name: ④ サイトを作る
+        run: python scripts/build.py
+      - name: 記事データを保存
+        run: |
+          git config user.name "kaibo-bot"
+          git config user.email "kaibo-bot@users.noreply.github.com"
+          git add data docs
+          git diff --cached --quiet || git commit -m "weekly: add posts"
+          git push
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - uses: actions/deploy-pages@v4
