@@ -98,6 +98,27 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .note{padding:18px 16px 8px;font-size:11px;color:var(--sub);line-height:1.7}
 .nav-logo{display:none}
 .nav-admin{display:none}
+.edit-btn{margin-left:auto;margin-right:8px;min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--chip-line);background:var(--card);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
+.pin-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 16px 12px;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:700}
+.pin-box input{width:110px;font-size:18px;letter-spacing:.3em;padding:6px 10px;border-radius:8px;border:1px solid var(--chip-line);background:var(--bg);color:var(--ink)}
+.editing [contenteditable]{outline:1.5px dashed #2F6BFF;outline-offset:3px;border-radius:4px;cursor:text;min-height:1.4em}
+.editing [contenteditable]:focus{outline-style:solid;background:rgba(47,107,255,.08)}
+.editing .one [contenteditable],.editing .task [contenteditable]{outline-color:currentColor}
+.editing{margin-bottom:150px}
+.edit-bar{position:fixed;left:0;right:0;bottom:calc(68px + env(safe-area-inset-bottom));z-index:5;background:var(--card);border-top:2px solid #2F6BFF;box-shadow:0 -6px 20px rgba(0,0,0,.08)}
+.eb-in{max-width:935px;margin:0 auto;padding:10px 16px}
+.eb-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.eb-row+.eb-row{margin-top:8px}
+.eb-hint{display:flex;align-items:center;gap:6px;font-size:12px;color:#2F6BFF;font-weight:700}
+.eb-l{font-size:13px;display:flex;align-items:center;gap:6px}
+.eb-l select{font-size:13px;padding:6px 8px;border-radius:8px;border:1px solid var(--chip-line);background:var(--bg);color:var(--ink)}
+.eb-l input{width:18px;height:18px}
+.eb-btn{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--chip-line);background:var(--card);font-size:14px;font-weight:700}
+.eb-btn.primary{background:var(--invert-bg);color:var(--invert-ink);border-color:var(--invert-bg)}
+.eb-btn:disabled{opacity:.5}
+.eb-msg{font-size:13px;margin-top:4px;min-height:1em}
+.eb-msg.ng,#pin-msg{color:#B42318}
+.saved-note{margin:0 16px 12px;padding:10px 14px;border-radius:10px;background:#E7F5EC;color:#14532D;font-size:13px;font-weight:700}
 .admin-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--sub);border-radius:10px}
 .admin-btn:hover{color:var(--ink);background:var(--card)}
 @media (min-width:900px){
@@ -125,6 +146,8 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   .tile .t{font-size:16px}
   .tile .c{font-size:12px}
   .bar{position:static;padding:0 0 12px}
+  .app>.edit-bar{left:244px;right:0;bottom:0;width:auto;max-width:none;margin:0}
+  .pin-box,.saved-note{margin-left:0;margin-right:0}
   .pw{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card);align-items:start}
   .pl{position:sticky;top:0}
   .pl .credit-img{padding:8px 16px 12px}
@@ -183,31 +206,111 @@ function home(mode){
   app.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{cat=b.dataset.c;home();});
 }
 
+/* ---------- その場で編集（この端末にGitHubの鍵が登録されている時だけ表示） ---------- */
+const PIN_HASH = 'e8026bda3ea2eedc7dc7bce9daa640f8cc0f33e335bd73d986a872b3ba789c71';
+const CATS = ['映像','SNS','ブランディング','体験','広告','コピー','パッケージ','デザイン','ロゴ'];
+const OWNER = location.hostname.endsWith('.github.io') ? location.hostname.split('.')[0] : 'toshiomitakahashi2-design';
+const REPO = (location.hostname.endsWith('.github.io') && location.pathname.split('/').filter(Boolean)[0]) || 'kaibooom';
+const API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/data/posts.json`;
+const ls = k => { try { return localStorage.getItem(k); } catch(e) { return null; } };
+const ss = (k, v) => { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch(e) { return null; } };
+const canEdit = () => !!ls('kaibooom-token');
+let editing = false;
+const PEN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>';
+const E = f => editing ? ` data-f="${f}" contenteditable="true" spellcheck="false"` : '';
+async function sha256(t){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join(''); }
+function fromB64(b64){ const bin = atob(b64.replace(/\s/g,'')); return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))); }
+function toB64(str){ const bytes = new TextEncoder().encode(str); let bin = ''; for (let i = 0; i < bytes.length; i += 8192) bin += String.fromCharCode(...bytes.subarray(i, i + 8192)); return btoa(bin); }
+const gh = () => ({ 'Authorization': 'Bearer ' + ls('kaibooom-token'), 'Accept': 'application/vnd.github+json' });
+
 function post(slug){
   const p = POSTS.find(x=>x.slug===slug);
-  if(!p){ location.hash=''; return; }
+  if(!p){ editing=false; location.hash=''; return; }
   const on = saved.includes(p.slug);
+  const editBtn = canEdit() && !editing ? `<button class="edit-btn" id="edit-start">${PEN}編集</button>` : '';
   app.innerHTML =
-    `<div class="bar"><button class="back" aria-label="フィードに戻る" onclick="history.length>1?history.back():location.hash=''"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${no3(p.no)}</span></div>` +
-    `<div class="pw"><div class="pl"><div class="cover${hi(p)}" style="background:${color(p.category)}">${img(p)}<span class="big">${no3(p.no).replace('No.','')}</span><span class="w">${esc(p.work)}</span></div>` +
+    `<div class="bar"><button class="back" aria-label="フィードに戻る" onclick="history.length>1?history.back():location.hash=''"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${no3(p.no)}</span>${editBtn}</div>` +
+    `<div class="pw${editing?' editing':''}"><div class="pl"><div class="cover${hi(p)}" style="background:${color(p.category)}">${img(p)}<span class="big">${no3(p.no).replace('No.','')}</span><span class="w">${esc(p.work)}</span></div>` +
     (p.image ? `<div class="credit-img">画像：<a href="${esc(p.source_url)}" target="_blank" rel="noopener" style="text-decoration:underline">${esc(p.source_name)}</a>より</div>` : '') +
     `</div><div class="pr"><div class="actions"><a class="go" href="${esc(p.source_url)}" target="_blank" rel="noopener">作品の紹介記事を見る <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a><button class="save" id="save" aria-label="保存" aria-pressed="${on}">${bm(on)}</button></div>` +
-    `<div class="head"><div class="k">${esc(p.category)} ／ ${esc(p.client)}</div><h1>${esc(p.title)}</h1></div>` +
-    `<div class="one"><small>ひとことで言うと</small><p>${esc(p.oneliner)}</p></div>` +
-    `<div class="steps"><b>解剖</b>${p.steps.map((s,i)=>`<div class="step"><div class="num">${i+1}</div><div><h3>${esc(s.title)}</h3><p>${esc(s.body)}</p></div></div>`).join('')}</div>` +
-    `<div class="box"><b>ここを盗め</b><p>${esc(p.steal)}</p></div>` +
-    `<div class="task"><b><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>やってみよう</b><p>${esc(p.challenge)}</p></div>` +
-    `<dl class="credit"><dt>作品</dt><dd>${esc(p.work)}</dd><dt>広告主</dt><dd>${esc(p.client)}</dd><dt>広告会社</dt><dd>${esc(p.agency)}</dd><dt>制作</dt><dd>${esc(p.production)}</dd><dt>受賞</dt><dd>${esc(p.award)}</dd><dt>出典</dt><dd><a href="${esc(p.source_url)}" target="_blank" rel="noopener" style="text-decoration:underline">${esc(p.source_name)}</a></dd></dl>` +
-    `<div class="note">作品の著作権は各権利者に帰属します。本記事は批評・解説を目的としています。</div></div></div>`;
+    `<div class="head"><div class="k">${esc(p.category)} ／ ${esc(p.client)}</div><h1${E('title')}>${esc(p.title)}</h1></div>` +
+    `<div class="one"><small>ひとことで言うと</small><p${E('oneliner')}>${esc(p.oneliner)}</p></div>` +
+    `<div class="steps"><b>解剖</b>${p.steps.map((s,i)=>`<div class="step"><div class="num">${i+1}</div><div><h3>${esc(s.title)}</h3><p${E('s'+i)}>${esc(s.body)}</p></div></div>`).join('')}</div>` +
+    `<div class="box"><b>ここを盗め</b><p${E('steal')}>${esc(p.steal)}</p></div>` +
+    `<div class="task"><b><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>やってみよう</b><p${E('challenge')}>${esc(p.challenge)}</p></div>` +
+    `<dl class="credit"><dt>作品</dt><dd${E('work')}>${esc(p.work)}</dd><dt>広告主</dt><dd${E('client')}>${esc(p.client)}</dd><dt>広告会社</dt><dd${E('agency')}>${esc(p.agency)}</dd><dt>制作</dt><dd${E('production')}>${esc(p.production)}</dd><dt>受賞</dt><dd${E('award')}>${esc(p.award)}</dd><dt>出典</dt><dd><a href="${esc(p.source_url)}" target="_blank" rel="noopener" style="text-decoration:underline">${esc(p.source_name)}</a></dd></dl>` +
+    `<div class="note">作品の著作権は各権利者に帰属します。本記事は批評・解説を目的としています。</div></div></div>` +
+    (editing ? `<div class="edit-bar" role="region" aria-label="編集"><div class="eb-in">
+      <div class="eb-row"><span class="eb-hint">${PEN}点線の文字をタップして直せます</span></div>
+      <div class="eb-row">
+        <label class="eb-l">カテゴリ <select id="eb-cat">${[...new Set([...CATS, p.category])].map(c=>`<option${c===p.category?' selected':''}>${esc(c)}</option>`).join('')}</select></label>
+        <label class="eb-l"><input type="checkbox" id="eb-hide"> 非公開にする</label>
+        <span style="flex-grow:1"></span>
+        <button class="eb-btn" id="eb-cancel">やめる</button><button class="eb-btn primary" id="eb-save">保存する</button>
+      </div>
+      <div class="eb-msg" id="eb-msg" role="status"></div></div></div>` : '');
   document.getElementById('save').onclick = () => {
     saved = saved.includes(p.slug) ? saved.filter(s=>s!==p.slug) : [...saved, p.slug];
     persist(); post(slug);
   };
-  window.scrollTo(0,0);
+  const st = document.getElementById('edit-start');
+  if (st) st.onclick = () => startEdit(slug);
+  if (editing) {
+    app.querySelectorAll('[contenteditable]').forEach(el => {
+      el.addEventListener('paste', e => { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain')); });
+      el.addEventListener('keydown', e => { if (e.key === 'Enter' && !['s0','s1','s2','steal','challenge'].includes(el.dataset.f)) e.preventDefault(); });
+    });
+    document.getElementById('eb-cancel').onclick = () => { editing = false; post(slug); };
+    document.getElementById('eb-save').onclick = () => saveEdit(p);
+  }
+  if (!editing) window.scrollTo(0,0);
+}
+
+function startEdit(slug){
+  if (ss('kaibooom-unlocked') === '1') { editing = true; post(slug); return; }
+  const bar = document.querySelector('.bar');
+  if (document.getElementById('pin-box')) return;
+  bar.insertAdjacentHTML('afterend', `<div class="pin-box" id="pin-box"><label for="pin-in">合鍵</label><input id="pin-in" type="password" inputmode="numeric" autocomplete="off" maxlength="8"><button class="eb-btn primary" id="pin-ok">ひらく</button><span class="eb-msg" id="pin-msg" role="alert"></span></div>`);
+  const input = document.getElementById('pin-in'); input.focus();
+  const go = async () => {
+    if (await sha256(input.value) !== PIN_HASH) { document.getElementById('pin-msg').textContent = '合鍵がちがいます'; input.select(); return; }
+    ss('kaibooom-unlocked', '1'); editing = true; post(slug);
+  };
+  document.getElementById('pin-ok').onclick = go;
+  input.onkeydown = e => { if (e.key === 'Enter') go(); };
+}
+
+async function saveEdit(p){
+  const btn = document.getElementById('eb-save'), m = document.getElementById('eb-msg');
+  const val = f => { const el = app.querySelector(`[data-f="${f}"]`); return el ? el.innerText.replace(/ /g,' ').trim() : ''; };
+  const edits = { title: val('title'), oneliner: val('oneliner'), steal: val('steal'), challenge: val('challenge'),
+    work: val('work'), client: val('client'), agency: val('agency'), production: val('production'), award: val('award'),
+    category: document.getElementById('eb-cat').value, bodies: [0,1,2].map(i => val('s'+i)), hide: document.getElementById('eb-hide').checked };
+  btn.disabled = true; m.className = 'eb-msg'; m.textContent = '保存中…';
+  try {
+    const r = await fetch(API + '?t=' + Date.now(), { headers: gh(), cache: 'no-store' });
+    if (r.status === 401 || r.status === 403) throw new Error('GitHubの鍵が使えませんでした。管理ページで登録し直してください。');
+    if (!r.ok) throw new Error('読み込みに失敗しました（' + r.status + '）');
+    const j = await r.json(); const all = JSON.parse(fromB64(j.content));
+    const t = all.find(x => x.slug === p.slug); if (!t) throw new Error('この記事が見つかりませんでした');
+    ['title','oneliner','steal','challenge','work','client','agency','production','award','category'].forEach(k => t[k] = edits[k]);
+    t.steps = [0,1,2].map(i => ({ title: (t.steps && t.steps[i] && t.steps[i].title) || ['課題','狙い','表現のしかけ'][i], body: edits.bodies[i] }));
+    t.status = edits.hide ? 'hidden' : 'published';
+    const put = await fetch(API, { method: 'PUT', headers: { ...gh(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `edit: No.${t.no} をサイト上で編集`, content: toB64(JSON.stringify(all, null, 2) + '\n'), sha: j.sha }) });
+    if (put.status === 409) throw new Error('ちょうど自動更新と重なりました。もう一度「保存する」を押してください。');
+    if (!put.ok) throw new Error('保存に失敗しました（' + put.status + '）');
+    Object.assign(p, t);  // この画面にもすぐ反映
+    editing = false;
+    if (edits.hide) { POSTS.splice(POSTS.indexOf(p), 1); location.hash = ''; return; }
+    post(p.slug);
+    document.querySelector('.bar').insertAdjacentHTML('afterend', '<div class="saved-note" role="status">保存しました。公開中のサイトには1〜2分で反映されます。</div>');
+  } catch(e) { m.className = 'eb-msg ng'; m.textContent = e.message; btn.disabled = false; }
 }
 
 let mode = 'home';
 function route(){
+  editing = false;
   const m = location.hash.match(/^#\/p\/(.+)$/);
   if(m) post(decodeURIComponent(m[1])); else home(mode);
   document.getElementById('nav-home').classList.toggle('on', !m && mode==='home');
