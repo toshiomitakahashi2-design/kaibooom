@@ -1,0 +1,11 @@
+{
+  "feeds": [
+    "https://www.advertimes.com/feed/"
+  ],
+  "keywords": ["広告", "CM", "キャンペーン", "クリエイティブ", "デザイン", "ブランディング", "コピー", "受賞", "グランプリ", "パッケージ", "ロゴ", "動画", "プロモーション"],
+  "exclude_keywords": ["求人", "セミナー", "講座", "PR TIMES掲載", "人事"],
+  "posts_per_run": 3,
+  "auto_publish": true,
+  "model": "claude-sonnet-5-5",
+  "categories": ["映像", "SNS", "ブランディング", "体験", "広告", "コピー", "パッケージ", "デザイン", "ロゴ"]
+}
