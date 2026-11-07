@@ -13,6 +13,7 @@ def main():
     out = ROOT / "docs/index.html"
     out.parent.mkdir(exist_ok=True)
     out.write_text(page, encoding="utf-8")
+    (ROOT / "docs/admin.html").write_text((ROOT / "site/admin.html").read_text(encoding="utf-8"), encoding="utf-8")
     print(f"built {out} with {len(live)} posts")
 
 
