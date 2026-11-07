@@ -28,7 +28,8 @@
       }
     ],
     "steal": "商品を映したくなったら、一度「映さない」案を考えてみる。モノを消すと、その会社が本当に売っている価値が浮かび上がってくる。",
-    "challenge": "消しゴムを一度も映さずに、消しゴムメーカーのブランドムービーを5カットの絵コンテで考えてみよう。"
+    "challenge": "消しゴムを一度も映さずに、消しゴムメーカーのブランドムービーを5カットの絵コンテで考えてみよう。",
+    "image": "https://digitalpr.jp/simg/2819/146032/715_400_202610151529486ad072dcd3e83.jpg"
   },
   {
     "slug": "kao-merit",
@@ -59,7 +60,8 @@
       }
     ],
     "steal": "タイトルの型を決めると、シリーズは量産できる。「〇〇した日」というひとつのフォーマットで、エピソードは何本でもつくれる。",
-    "challenge": "「〇〇した日」の型で、地元のパン屋さんのCMを3本分、タイトルとあらすじ（各2行）で考えてみよう。"
+    "challenge": "「〇〇した日」の型で、地元のパン屋さんのCMを3本分、タイトルとあらすじ（各2行）で考えてみよう。",
+    "image": "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-26f004bc85086c5fe348544d9265cc22-547x308.jpg?format=jpeg&auto=webp&fit=bounds&width=2400&height=1260"
   },
   {
     "slug": "mcd-tsukimi-tabemi",
@@ -90,7 +92,8 @@
       }
     ],
     "steal": "売りたい条件（期間限定、季節など）をキャラクターの名前や設定に埋め込む。説明しなくても、勝手に伝わる。",
-    "challenge": "冬だけの商品（おでん、肉まんなど）に、条件を名前に埋め込んだ宣伝隊長キャラをつくってみよう。名前・モチーフ・決めゼリフをひとつずつ。"
+    "challenge": "冬だけの商品（おでん、肉まんなど）に、条件を名前に埋め込んだ宣伝隊長キャラをつくってみよう。名前・モチーフ・決めゼリフをひとつずつ。",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2025/09/tsukimitabebi_ogp2.jpg"
   },
   {
     "slug": "suntory-nope",
@@ -121,7 +124,8 @@
       }
     ],
     "steal": "弱点や後ろめたさは、消すより人格にする。ツッコまれる余白を、わざと残しておく。",
-    "challenge": "「カロリーが高い」お菓子を、それを隠さずに魅力として売る広告コピーを3案考えてみよう。"
+    "challenge": "「カロリーが高い」お菓子を、それを隠さずに魅力として売る広告コピーを3案考えてみよう。",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/09/suntory_nope_over-100-million-sold_ogp.jpg"
   },
   {
     "slug": "mangalogue-hinotori",
@@ -152,7 +156,8 @@
       }
     ],
     "steal": "体験を分解して、要素ごとに別のメディアへ置き換えてみる。視線はカメラに、ページは時間に、というふうに。",
-    "challenge": "「絵本を読む」体験を分解して、図書館で行うライブイベントに組み立て直そう。要素ごとに何へ置き換えるか、表にしてみよう。"
+    "challenge": "「絵本を読む」体験を分解して、図書館で行うライブイベントに組み立て直そう。要素ごとに何へ置き換えるか、表にしてみよう。",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/04/OGP-1-2.jpg"
   },
   {
     "category": "体験",
@@ -184,7 +189,8 @@
     "date": "2026-11-07",
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261106/article563356/?utm_source=feed",
-    "status": "published"
+    "status": "published",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/kodansha-media-conf2026_media-awards2026_ceremony_ogp.jpg"
   },
   {
     "category": "広告",
@@ -216,7 +222,8 @@
     "date": "2026-11-07",
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261106/article563310/?utm_source=feed",
-    "status": "published"
+    "status": "published",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/pizzala-drstone_ogp.jpg"
   },
   {
     "category": "映像",
@@ -248,6 +255,106 @@
     "date": "2026-11-07",
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261105/article563192/?utm_source=feed",
-    "status": "published"
+    "status": "published",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/venex01.jpg"
+  },
+  {
+    "category": "SNS",
+    "title": "ホワイトハウスのゼルダ風動画は、なぜ物議を醸すのか。",
+    "work": "THE LEGEND OF TRUMP: MAKE AMERICA GREAT AGAIN(公式X投稿の44秒動画)",
+    "client": "米ホワイトハウス",
+    "agency": "—",
+    "production": "—",
+    "award": "—",
+    "oneliner": "人気ゲームの文法で、政策を“発見”に変えた",
+    "steps": [
+      {
+        "title": "課題",
+        "body": "記事は課題を明示していない。ただ、薬価や治安といった実績は数字が多く、文字だけで出すとSNSでは流れて読まれにくい。そこで注目が集まる日に重ね、短い動画で最後まで見せる必要があったと考えられる。"
+      },
+      {
+        "title": "狙い",
+        "body": "記事によると、投稿は人気ゲームのリメイク発売日に合わせたものとみられる。ゲームに親しむ層に、政権の実績を「楽しい話題」として届けたかったのだろう(これは私の解釈)。一方で批判も相次ぎ、全員の共感を狙った形ではない。"
+      },
+      {
+        "title": "表現のしかけ",
+        "body": "記事によれば、動画はタイトル画面から始まり、ローポリ調の主人公、体力ゲージ、剣のアイコン、地図など、ゲームらしい画面で統一されている。効いているのは、アイテムを見つけた時のメッセージの形式を実績の紹介に使った点だ。「数字の主張」が「お宝を手に入れた瞬間」に見え、ゲームを知る人ほど先が気になる。投稿文に有名なセリフを置く入口づくりも巧い。"
+      }
+    ],
+    "steal": "伝えたい情報を、誰もが知る形式のお約束(メッセージ枠や画面表示)に流し込む。ただし他社のキャラや作品は無断で借りず、形式だけ借りる。",
+    "challenge": "学食の新メニュー紹介を、RPGのアイテム入手画面風に15秒の絵コンテにする。キャラクターは自作のものに限る。",
+    "slug": "pm-20261106-article563322-utm-source-feed",
+    "no": 9,
+    "date": "2026-11-07",
+    "source_name": "AdverTimes.",
+    "source_url": "https://www.advertimes.com/20261106/article563322/?utm_source=feed",
+    "status": "published",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/the-white-house_official-x_remake_the-legend-of-zelda_ogp1.jpg"
+  },
+  {
+    "category": "体験",
+    "title": "ケルヒャーの渋谷洗浄アートは、なぜ話題になるのか。",
+    "work": "「渋谷を洗ってます」アクション（洗伝プロジェクト）／「洗キュー！寄せ書き」",
+    "client": "ケルヒャー ジャパン",
+    "agency": "—",
+    "production": "—",
+    "award": "—",
+    "oneliner": "掃除そのものを街の作品に変えた",
+    "steps": [
+      {
+        "title": "課題",
+        "body": "高圧洗浄機は「汚れが落ちる」ことが当たり前の商品で、機能を語るだけでは差がつきにくい。掃除という地味な行為を、どうすれば楽しく、見てもらえる話題にできるかが問われていたと考えられる。"
+      },
+      {
+        "title": "狙い",
+        "body": "記事によれば狙いは「楽しくきれいに」のアピール。街を歩く人や渋谷を愛する人に、掃除への親しみを持ってもらう。さらに閉店するハンズへの感謝に参加者を巻き込み、ブランドへの好意につなげようとしたと読める。"
+      },
+      {
+        "title": "表現のしかけ",
+        "body": "足跡の形に抜いたパネルに水を当てて汚れを落とし、跡を絵にする。商品の機能がそのまま表現になっている。ハチ公が駅から宮下公園まで散歩したという物語を足跡でつなぎ、歩く人が見つけたくなる仕掛けにした。ハンズでは他の商業施設などから寄せられたメッセージを使い、感謝を街に残した。場所の文脈に合わせた絵や文字が、写真に撮って共有したくなる理由になっている。"
+      }
+    ],
+    "steal": "商品の機能そのものを表現の手段にする。そこに「ハチ公の散歩」のような短い物語と、場所の文脈を重ねると、見た人が語りたくなる。",
+    "challenge": "消しゴムや付箋など身近な文房具の機能を使い、学校の一角で「機能がそのまま表現になる」小さな作品を1つ企画しよう。",
+    "slug": "pm-20261105-article563157-utm-source-feed",
+    "no": 10,
+    "date": "2026-11-07",
+    "source_name": "AdverTimes.",
+    "source_url": "https://www.advertimes.com/20261105/article563157/?utm_source=feed",
+    "status": "published",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/karcher_proj_shibuya_hachiko-paw-prints_thx-hands_ogp.jpg"
+  },
+  {
+    "category": "映像",
+    "title": "THE DRYのCMは、なぜ猪木の「ダァー」を叫ぶのか。",
+    "work": "THE DRY 新テレビCM『登場』篇(30秒)",
+    "client": "サントリー",
+    "agency": "—",
+    "production": "—",
+    "award": "—",
+    "oneliner": "ノドの刺激を、猪木の叫びで音にした",
+    "steps": [
+      {
+        "title": "課題",
+        "body": "新ブランドTHE DRYは、高密度・強炭酸でノドへの刺激とキレが売り。担当者によれば、オリエンのお題は「ノドのうなり」をどう表現すれば一番インパクトをもって伝わるか。ビールの「くぅーっ！」に並ぶ、新しい“のどごしの音”が求められた。"
+      },
+      {
+        "title": "狙い",
+        "body": "ターゲットは40代の大人たち。担当者によれば、大変な時代を生きる彼らを元気づけ、背中を押すチューハイを目指した。1日を戦い抜いた自分をねぎらう「報酬感」を、生き方がカッコいい大人として起用した坂口憲二さんに重ねている。"
+      },
+      {
+        "title": "表現のしかけ",
+        "body": "強炭酸でノドが開くと「アァァー」に近い声が出る。その最上級が「ダァー」だと考えた、と担当者は語る。暗い空間、猪木さんのテーマ曲、タオルを首にかける所作で飲む前に期待を溜め、最後の叫びで一気に解放する構成だ。さらに、坂口さんは猪木さんの盟友・坂口征二さんの次男。この背景がファンの心にも響くと狙っている。"
+      }
+    ],
+    "steal": "商品の特長を「音・声」に置き換え、誰もが知る掛け声と結びつける。新しい言葉を作るより、みんなの記憶にある言葉を借りるほうが一瞬で伝わる。",
+    "challenge": "好きな飲み物や食べ物を口にした瞬間の感覚を擬音1つで表し、有名な掛け声や決めゼリフと組み合わせた15秒CMの絵コンテを描く。",
+    "slug": "pm-20261104-article563101-utm-source-feed",
+    "no": 11,
+    "date": "2026-11-07",
+    "source_name": "AdverTimes.",
+    "source_url": "https://www.advertimes.com/20261104/article563101/?utm_source=feed",
+    "status": "published",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/suntory_the-dry_cm_sns_ogp.jpg"
   }
 ]
