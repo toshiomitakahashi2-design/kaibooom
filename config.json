@@ -1,10 +1,15 @@
 {
-  "feeds": [
-    "https://www.advertimes.com/feed/"
+  "sources": [
+    {"name": "AdverTimes.", "type": "rss", "url": "https://www.advertimes.com/feed/", "filter": true},
+    {"name": "電通報", "type": "page", "url": "https://dentsu-ho.com/", "link_pattern": "/articles/\\d+", "filter": false},
+    {"name": "Cannes Lions", "type": "page", "url": "https://www.canneslions.com/news", "link_pattern": "/news/[a-z0-9-]+", "filter": false},
+    {"name": "Adweek", "type": "rss", "url": "https://www.adweek.com/feed/", "filter": true}
   ],
-  "keywords": ["広告", "CM", "キャンペーン", "クリエイティブ", "デザイン", "ブランディング", "コピー", "受賞", "グランプリ", "パッケージ", "ロゴ", "動画", "プロモーション"],
-  "exclude_keywords": ["求人", "セミナー", "講座", "PR TIMES掲載", "人事"],
-  "posts_per_run": 3,
+  "keywords": ["広告", "CM", "キャンペーン", "クリエイティブ", "デザイン", "ブランディング", "コピー", "受賞", "グランプリ", "パッケージ", "ロゴ", "動画", "プロモーション",
+               "campaign", "ad ", "ads", "creative", "Cannes", "Grand Prix", "brand", "spot", "commercial", "design", "agency", "award"],
+  "exclude_keywords": ["求人", "セミナー", "講座", "人事", "Entries Now Open", "Webinar", "hiring"],
+  "candidates_per_source": 3,
+  "posts_per_run": 4,
   "auto_publish": true,
   "model": "claude-sonnet-5-5",
   "categories": ["映像", "SNS", "ブランディング", "体験", "広告", "コピー", "パッケージ", "デザイン", "ロゴ"]
