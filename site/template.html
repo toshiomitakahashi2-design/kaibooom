@@ -54,6 +54,12 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .tile .n{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700}
 .tile .t{font-size:12px;font-weight:700;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .tile .c{font-size:10px;opacity:.8}
+.tile,.cover,.hero .band{position:relative}
+.ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.has-img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65),rgba(0,0,0,.05) 55%);z-index:0}
+.tile>span,.cover>span,.hero .band>span{position:relative;z-index:1}
+.has-img .t{display:none}
+.credit-img{padding:6px 16px 0;font-size:11px;color:var(--sub)}
 .empty{padding:40px 16px;text-align:center;color:var(--sub);font-size:14px;line-height:1.8}
 .nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line)}
 .nav .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:6px 0 calc(10px + env(safe-area-inset-bottom))}
@@ -110,11 +116,13 @@ try { saved = JSON.parse(localStorage.getItem('kaibo-saved') || '[]'); } catch(e
 const persist = () => { try { localStorage.setItem('kaibo-saved', JSON.stringify(saved)); } catch(e) {} };
 let cat = 'すべて';
 const app = document.getElementById('app');
+const img = p => p.image ? `<img class="ph" src="${esc(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.classList.remove('has-img');this.remove()">` : '';
+const hi = p => p.image ? ' has-img' : '';
 const bm = on => `<svg width="20" height="20" viewBox="0 0 24 24" fill="${on?'currentColor':'none'}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>`;
 
 function tiles(list){
   if(!list.length) return '<div class="empty">まだここには記事がありません。<br>気になる記事を保存してみよう。</div>';
-  return '<div class="grid">' + list.map(p=>`<a class="tile" href="#/p/${esc(p.slug)}" style="background:${color(p.category)}"><span class="n">${no3(p.no)}</span><span class="t">${esc(p.oneliner)}</span><span class="c">${esc(p.category)}</span></a>`).join('') + '</div>';
+  return '<div class="grid">' + list.map(p=>`<a class="tile${hi(p)}" href="#/p/${esc(p.slug)}" style="background:${color(p.category)}">${img(p)}<span class="n">${no3(p.no)}</span><span class="t">${esc(p.oneliner)}</span><span class="c">${esc(p.category)}</span></a>`).join('') + '</div>';
 }
 
 function home(mode){
@@ -129,7 +137,7 @@ function home(mode){
   const f = POSTS[0];
   app.innerHTML = top +
     `<div class="chips" role="group" aria-label="カテゴリ">${cats.map(c=>`<button class="chip${c===cat?' on':''}" data-c="${esc(c)}" aria-pressed="${c===cat}">${esc(c)}</button>`).join('')}</div>` +
-    (cat==='すべて' && f ? `<a class="hero" href="#/p/${esc(f.slug)}"><div class="band"><span class="pill">今週の解剖</span><span class="big">${no3(f.no).replace('No.','')}</span></div><div class="meta"><div class="cat">${esc(f.category)} ／ ${esc(f.client)}</div><div class="ttl">${esc(f.title)}</div></div></a>` : '') +
+    (cat==='すべて' && f ? `<a class="hero" href="#/p/${esc(f.slug)}"><div class="band${hi(f)}">${img(f)}<span class="pill">今週の解剖</span><span class="big">${no3(f.no).replace('No.','')}</span></div><div class="meta"><div class="cat">${esc(f.category)} ／ ${esc(f.client)}</div><div class="ttl">${esc(f.title)}</div></div></a>` : '') +
     `<div class="sec"><b>${cat==='すべて'?'新着の解剖':esc(cat)}</b><small>全 ${list.length} 本</small></div>` + tiles(list);
   app.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{cat=b.dataset.c;home();});
 }
@@ -140,7 +148,8 @@ function post(slug){
   const on = saved.includes(p.slug);
   app.innerHTML =
     `<div class="bar"><button class="back" aria-label="フィードに戻る" onclick="history.length>1?history.back():location.hash=''"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${no3(p.no)}</span></div>` +
-    `<div class="cover" style="background:${color(p.category)}"><span class="big">${no3(p.no).replace('No.','')}</span><span class="w">${esc(p.work)}</span></div>` +
+    `<div class="cover${hi(p)}" style="background:${color(p.category)}">${img(p)}<span class="big">${no3(p.no).replace('No.','')}</span><span class="w">${esc(p.work)}</span></div>` +
+    (p.image ? `<div class="credit-img">画像：<a href="${esc(p.source_url)}" target="_blank" rel="noopener" style="text-decoration:underline">${esc(p.source_name)}</a>より</div>` : '') +
     `<div class="actions"><a class="go" href="${esc(p.source_url)}" target="_blank" rel="noopener">作品の紹介記事を見る <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a><button class="save" id="save" aria-label="保存" aria-pressed="${on}">${bm(on)}</button></div>` +
     `<div class="head"><div class="k">${esc(p.category)} ／ ${esc(p.client)}</div><h1>${esc(p.title)}</h1></div>` +
     `<div class="one"><small>ひとことで言うと</small><p>${esc(p.oneliner)}</p></div>` +
