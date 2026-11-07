@@ -27,6 +27,8 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/draft.py
+      - name: ③ 画像を探す
+        run: python scripts/images.py      
       - name: ④ サイトを作る
         run: python scripts/build.py
       - name: 記事データを保存
