@@ -42,6 +42,8 @@ def main():
     cands = json.loads((ROOT / "data/candidates.json").read_text(encoding="utf-8"))
     posts = json.loads(POSTS_PATH.read_text(encoding="utf-8"))
     client = anthropic.Anthropic()
+    seen_path = ROOT / "data/seen.json"
+    seen = json.loads(seen_path.read_text(encoding="utf-8")) if seen_path.exists() else []
     next_no = max((p["no"] for p in posts), default=0) + 1
     added = 0
     for cand in cands:
@@ -52,6 +54,7 @@ def main():
         except Exception as e:
             print(f"skip {cand['link']}: {e}")
             continue
+        seen.append(cand["link"])  # 一度読んだ記事は、次回から候補に入れない
         if data.get("skip"):
             print(f"not a work: {cand['title']}")
             continue
@@ -59,7 +62,7 @@ def main():
             "slug": slugify(cand["link"]),
             "no": next_no,
             "date": datetime.date.today().isoformat(),
-            "source_name": "AdverTimes." if "advertimes" in cand["link"] else cand["link"].split("/")[2],
+            "source_name": cand.get("source") or cand["link"].split("/")[2],
             "source_url": cand["link"],
             "status": "published" if CONFIG["auto_publish"] else "draft",
         })
@@ -68,6 +71,7 @@ def main():
         added += 1
         print(f"added No.{data['no']}: {data['title']}")
     POSTS_PATH.write_text(json.dumps(posts, ensure_ascii=False, indent=2), encoding="utf-8")
+    seen_path.write_text(json.dumps(seen, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":
