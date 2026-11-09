@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>KAIBOOOM 管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Outfit:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F6F3;--card:#FFFFFF;--ink:#161616;--sub:#5C5A55;--line:#E4E1DA;--field:#FFFFFF;--accent:#E2462F;--ok:#1E7A46;--ng:#B42318;--inv:#161616;--inv-ink:#F7F6F3}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121212;--card:#1C1C1B;--ink:#F2F0EC;--sub:#A8A49C;--line:#2C2B29;--field:#232321;--ok:#4FC27F;--ng:#F27D72;--inv:#F2F0EC;--inv-ink:#121212}}
+:root[data-theme="dark"]{--bg:#121212;--card:#1C1C1B;--ink:#F2F0EC;--sub:#A8A49C;--line:#2C2B29;--field:#232321;--ok:#4FC27F;--ng:#F27D72;--inv:#F2F0EC;--inv-ink:#121212}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Zen Kaku Gothic New',system-ui,sans-serif}
+a{color:inherit}
+button,input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 80px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.logo{font-family:'Outfit',sans-serif;font-weight:600;font-size:26px;line-height:1;text-decoration:none}
+.logo .r{color:#E2462F}.logo .b{color:#2F6BFF}.logo .y{color:#E5A000}.logo .g{color:#2E9E5B}
+.badge{font-size:12px;font-weight:700;background:var(--inv);color:var(--inv-ink);padding:3px 9px;border-radius:99px;margin-left:8px;vertical-align:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+h1{font-size:20px;margin:0 0 6px}
+h2{font-size:16px;margin:0 0 12px}
+p.help{font-size:13px;color:var(--sub);line-height:1.8;margin:0 0 14px}
+label{display:block;font-size:13px;font-weight:700;margin:16px 0 6px}
+input[type=text],input[type=password],select,textarea{width:100%;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:10px 12px;line-height:1.7}
+textarea{min-height:96px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset:1px}
+.btn{min-height:44px;padding:0 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:700;cursor:pointer}
+.btn.primary{background:var(--inv);color:var(--inv-ink);border-color:var(--inv)}
+.btn:disabled{opacity:.5;cursor:wait}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.msg{font-size:14px;margin-top:12px;line-height:1.7;min-height:1em}
+.msg.ok{color:var(--ok)}.msg.ng{color:var(--ng)}
+.pin{font-size:28px;letter-spacing:.4em;text-align:center;max-width:220px}
+.center{max-width:360px;margin:12vh auto 0;text-align:center}
+.center .row{justify-content:center}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer}
+.item:hover{border-color:var(--sub)}
+.item .no{font-family:'Outfit',sans-serif;font-size:14px;color:var(--sub);flex-shrink:0;width:48px}
+.item .t{flex-grow:1;font-weight:700;font-size:14px;line-height:1.5}
+.item .s{flex-shrink:0;font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--sub)}
+.item .s.pub{color:var(--ok);border-color:var(--ok)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+@media (max-width:560px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.sticky{position:sticky;bottom:0;background:var(--bg);padding:12px 0;margin-top:20px;border-top:1px solid var(--line)}
+.steps ol{padding-left:20px;font-size:13px;line-height:1.9;color:var(--sub);margin:0 0 8px}
+.steps b{color:var(--ink)}
+.hidden{display:none}
+.link{background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;font-size:13px;color:var(--sub)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <a class="logo" href="./" aria-label="KAIBOOOM トップへ"><span class="b">K</span><span class="r">A</span><span class="y">I</span><span class="b">B</span><span class="g">O</span><span class="r">O</span><span class="y">O</span><span class="g">M</span></a>
+    <a href="./" style="font-size:13px">サイトを見る</a>
+  </div>
+
+  <section id="v-lock" class="center hidden">
+    <h1>管理ページ</h1>
+    <p class="help">合鍵を入れてください</p>
+    <label for="pin" class="hidden">合鍵</label>
+    <input id="pin" class="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="8">
+    <div class="row" style="margin-top:14px"><button class="btn primary" id="pin-go">ひらく</button></div>
+    <div class="msg ng" id="pin-msg" role="alert"></div>
+  </section>
+
+  <section id="v-token" class="card hidden">
+    <h1>この端末を登録する（最初の1回だけ）</h1>
+    <p class="help">記事を書き換えるための「GitHubの鍵（トークン）」を、この端末にだけ保存します。サイトには載らないので、ほかの人は使えません。</p>
+    <div class="steps">
+      <ol>
+        <li>GitHub の右上のアイコン →「<b>Settings</b>」</li>
+        <li>左メニューのいちばん下「<b>Developer settings</b>」→「<b>Personal access tokens</b>」→「<b>Fine-grained tokens</b>」</li>
+        <li>「<b>Generate new token</b>」を押し、Token name に <b>kaibooom-admin</b>、Expiration は <b>1年</b> くらい</li>
+        <li>Repository access で「<b>Only select repositories</b>」→ <b>kaibooom</b> を選ぶ</li>
+        <li>Permissions の「<b>Contents</b>」を <b>Read and write</b> にする</li>
+        <li>いちばん下の「<b>Generate token</b>」→ 表示された <b>github_pat_</b> で始まる文字をコピー</li>
+      </ol>
+    </div>
+    <label for="token">GitHubの鍵（github_pat_…）</label>
+    <input id="token" type="password" autocomplete="off" placeholder="github_pat_xxxxxxxx">
+    <div class="row" style="margin-top:14px"><button class="btn primary" id="token-go">登録する</button></div>
+    <div class="msg" id="token-msg" role="status"></div>
+  </section>
+
+  <section id="v-list" class="hidden">
+    <div class="row" style="justify-content:space-between;margin-bottom:12px">
+      <h1 style="margin:0">記事の一覧 <span id="count" style="font-size:13px;color:var(--sub);font-weight:400"></span></h1>
+      <button class="btn" id="reload">最新を読み込む</button>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="msg" id="list-msg" role="status"></div>
+    <div style="margin-top:28px"><button class="link" id="forget">この端末の登録を解除する</button></div>
+  </section>
+
+  <section id="v-edit" class="hidden">
+    <div class="row" style="justify-content:space-between;margin-bottom:12px">
+      <button class="btn" id="back">← 一覧へ</button>
+      <a id="preview" href="./" target="_blank" rel="noopener" style="font-size:13px">サイトで見る ↗</a>
+    </div>
+    <div class="card">
+      <h2 id="e-no"></h2>
+      <div class="grid2">
+        <div><label for="f-status">公開</label><select id="f-status"><option value="published">公開する</option><option value="hidden">非公開にする</option></select></div>
+        <div><label for="f-category">カテゴリ</label><select id="f-category"></select></div>
+      </div>
+      <label for="f-title">見出し</label><input id="f-title" type="text">
+      <label for="f-oneliner">ひとことで言うと</label><input id="f-oneliner" type="text">
+      <label for="f-s0">解剖① 課題</label><textarea id="f-s0"></textarea>
+      <label for="f-s1">解剖② 狙い</label><textarea id="f-s1"></textarea>
+      <label for="f-s2">解剖③ 表現のしかけ</label><textarea id="f-s2" style="min-height:130px"></textarea>
+      <label for="f-steal">ここを盗め</label><textarea id="f-steal"></textarea>
+      <label for="f-challenge">やってみよう（課題）</label><textarea id="f-challenge"></textarea>
+      <h2 style="margin-top:28px">クレジット</h2>
+      <label for="f-work">作品名</label><input id="f-work" type="text">
+      <div class="grid2">
+        <div><label for="f-client">広告主</label><input id="f-client" type="text"></div>
+        <div><label for="f-agency">広告会社</label><input id="f-agency" type="text"></div>
+        <div><label for="f-production">制作</label><input id="f-production" type="text"></div>
+        <div><label for="f-award">受賞</label><input id="f-award" type="text"></div>
+      </div>
+      <label for="f-image">画像のURL（空にすると画像なし）</label><input id="f-image" type="text">
+    </div>
+    <div class="sticky">
+      <div class="row"><button class="btn primary" id="save">保存する</button><span style="font-size:13px;color:var(--sub)">保存すると1〜2分でサイトに反映されます</span></div>
+      <div class="msg" id="save-msg" role="status"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const PIN_HASH = 'e8026bda3ea2eedc7dc7bce9daa640f8cc0f33e335bd73d986a872b3ba789c71';
+const CATS = ['映像','SNS','ブランディング','体験','広告','コピー','パッケージ','デザイン','ロゴ'];
+const host = location.hostname.endsWith('.github.io') ? location.hostname.split('.')[0] : 'toshiomitakahashi2-design';
+const seg = location.pathname.split('/').filter(Boolean)[0];
+const REPO = (location.hostname.endsWith('.github.io') && seg && seg !== 'admin.html') ? seg : 'kaibooom';
+const API = `https://api.github.com/repos/${host}/${REPO}/contents/data/posts.json`;
+
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, s){ try { return (s ? sessionStorage : localStorage).getItem(k); } catch(e) { return null; } },
+  set(k, v, s){ try { (s ? sessionStorage : localStorage).setItem(k, v); } catch(e) {} },
+  del(k){ try { localStorage.removeItem(k); sessionStorage.removeItem(k); } catch(e) {} }
+};
+let posts = [], sha = '', cur = null;
+
+function show(v){ ['lock','token','list','edit'].forEach(n => $('v-'+n).classList.toggle('hidden', n !== v)); window.scrollTo(0,0); }
+function msg(id, text, kind){ const el = $(id); el.textContent = text; el.className = 'msg' + (kind ? ' ' + kind : ''); }
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+async function sha256(t){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join(''); }
+function fromB64(b64){ const bin = atob(b64.replace(/\s/g,'')); return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))); }
+function toB64(str){ const bytes = new TextEncoder().encode(str); let bin = ''; for (let i = 0; i < bytes.length; i += 8192) bin += String.fromCharCode(...bytes.subarray(i, i + 8192)); return btoa(bin); }
+function token(){ return store.get('kaibooom-token'); }
+function headers(){ return { 'Authorization': 'Bearer ' + token(), 'Accept': 'application/vnd.github+json' }; }
+
+async function load(){
+  msg('list-msg', '読み込み中…');
+  const r = await fetch(API + '?t=' + Date.now(), { headers: headers(), cache: 'no-store' });
+  if (r.status === 401 || r.status === 403) throw new Error('鍵が使えませんでした。期限切れか、権限（Contents: Read and write）が足りないかもしれません。');
+  if (!r.ok) throw new Error('読み込みに失敗しました（' + r.status + '）');
+  const j = await r.json();
+  sha = j.sha; posts = JSON.parse(fromB64(j.content));
+  msg('list-msg', '');
+}
+
+function renderList(){
+  const sorted = [...posts].sort((a,b) => b.no - a.no);
+  $('count').textContent = '全 ' + posts.length + ' 本';
+  $('list').innerHTML = sorted.map(p => {
+    const pub = (p.status || 'published') === 'published';
+    return `<button class="item" data-slug="${esc(p.slug)}"><span class="no">No.${String(p.no).padStart(3,'0')}</span><span class="t">${esc(p.title)}</span><span class="s${pub ? ' pub' : ''}">${pub ? '公開中' : '非公開'}</span></button>`;
+  }).join('');
+  $('list').querySelectorAll('.item').forEach(b => b.onclick = () => openEdit(b.dataset.slug));
+}
+
+function openEdit(slug){
+  cur = posts.find(p => p.slug === slug); if (!cur) return;
+  $('e-no').textContent = 'No.' + String(cur.no).padStart(3,'0') + '　' + (cur.client || '');
+  $('f-category').innerHTML = [...new Set([...CATS, cur.category])].map(c => `<option${c === cur.category ? ' selected' : ''}>${esc(c)}</option>`).join('');
+  $('f-status').value = (cur.status || 'published') === 'published' ? 'published' : 'hidden';
+  ['title','oneliner','steal','challenge','work','client','agency','production','award','image'].forEach(k => $('f-'+k).value = cur[k] || '');
+  [0,1,2].forEach(i => $('f-s'+i).value = (cur.steps && cur.steps[i]) ? cur.steps[i].body : '');
+  $('preview').href = './#/p/' + encodeURIComponent(cur.slug);
+  msg('save-msg', '');
+  show('edit');
+}
+
+async function save(){
+  const btn = $('save'); btn.disabled = true; msg('save-msg', '保存中…');
+  try {
+    await load();  // 自動更新で記事が増えていても消さないように、最新を読み直してから書き換える
+    const p = posts.find(x => x.slug === cur.slug);
+    if (!p) throw new Error('この記事が見つかりませんでした。一覧に戻って読み込み直してください。');
+    p.status = $('f-status').value;
+    p.category = $('f-category').value;
+    ['title','oneliner','steal','challenge','work','client','agency','production','award'].forEach(k => p[k] = $('f-'+k).value.trim());
+    const img = $('f-image').value.trim(); if (img) p.image = img; else delete p.image;
+    const titles = ['課題','狙い','表現のしかけ'];
+    p.steps = [0,1,2].map(i => ({ title: (p.steps && p.steps[i] && p.steps[i].title) || titles[i], body: $('f-s'+i).value.trim() }));
+    const body = { message: `admin: No.${p.no} を編集`, content: toB64(JSON.stringify(posts, null, 2) + '\n'), sha };
+    const r = await fetch(API, { method: 'PUT', headers: { ...headers(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (r.status === 409) throw new Error('ちょうど自動更新と重なりました。もう一度「保存する」を押してください。');
+    if (!r.ok) throw new Error('保存に失敗しました（' + r.status + '）');
+    sha = (await r.json()).content.sha; cur = p;
+    msg('save-msg', '保存しました。1〜2分でサイトに反映されます。', 'ok');
+  } catch(e) { msg('save-msg', e.message, 'ng'); }
+  btn.disabled = false;
+}
+
+async function enterList(){
+  show('list');
+  try { await load(); renderList(); } catch(e) { msg('list-msg', e.message, 'ng'); }
+}
+
+async function unlock(){
+  if (await sha256($('pin').value) !== PIN_HASH) { msg('pin-msg', '合鍵がちがいます', 'ng'); $('pin').select(); return; }
+  store.set('kaibooom-unlocked', '1', true);
+  token() ? enterList() : show('token');
+}
+
+$('pin-go').onclick = unlock;
+$('pin').onkeydown = e => { if (e.key === 'Enter') unlock(); msg('pin-msg', ''); };
+$('token-go').onclick = async () => {
+  const t = $('token').value.trim();
+  if (!t) { msg('token-msg', '鍵を貼り付けてください', 'ng'); return; }
+  store.set('kaibooom-token', t);
+  msg('token-msg', '確認中…');
+  try { await load(); renderList(); show('list'); }
+  catch(e) { store.del('kaibooom-token'); msg('token-msg', e.message, 'ng'); }
+};
+$('token').oninput = () => msg('token-msg', '');
+$('reload').onclick = enterList;
+$('back').onclick = () => { renderList(); show('list'); };
+$('save').onclick = save;
+$('forget').onclick = () => { store.del('kaibooom-token'); store.del('kaibooom-unlocked'); location.reload(); };
+
+if (store.get('kaibooom-unlocked', true)) { token() ? enterList() : show('token'); } else { show('lock'); $('pin').focus(); }
+</script>
+</body>
+</html>

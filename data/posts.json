@@ -521,5 +521,72 @@
     "source_url": "https://www.adweek.com/commerce/amazon-is-letting-customers-text-its-shopping-assistant/",
     "status": "published",
     "image": "https://static-www.adweek.com/wp-content/uploads/2026/11/iMessage.jpg?w=600&h=315&crop=1"
+  },
+  {
+    "category": "体験",
+    "title": "「やさい文学」は、なぜ野菜を物語に変えたのか。",
+    "work": "やさい文学",
+    "client": "クボタ",
+    "agency": "博報堂",
+    "production": "—",
+    "award": "第5回ACCヤングコンペ グランプリ",
+    "oneliner": "野菜の花言葉で、文学を料理にした",
+    "steps": [
+      {
+        "title": "課題",
+        "body": "記事に課題の明記はない。ただ協賛企業がクボタで、実現の場が KUBOTA AGRI FRONT CAFE だった点から、野菜や農への関心を若い世代にどう開くかが問われたと読める（解釈）。"
+      },
+      {
+        "title": "狙い",
+        "body": "解釈として、野菜に興味が薄い人でも、好きな物語から入れば野菜を身近に感じられる、という気持ちの動きを狙ったのだろう。山岡さんは、クライアントと社会のためになることを前提に置いたと語っている。"
+      },
+      {
+        "title": "表現のしかけ",
+        "body": "野菜の花言葉という小さな入り口を、文学という大きな物語につなげた構造が核になっている。たとえば『走れメロス』の物語を再現したスープカレーのように、読書の記憶を一皿に置き換える。企画で終わらせず、カフェのオリジナルメニューとして実際に食べられる形まで落とした点も強い。"
+      }
+    ],
+    "steal": "一見関係のない二つ（野菜の花言葉×文学）を「料理」という体験に着地させる。意外な組み合わせと、実物にできる出口をセットで考える。",
+    "challenge": "身近な食材を1つ選び、名前や由来から連想できる小説や映画を決めて、再現メニューの企画を企画書1枚にまとめてみよう。",
+    "note": "",
+    "slug": "pm-20261109-article561086-utm-source-feed",
+    "no": 17,
+    "date": "2026-11-09",
+    "source_name": "AdverTimes.",
+    "source_url": "https://www.advertimes.com/20261109/article561086/?utm_source=feed",
+    "status": "published",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/10/omoshiro-ad-20_yamaoka_ogp.jpg"
+  },
+  {
+    "category": "デザイン",
+    "title": "SOS POSは、なぜ決済端末を命綱に変えたのか。",
+    "work": "SOS POS",
+    "client": "BCP",
+    "agency": "Circus Grey, Lima（サーカス・グレイ、リマ）",
+    "production": "—",
+    "award": "Cannes Lions 2026 Creative Data Lions グランプリ",
+    "oneliner": "いつもの決済端末を、盗難被害の駆け込み先に変えた",
+    "steps": [
+      {
+        "title": "課題",
+        "body": "スマホを盗まれた直後、人は口座の不正利用におびえる。そんな被害者を守る手段が身近に必要だった。審査員によれば銀行は差をつけにくい業種で、信頼をどう築くかも課題だった。"
+      },
+      {
+        "title": "狙い",
+        "body": "盗難に遭って心細い人の「今すぐ口座を守りたい」という気持ちを動かす狙い。審査員は、弱っている瞬間に寄り添うことで銀行への信頼を高めた点を評価した。結果は3,400万人超のペルー人に届いた。"
+      },
+      {
+        "title": "表現のしかけ",
+        "body": "新しい機械を作らず、街にある決済端末（POS）を「口座をブロックする窓口」に読み替えた。審査員はこれを「データでデータを守る」美しいシンプルさと評した。足し算ではなく、すでにある物の役割を変えたので説明が一言で済み、広く届いたのだと私は読む。"
+      }
+    ],
+    "steal": "新しいものを作る前に、身の回りの「すでにあるもの」の役割を変えられないか考える。困っている人がいる場所に、解決策を置くのがコツ。",
+    "challenge": "身近な物（自販機やバス停など）を1つ選び、困っている人を助ける新しい役割を、一文で説明できる形で考えてみよう。",
+    "slug": "pvity-announces-lion-winners-on-day-three",
+    "no": 18,
+    "date": "2026-11-09",
+    "source_name": "Cannes Lions",
+    "source_url": "https://www.canneslions.com/news/cannes-lions-international-festival-of-creativity-announces-lion-winners-on-day-three",
+    "status": "published",
+    "image": "https://images.ctfassets.net/vjs6vfoxg7y6/4opCcrk7JYjMCKvmvacrmm/260c0f614f4f5c17ebba85ea5eab3fe6/Open_Graph_Image_home.png"
   }
 ]
