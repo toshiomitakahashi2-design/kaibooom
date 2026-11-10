@@ -18,6 +18,9 @@ WRITE = (PROMPTS / "write.md").read_text(encoding="utf-8")
 SPICE = (PROMPTS / "spice.md").read_text(encoding="utf-8")
 
 TEXT_FIELDS = ("title", "oneliner", "about", "points")
+# エンジンの書き方を変えたら数字を上げる。古い版で書いた記事は「KAIBO rewrite」で書き直される
+ENGINE_VERSION = 3
+POINTS_MAX = 480
 
 # なるべく使わない定番ワード（5本につき2回くらいまで）
 BUZZ = ["刺さる", "刺さり", "エモい", "世界観", "インサイト", "バズる", "バズっ", "ストーリーテリング", "寄り添", "共感を呼"]
@@ -121,6 +124,37 @@ def sentences(text):
     return [x.strip() for x in re.split(r"(?<=[。？])|\n+", str(text)) if x.strip()]
 
 
+ENDINGS = re.compile(r"(ました|ません|ます|でした|です)。$")
+
+
+def ending_run(text):
+    """同じ文末がいちばん長く続いた回数と、その文末。"""
+    ends = [(ENDINGS.search(s).group(1) if ENDINGS.search(s) else None) for s in sentences(text)]
+    best, word, run = 0, "", 0
+    for i, e in enumerate(ends):
+        run = run + 1 if e and i and e == ends[i - 1] else (1 if e else 0)
+        if run > best:
+            best, word = run, e
+    return best, word
+
+
+def taigen_count(text):
+    """体言止め（ひらがな以外で終わる文）の数。かぎかっこで終わる文は数えない。"""
+    return sum(1 for x in sentences(text) if re.search(r"[^ぁ-ん」）)？?!！]。$", x))
+
+
+SPICE_ENDS = ["と想像します", "と考えます", "と思います", "はずです", "ように見えます", "かもしれません"]
+
+
+def hedge_ban(n=4):
+    """最近の記事の「作り手の目」で2回以上使われた語尾は、今回は使わせない。"""
+    path = ROOT / "data/originals.json"
+    if not path.exists():
+        return []
+    items = [" ".join(v["spice"]) for v in json.loads(path.read_text(encoding="utf-8")).values() if v.get("spice")][-n:]
+    return [w for w in SPICE_ENDS if sum(w in x for x in items) >= 2]
+
+
 def spice_sentences(draft, final):
     """スパイスで新しく入った文（下書きにはなかった文）。"""
     before = set(sentences(draft.get("points", "")))
@@ -151,18 +185,32 @@ def write_flat(client, title, url, body, posts):
 def add_spice(client, draft, body, log=print):
     """2段階目：髙橋らしさを少しだけ効かせる。癖が強すぎたり、禁止の言い回しが残ったら1回だけやり直す。"""
     final, note = draft, ""
-    for attempt in range(2):
+    banned = hedge_ban()
+    ban_note = ("\n今回は、最近の記事で続いている次の語尾を使いません：" + "、".join(f"「〜{w}」" for w in banned)) if banned else ""
+    for attempt in range(3):
         final = call(client, VOICE, fill(
-            SPICE, lint_note=note, edit_examples=edit_examples(), recent_spice=recent_spice(), body=body,
+            SPICE, lint_note=note, edit_examples=edit_examples(), recent_spice=recent_spice(), hedge_ban=ban_note, body=body,
             draft=json.dumps(draft, ensure_ascii=False, indent=2)), label="スパイス")
         found, hedges = lint(final), hedge_count(final)
         before, after = len(str(draft.get("points", ""))), len(str(final.get("points", "")))
-        too_long = after > before * 1.1
-        if not found and hedges <= HEDGE_MAX and not too_long:
+        too_long = after > max(before * 1.1, 1) or after > POINTS_MAX
+        run, word = ending_run(final.get("points", ""))
+        used_ban = [w for w in banned if any(w in s for s in spice_sentences(draft, final))]
+        taigen = taigen_count(final.get("points", ""))
+        if not found and hedges <= HEDGE_MAX and not too_long and run < 3 and not used_ban and taigen >= 1:
             break
         notes = []
+        if taigen == 0:
+            notes.append("- 前回は体言止めが1回もありませんでした。「大切なのは、体験。」のような一文を2〜3回入れます（続けては使いません）。")
+            log("  体言止めがなかった")
+        if run >= 3:
+            notes.append(f"- 前回は「〜{word}。」で終わる文が{run}文続きました。同じ文末は2文までにします。")
+            log(f"  同じ文末が続いた: 〜{word}。×{run}")
+        if used_ban:
+            notes.append("- 前回は、使わないと決めた語尾を使いました：" + "、".join(f"「〜{w}」" for w in used_ban))
+            log(f"  続いている語尾を使った: {used_ban}")
         if too_long:
-            notes.append(f"- 前回は points が下書きより長くなりました（{before}字 → {after}字）。足したぶんだけ削り、{before}字以内にします。")
+            notes.append(f"- 前回は points が長すぎました（下書き {before}字 → {after}字）。{min(before, POINTS_MAX - 30)}字以内にします。")
             log(f"  長くなりすぎ: {before}字 → {after}字")
         if found:
             notes.append("- 次の言い回しは使いません。別の書き方に直します：" + "、".join(f"「{w}」" for w in found))
