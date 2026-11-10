@@ -30,7 +30,7 @@ def main():
         print(f"No.{p['no']}: {p['title']}")
         others = [x for x in posts if x is not p]
         try:
-            data = make_post(client, p.get("work") or p["title"], p["source_url"], page_text(p["source_url"]), others)
+            data, flat = make_post(client, p.get("work") or p["title"], p["source_url"], page_text(p["source_url"]), others, with_draft=True)
         except Exception as e:
             print(f"  skip: {e}")
             continue
@@ -43,7 +43,7 @@ def main():
                 p[k] = data[k]
         for k in OLD:
             p.pop(k, None)
-        save_original(p["slug"], p)
+        save_original(p["slug"], p, flat)
         changed += 1
         print(f"  → {p['title']}")
         # 途中で止まっても、そこまでの分は残るように毎回保存する

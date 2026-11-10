@@ -27,7 +27,9 @@ LINT = ["見事に", "見事な", "絶妙", "巧みに", "巧みな", "秀逸", 
         "胸を打", "見逃せません", "学べるのは", "学びがあります", "若手のみなさん", "核だと読め"]
 # 一歩引いた言い方。多すぎると癖が強くなるので数える
 HEDGES = ["と考えます", "と思います", "と想像します", "のではないでしょうか", "かもしれません"]
-HEDGE_MAX = 5
+HEDGE_MAX = 3
+# 作例の言い回しを毎回なぞらないように、決まり文句は機械的に止める
+STOCK = ["難しいのはその先です", "さほど難しくなかったのでは"]
 
 
 def fill(template, **values):
@@ -111,7 +113,26 @@ def edit_examples(n=6, limit=400):
 
 def lint(data):
     text = " ".join(str(data.get(k, "")) for k in TEXT_FIELDS)
-    return [w for w in LINT if w in text]
+    return [w for w in LINT + STOCK if w in text]
+
+
+def sentences(text):
+    return [x.strip() for x in re.split(r"(?<=[。？])|\n+", str(text)) if x.strip()]
+
+
+def spice_sentences(draft, final):
+    """スパイスで新しく入った文（下書きにはなかった文）。"""
+    before = set(sentences(draft.get("points", "")))
+    return [x for x in sentences(final.get("points", "")) if x not in before]
+
+
+def recent_spice(n=5):
+    """最近の記事で入れた「作り手の目」。同じ切り口のくり返しを避けるために渡す。"""
+    path = ROOT / "data/originals.json"
+    if not path.exists():
+        return "（まだありません）"
+    items = [v["spice"] for v in json.loads(path.read_text(encoding="utf-8")).values() if v.get("spice")][-n:]
+    return "\n".join("- " + " ".join(x) for x in items) or "（まだありません）"
 
 
 def hedge_count(data):
@@ -131,17 +152,22 @@ def add_spice(client, draft, body, log=print):
     final, note = draft, ""
     for attempt in range(2):
         final = call(client, VOICE, fill(
-            SPICE, lint_note=note, edit_examples=edit_examples(), body=body,
+            SPICE, lint_note=note, edit_examples=edit_examples(), recent_spice=recent_spice(), body=body,
             draft=json.dumps(draft, ensure_ascii=False, indent=2)), label="スパイス")
         found, hedges = lint(final), hedge_count(final)
-        if not found and hedges <= HEDGE_MAX:
+        before, after = len(str(draft.get("points", ""))), len(str(final.get("points", "")))
+        too_long = after > before * 1.1
+        if not found and hedges <= HEDGE_MAX and not too_long:
             break
         notes = []
+        if too_long:
+            notes.append(f"- 前回は points が下書きより長くなりました（{before}字 → {after}字）。足したぶんだけ削り、{before}字以内にします。")
+            log(f"  長くなりすぎ: {before}字 → {after}字")
         if found:
             notes.append("- 次の言い回しは使いません。別の書き方に直します：" + "、".join(f"「{w}」" for w in found))
             log(f"  禁止の言い回しを検出: {found}")
         if hedges > HEDGE_MAX:
-            notes.append(f"- 前回は一歩引いた言い方（〜と考えます、〜と思います など）が{hedges}回あり、癖が強すぎました。全体で3回までにします。")
+            notes.append(f"- 前回は一歩引いた言い方（〜と考えます、〜と思います など）が{hedges}回あり、癖が強すぎました。全体で2回までにします。")
             log(f"  一歩引いた言い方が多すぎ: {hedges}回")
         note = "\n# 前回の失敗（今回は必ず直す）\n" + "\n".join(notes) + "\n"
     for k, v in draft.items():  # クレジットなど、スパイスで欠けた項目は下書きから補う
@@ -162,9 +188,12 @@ def make_post(client, title, url, body, posts, log=print, with_draft=False):
     return (final, draft) if with_draft else final
 
 
-def save_original(slug, data):
-    """AIが書いたままの文を残しておく。あとで髙橋の手直しと比べるため。"""
+def save_original(slug, data, draft=None):
+    """AIが書いたままの文を残しておく。あとで髙橋の手直しと比べるため。
+    draft（スパイス前の下書き）があれば、スパイスで入った文も記録する。"""
     path = ROOT / "data/originals.json"
     originals = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     originals[slug] = {k: data.get(k, "") for k in TEXT_FIELDS}
+    if draft:
+        originals[slug]["spice"] = spice_sentences(draft, data)
     path.write_text(json.dumps(originals, ensure_ascii=False, indent=2), encoding="utf-8")
