@@ -121,6 +121,9 @@ main{max-width:1680px;margin:0 auto;padding:16px 10px 64px}
 .step .num{font-family:'Archivo',sans-serif;font-stretch:112%;font-weight:700;font-size:14px;color:var(--cut);padding-top:2px}
 .step h3{margin:0 0 4px;font-size:15px;font-weight:700}
 .step p{margin:0;font-size:15px;line-height:1.95;color:var(--body)}
+.pts p{margin:12px 0 0;font-size:15.5px;line-height:2.05;color:var(--body)}
+.pts p:first-of-type{margin-top:10px}
+.pts-edit{margin:10px 0 0;font-size:15.5px;line-height:2.05;color:var(--body);white-space:pre-wrap}
 .steal p{margin:8px 0 0;font-family:'Zen Old Mincho',serif;font-size:17px;font-weight:700;line-height:1.85}
 .task{margin-top:28px;padding:18px 20px;border-radius:14px;background:var(--cut);color:var(--cut-ink)}
 .task h2{margin:0;font-size:13px;font-weight:700;opacity:.85}
@@ -259,6 +262,14 @@ function post(slug){
     ? `<div class="cover"><img src="${esc(p.image)}" alt="${esc(p.work)}" referrerpolicy="no-referrer" data-c="${color(p.category)}" onerror="this.parentNode.classList.add('noimg');this.parentNode.style.background=this.dataset.c;this.parentNode.textContent=${esc(JSON.stringify(p.work))}"></div>`
     : `<div class="cover noimg" style="background:${color(p.category)}">${esc(p.work)}</div>`;
   const hasMedia = p.image || vids || gal;
+  const about = p.about || editing ? `<section class="about"><h2>なんの広告？</h2><p${E('about')}>${esc(p.about)}</p></section>` : '';
+  const paras = t => esc(t).split(/\n{2,}/).map(x => `<p>${x.replace(/\n/g,'<br>')}</p>`).join('');
+  const body = p.points
+    ? about + `<section class="sec pts"><h2>アイデア、ポイント</h2>` + (editing ? `<div class="pts-edit"${E('points')}>${esc(p.points)}</div>` : paras(p.points)) + `</section>`
+    : about +
+      `<section class="sec"><h2>解剖</h2><ol class="steps">${(p.steps||[]).map((s,i)=>`<li class="step"><span class="num">${i+1}</span><div><h3>${esc(s.title)}</h3><p${E('s'+i)}>${esc(s.body)}</p></div></li>`).join('')}</ol></section>` +
+      `<section class="sec steal"><h2>ここを盗め</h2><p${E('steal')}>${esc(p.steal)}</p></section>` +
+      `<section class="task"><h2>やってみよう</h2><p${E('challenge')}>${esc(p.challenge)}</p></section>`;
   const credit = [['作品','work'],['広告主','client'],['広告会社','agency'],['制作','production'],['受賞','award']]
     .filter(([,k]) => editing || dash(p[k])).map(([l,k]) => `<dt>${l}</dt><dd${E(k)}>${esc(p[k])}</dd>`).join('');
   const more = POSTS.filter(x => x.slug !== p.slug && x.category === p.category).slice(0, 10);
@@ -270,10 +281,7 @@ function post(slug){
     `</div><article class="txtcol">` +
     `<div class="k">${meta(p)}</div><h1${E('title')}>${esc(p.title)}</h1>` +
     `<p class="one"${E('oneliner')}>${esc(p.oneliner)}</p>` +
-    (p.about || editing ? `<section class="about"><h2>どんな作品？</h2><p${E('about')}>${esc(p.about)}</p></section>` : '') +
-    `<section class="sec"><h2>解剖</h2><ol class="steps">${p.steps.map((s,i)=>`<li class="step"><span class="num">${i+1}</span><div><h3>${esc(s.title)}</h3><p${E('s'+i)}>${esc(s.body)}</p></div></li>`).join('')}</ol></section>` +
-    `<section class="sec steal"><h2>ここを盗め</h2><p${E('steal')}>${esc(p.steal)}</p></section>` +
-    `<section class="task"><h2>やってみよう</h2><p${E('challenge')}>${esc(p.challenge)}</p></section>` +
+    body +
     `<div class="actions"><a class="go" href="${esc(p.source_url)}" target="_blank" rel="noopener">元の記事を読む（${esc(p.source_name)}）</a><button class="save" id="save" aria-label="${on?'保存を外す':'保存する'}" aria-pressed="${on}">${bm(on)}</button></div>` +
     `<dl class="credit">${credit}</dl>` +
     `<div class="note">作品の著作権は各権利者に帰属します。本記事は批評・解説を目的としています。</div></article></div>` +
@@ -296,7 +304,7 @@ function post(slug){
   if (editing) {
     app.querySelectorAll('[contenteditable]').forEach(el => {
       el.addEventListener('paste', e => { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain')); });
-      el.addEventListener('keydown', e => { if (e.key === 'Enter' && !['s0','s1','s2','steal','challenge','about'].includes(el.dataset.f)) e.preventDefault(); });
+      el.addEventListener('keydown', e => { if (e.key === 'Enter' && !['s0','s1','s2','steal','challenge','about','points'].includes(el.dataset.f)) e.preventDefault(); });
     });
     document.getElementById('eb-cancel').onclick = () => { editing = false; post(slug); };
     document.getElementById('eb-save').onclick = () => saveEdit(p);
@@ -320,7 +328,7 @@ function startEdit(slug){
 async function saveEdit(p){
   const btn = document.getElementById('eb-save'), m = document.getElementById('eb-msg');
   const val = f => { const el = app.querySelector(`[data-f="${f}"]`); return el ? el.innerText.replace(/ /g,' ').trim() : ''; };
-  const edits = { title: val('title'), oneliner: val('oneliner'), about: val('about'), steal: val('steal'), challenge: val('challenge'),
+  const edits = { title: val('title'), oneliner: val('oneliner'), about: val('about'), points: val('points').replace(/\n{3,}/g,'\n\n'), steal: val('steal'), challenge: val('challenge'),
     work: val('work'), client: val('client'), agency: val('agency'), production: val('production'), award: val('award'),
     category: document.getElementById('eb-cat').value, bodies: [0,1,2].map(i => val('s'+i)), hide: document.getElementById('eb-hide').checked };
   btn.disabled = true; m.className = 'eb-msg'; m.textContent = '保存中…';
@@ -330,9 +338,11 @@ async function saveEdit(p){
     if (!r.ok) throw new Error('読み込みに失敗しました（' + r.status + '）');
     const j = await r.json(); const all = JSON.parse(fromB64(j.content));
     const t = all.find(x => x.slug === p.slug); if (!t) throw new Error('この記事が見つかりませんでした');
-    ['title','oneliner','steal','challenge','work','client','agency','production','award','category'].forEach(k => t[k] = edits[k]);
+    ['title','oneliner','work','client','agency','production','award','category'].forEach(k => t[k] = edits[k]);
     if (edits.about || t.about) t.about = edits.about;
-    t.steps = [0,1,2].map(i => ({ title: (t.steps && t.steps[i] && t.steps[i].title) || ['課題','狙い','表現のしかけ'][i], body: edits.bodies[i] }));
+    if (t.points) { if (edits.points) t.points = edits.points; }
+    else { t.steal = edits.steal; t.challenge = edits.challenge;
+      t.steps = [0,1,2].map(i => ({ title: (t.steps && t.steps[i] && t.steps[i].title) || ['課題','狙い','表現のしかけ'][i], body: edits.bodies[i] })); }
     t.status = edits.hide ? 'hidden' : 'published';
     const put = await fetch(API, { method: 'PUT', headers: { ...gh(), 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: `edit: No.${t.no} をサイト上で編集`, content: toB64(JSON.stringify(all, null, 2) + '\n'), sha: j.sha }) });

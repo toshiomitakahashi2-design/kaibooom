@@ -1,0 +1,44 @@
+name: KAIBO test
+
+# 手動で動かす：読みくらべ（ブラインドテスト）用に、記事3本を2通りの書き方で書く。
+# 公開中の記事は書き換えない。結果は サイトの /test.html に出る。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: ① 3本を2通りに書く
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/trial.py
+      - name: ② サイトを作る
+        run: python scripts/build.py
+      - name: 記事データを保存
+        run: |
+          git config user.name "kaibo-bot"
+          git config user.email "kaibo-bot@users.noreply.github.com"
+          git add data docs
+          git diff --cached --quiet || git commit -m "test: blind comparison"
+          git push
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - uses: actions/deploy-pages@v4

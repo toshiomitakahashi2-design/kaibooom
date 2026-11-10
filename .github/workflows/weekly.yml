@@ -23,7 +23,9 @@ jobs:
       - run: pip install -r requirements.txt
       - name: ① 集める
         run: python scripts/collect.py
-      - name: ② 下書き
+      - name: 手直しから学ぶ
+        run: python scripts/learn.py
+      - name: ② 下書き（書く → 赤入れ → 書き直す）
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/draft.py
