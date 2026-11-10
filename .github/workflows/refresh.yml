@@ -1,0 +1,46 @@
+name: KAIBO refresh
+
+# 手動で動かす：これまでの記事に「どんな作品？」と写真・動画をまとめて足す。
+# 一度足した記事は次から対象外なので、何度押しても料金はほとんどかからない。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: ① 写真・動画を探す
+        run: python scripts/images.py
+      - name: ② 「どんな作品？」を足す
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/refresh.py
+      - name: ③ サイトを作る
+        run: python scripts/build.py
+      - name: 記事データを保存
+        run: |
+          git config user.name "kaibo-bot"
+          git config user.email "kaibo-bot@users.noreply.github.com"
+          git add data docs
+          git diff --cached --quiet || git commit -m "refresh: add about and media"
+          git push
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - uses: actions/deploy-pages@v4
