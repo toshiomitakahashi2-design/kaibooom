@@ -1,44 +1,54 @@
-"""既存の記事に「どんな作品？」（about）を後から足す。
-- about がない記事だけを対象にする（一度足した記事は、次からは料金がかからない）
-- 「本文には書かれていません」のような説明が混ざっていた記事は、解剖の本文も書き直す
+"""古い型の記事（課題・狙い・しかけ／ここを盗め／やってみよう）を、
+新しい文章エンジンで「なんの広告なのか／アイデア、ポイント」の型に書き直す。
+- まだ書き直していない記事（points がない記事）だけが対象。何度動かしても同じ記事を二重に書き直さない
+- 写真・動画・番号・日付はそのまま残す
+- 書き直す前の文章は data/legacy.json に残す
 環境変数 ANTHROPIC_API_KEY が必要。"""
 import json
 import pathlib
-import re
 
 import anthropic
 
-from draft import ask, page_text
+from draft import page_text
+from engine import make_post, save_original
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 POSTS_PATH = ROOT / "data/posts.json"
-META_TALK = re.compile(r"本文(には|に|で)?.{0,6}(明記|書かれて|不明|わから)|記事からは|私の読みでは")
+LEGACY_PATH = ROOT / "data/legacy.json"
+KEEP = ("category", "title", "work", "client", "agency", "production", "award", "country", "oneliner", "about", "points")
+OLD = ("steps", "steal", "challenge")
 
 
 def main():
     posts = json.loads(POSTS_PATH.read_text(encoding="utf-8"))
+    legacy = json.loads(LEGACY_PATH.read_text(encoding="utf-8")) if LEGACY_PATH.exists() else {}
     client = anthropic.Anthropic()
     changed = 0
-    for p in posts:
-        if p.get("about"):
+    for p in sorted(posts, key=lambda x: x["no"]):
+        if p.get("points"):
             continue
+        print(f"No.{p['no']}: {p['title']}")
+        others = [x for x in posts if x is not p]
         try:
-            data = ask(client, {"title": p["title"], "link": p["source_url"]}, page_text(p["source_url"]))
+            data = make_post(client, p.get("work") or p["title"], p["source_url"], page_text(p["source_url"]), others)
         except Exception as e:
-            print(f"skip No.{p['no']}: {e}")
+            print(f"  skip: {e}")
             continue
-        if data.get("skip") or not data.get("about"):
-            print(f"no about: No.{p['no']}")
+        if data.get("skip") or not data.get("points"):
+            print("  出典から書けなかったので、そのままにします")
             continue
-        p["about"] = data["about"]
-        p["country"] = data.get("country") or p.get("country", "")
-        body = " ".join(s["body"] for s in p.get("steps", [])) + p.get("steal", "")
-        if META_TALK.search(body) and data.get("steps"):
-            p["steps"], p["steal"] = data["steps"], data.get("steal", p["steal"])
-            print(f"rewrote steps: No.{p['no']}")
+        legacy[p["slug"]] = {k: p[k] for k in ("title", "oneliner", "about") + OLD if k in p}
+        for k in KEEP:
+            if data.get(k) and not (data[k] == "—" and p.get(k)):
+                p[k] = data[k]
+        for k in OLD:
+            p.pop(k, None)
+        save_original(p["slug"], p)
         changed += 1
-        print(f"about added: No.{p['no']}")
-    POSTS_PATH.write_text(json.dumps(posts, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"  → {p['title']}")
+        # 途中で止まっても、そこまでの分は残るように毎回保存する
+        POSTS_PATH.write_text(json.dumps(posts, ensure_ascii=False, indent=2), encoding="utf-8")
+        LEGACY_PATH.write_text(json.dumps(legacy, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"done: {changed} posts")
 
 

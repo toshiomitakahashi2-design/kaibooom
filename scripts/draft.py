@@ -1,20 +1,17 @@
-"""② 下書き：候補記事の本文を読み、Claude APIで解剖記事を書いて data/posts.json に追加する。
+"""② 下書き：候補記事の本文を読み、髙橋俊臣の文章エンジンで解説記事を書いて data/posts.json に追加する。
+エンジンは「書く → 髙橋の目で赤入れ → 書き直す」の3段階（scripts/engine.py）。
 環境変数 ANTHROPIC_API_KEY が必要。"""
 import datetime
-import html
 import json
-import os
 import pathlib
 import re
-import urllib.request
 
 import anthropic
 
+from engine import CONFIG, make_post, save_original
 from web import article_text, fetch_html
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
-PROMPT = (ROOT / "prompts/kaibo.md").read_text(encoding="utf-8")
 POSTS_PATH = ROOT / "data/posts.json"
 
 
@@ -24,15 +21,6 @@ def page_text(url):
 
 def slugify(url):
     return "p" + re.sub(r"[^0-9a-z]+", "-", url.lower())[-40:].strip("-")
-
-
-def ask(client, cand, body):
-    prompt = (PROMPT.replace("{categories}", " / ".join(CONFIG["categories"]))
-              .replace("{title}", cand["title"]).replace("{url}", cand["link"]).replace("{body}", body))
-    msg = client.messages.create(model=CONFIG["model"], max_tokens=3000,
-                                 messages=[{"role": "user", "content": prompt}])
-    text = "".join(b.text for b in msg.content if b.type == "text")
-    return json.loads(text[text.find("{"): text.rfind("}") + 1])
 
 
 def main():
@@ -46,8 +34,9 @@ def main():
     for cand in cands:
         if added >= CONFIG["posts_per_run"]:
             break
+        print(f"reading: {cand['title']}")
         try:
-            data = ask(client, cand, page_text(cand["link"]))
+            data = make_post(client, cand["title"], cand["link"], page_text(cand["link"]), posts)
         except Exception as e:
             print(f"skip {cand['link']}: {e}")
             continue
@@ -63,6 +52,7 @@ def main():
             "source_url": cand["link"],
             "status": "published" if CONFIG["auto_publish"] else "draft",
         })
+        save_original(data["slug"], data)
         posts.append(data)
         next_no += 1
         added += 1

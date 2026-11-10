@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>KAIBOOOM 読みくらべ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112..125,500..800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FFFFFF;--ink:#000000;--body:#2B2B2B;--sub:#707070;--line:#E8E8E8;--soft:#F4F4F4;--cut:#2742E8;--cut-ink:#FFFFFF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#0F0F0F;--ink:#F5F5F5;--body:#D4D4D4;--sub:#9A9A9A;--line:#262626;--soft:#1A1A1A;--cut:#6E82FF;--cut-ink:#0F0F0F}}
+:root[data-theme="dark"]{--paper:#0F0F0F;--ink:#F5F5F5;--body:#D4D4D4;--sub:#9A9A9A;--line:#262626;--soft:#1A1A1A;--cut:#6E82FF;--cut-ink:#0F0F0F}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Zen Kaku Gothic New',system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-size:15px}
+button{font-family:inherit;color:inherit;cursor:pointer;background:none;border:0}
+:focus-visible{outline:2px solid var(--cut);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 16px 96px}
+.logo{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:800;font-size:20px;text-decoration:none;color:var(--ink)}
+h1{font-family:'Zen Old Mincho',serif;font-size:24px;margin:20px 0 8px}
+.lead{color:var(--body);line-height:1.9;max-width:640px;margin:0 0 8px}
+.round{margin-top:44px;padding-top:24px;border-top:1px solid var(--line)}
+.round h2{margin:0;font-size:13px;color:var(--sub);font-weight:700}
+.round .w{margin:4px 0 16px;font-family:'Zen Old Mincho',serif;font-size:19px;font-weight:700;line-height:1.6}
+.pair{display:grid;gap:16px}
+@media (min-width:860px){.pair{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}}
+.ver{border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column}
+.ver.picked{border-color:var(--cut);box-shadow:0 0 0 1px var(--cut)}
+.ab{font-family:'Archivo',sans-serif;font-stretch:112%;font-weight:800;font-size:22px;color:var(--cut)}
+.ver h3{margin:8px 0 0;font-family:'Zen Old Mincho',serif;font-size:20px;line-height:1.55}
+.ver h4{margin:20px 0 0;font-size:13px;color:var(--sub)}
+.ver p{margin:8px 0 0;line-height:2;color:var(--body)}
+.pick{margin-top:20px;min-height:46px;border-radius:99px;border:1px solid var(--ink);font-size:14px;font-weight:700;padding:0 16px}
+.ver.picked .pick{background:var(--cut);border-color:var(--cut);color:var(--cut-ink)}
+.who{margin-top:14px;font-size:13px;font-weight:700;padding:8px 12px;border-radius:10px;background:var(--soft)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:1px solid var(--line)}
+.bar-in{max-width:1180px;margin:0 auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.bar-in span{flex:1;min-width:200px;font-size:14px;line-height:1.6}
+.reveal{min-height:46px;border-radius:99px;background:var(--ink);color:var(--paper);font-size:14px;font-weight:700;padding:0 22px}
+.reveal:disabled{opacity:.35;cursor:not-allowed}
+.empty{padding:64px 0;color:var(--sub);line-height:1.9}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="logo" href="./">KAIBOOOM</a>
+  <h1>読みくらべ</h1>
+  <p class="lead">同じ広告について、2通りの記事を並べています。片方は「髙橋俊臣の文章エンジン」、もう片方は考え方や文体のルールを渡していない、ふつうのAIが書きました。どちらがどちらかは伏せてあります。</p>
+  <p class="lead">3本それぞれで「髙橋が書いたように読めるほう」を選んでください。3本とも選ぶと、答え合わせができます。</p>
+  <div id="rounds"></div>
+</div>
+<div class="bar"><div class="bar-in"><span id="status" role="status"></span><button class="reveal" id="reveal" disabled>答え合わせをする</button></div></div>
+<script id="data" type="application/json">__TRIAL__</script>
+<script>
+const T = JSON.parse(document.getElementById('data').textContent);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const paras = t => esc(t).split(/\n{2,}/).map(x => `<p>${x.replace(/\n/g,'<br>')}</p>`).join('');
+const picks = {}; let revealed = false;
+const side = (r, ab) => (r.engine_is === ab ? r.engine : r.plain);
+function render(){
+  const el = document.getElementById('rounds');
+  if (!T.length) { el.innerHTML = '<div class="empty">まだ読みくらべの記事がありません。<br>GitHubの「Actions」から「KAIBO test」を動かすと、ここに3本ならびます。</div>'; document.querySelector('.bar').hidden = true; return; }
+  el.innerHTML = T.map((r, i) => `<section class="round"><h2>${i+1}本目　${esc(r.client)}</h2><div class="w">${esc(r.work)}</div><div class="pair">` +
+    ['A','B'].map(ab => { const v = side(r, ab); const on = picks[i] === ab;
+      return `<article class="ver${on?' picked':''}"><div class="ab">${ab}</div><h3>${esc(v.title)}</h3><h4>なんの広告？</h4>${paras(v.about)}<h4>アイデア、ポイント</h4>${paras(v.points)}` +
+        (revealed ? `<div class="who">${r.engine_is===ab?'髙橋俊臣の文章エンジン':'ふつうのAI'}</div>` : `<button class="pick" data-i="${i}" data-ab="${ab}" aria-pressed="${on}">${on?'こちらを選びました':'こちらが髙橋らしい'}</button>`) + `</article>`; }).join('') + `</div></section>`).join('');
+  el.querySelectorAll('.pick').forEach(b => b.onclick = () => { picks[b.dataset.i] = b.dataset.ab; const y = window.scrollY; render(); window.scrollTo(0, y); });
+  const n = Object.keys(picks).length, st = document.getElementById('status'), btn = document.getElementById('reveal');
+  if (revealed) { const hit = T.filter((r, i) => picks[i] === r.engine_is).length; st.textContent = `${T.length}本中 ${hit}本で、エンジンのほうを「髙橋らしい」と選びました。`; btn.hidden = true; }
+  else { st.textContent = `${n} / ${T.length} 本を選びました`; btn.disabled = n < T.length; }
+}
+document.getElementById('reveal').onclick = () => { revealed = true; render(); };
+render();
+</script>
+</body>
+</html>

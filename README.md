@@ -1,17 +1,37 @@
-# KAIBO（広告解剖）自動化パイプライン 試作版
+# KAIBOOOM（広告解剖）自動化パイプライン
 
 毎週月曜の朝7時に、次の流れが全自動で動きます。
 
-1. **集める** `scripts/collect.py`：AdverTimes.のRSSから、広告・デザイン関連の記事を拾います
-2. **下書き** `scripts/draft.py`：Claude APIが記事を読み、解剖記事を書きます（作品でないニュースは自動でスキップ）
-3. **チェック**：試作版ではオフです（`config.json` の `auto_publish` を `false` にするとオンになります）
-4. **公開** `scripts/build.py`：サイト `docs/index.html` を作り、GitHub Pagesに公開します
+1. **集める** `scripts/collect.py`：AdverTimes.・電通報・Cannes Lions・Adweek から、広告・デザイン関連の記事を拾います
+2. **学ぶ** `scripts/learn.py`：髙橋が手直しした記事があれば、「AIの文 → 髙橋の文」を記録します
+3. **書く** `scripts/draft.py`：髙橋俊臣の文章エンジンが記事を書きます（作品でないニュースは自動でスキップ）
+4. **写真・動画** `scripts/images.py`：出典ページから画像と動画（YouTube / Vimeo）を探します
+5. **公開** `scripts/build.py`：サイト `docs/index.html` を作り、GitHub Pagesに公開します
+
+## 髙橋俊臣の文章エンジン
+
+`scripts/engine.py` が、1本の記事を3段階でつくります。
+
+**書く → 髙橋の目で赤入れ → 書き直す**
+
+記事は「なんの広告なのか」「アイデア、ポイント」の2部構成です。
+考え方と書き方は、次の3つのファイルに書いてあります。ここを直すと、次の記事から書き方が変わります。
+
+- `prompts/voice/kangaekata.md`：考え方の型（作り手の席から書く、広告の見方、判断のものさし）
+- `prompts/voice/buntai.md`：文体のルール（良い例・悪い例つき）
+- `prompts/voice/ai-shu.md`：AI臭の禁止リスト
+
+## 手で動かせるもの（GitHubの「Actions」タブ）
+
+- **KAIBO test**：記事3本を「エンジン」と「ふつうのAI」の2通りで書き、読みくらべページ（`/test.html`）に並べます。公開中の記事は変わりません
+- **KAIBO rewrite**：古い型の記事を、新しいエンジンで書き直します。書き直す前の文章は `data/legacy.json` に残ります
+- **KAIBO weekly**：毎週の自動更新を、いますぐ動かします
 
 ## 調整できるところ
-- `config.json`：拾うサイト（feeds）、キーワード、1回に書く本数、使うモデル
-- `prompts/kaibo.md`：記事の書き方（文体や型）
+- `config.json`：拾うサイト、キーワード、1回に書く本数、使うモデル
 - `site/template.html`：サイトのデザイン
+- 管理ページ（`/admin.html`）：記事の手直し、写真・動画の追加、公開・非公開
 
-## 動かし方（はじめての人向け）
-GitHub Pagesへの公開手順は、別途チャットで1ステップずつ案内します。
-必要なもの：GitHubアカウント、Anthropic APIキー（console.anthropic.com で発行）
+## 記録されるデータ
+- `data/originals.json`：AIが書いたままの文
+- `data/edits.json`：髙橋が直したところ（次の執筆で手本として使われます）

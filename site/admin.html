@@ -112,12 +112,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset
       </div>
       <label for="f-title">見出し</label><input id="f-title" type="text">
       <label for="f-oneliner">ひとことで言うと</label><input id="f-oneliner" type="text">
-      <label for="f-about">どんな作品？</label><textarea id="f-about" style="min-height:120px"></textarea>
+      <label for="f-about">なんの広告？</label><textarea id="f-about" style="min-height:140px"></textarea>
+      <div id="new-fields"><label for="f-points">アイデア、ポイント（段落の間は1行あける）</label><textarea id="f-points" style="min-height:320px"></textarea></div>
+      <div id="old-fields">
       <label for="f-s0">解剖① 課題</label><textarea id="f-s0"></textarea>
       <label for="f-s1">解剖② 狙い</label><textarea id="f-s1"></textarea>
       <label for="f-s2">解剖③ 表現のしかけ</label><textarea id="f-s2" style="min-height:130px"></textarea>
       <label for="f-steal">ここを盗め</label><textarea id="f-steal"></textarea>
       <label for="f-challenge">やってみよう（課題）</label><textarea id="f-challenge"></textarea>
+      </div>
       <h2 style="margin-top:28px">クレジット</h2>
       <label for="f-work">作品名</label><input id="f-work" type="text">
       <div class="grid2">
@@ -203,6 +206,9 @@ function openEdit(slug){
   $('f-videos').value = (cur.videos || []).map(videoUrl).join('\n');
   $('f-gallery').value = (cur.gallery || []).join('\n');
   [0,1,2].forEach(i => $('f-s'+i).value = (cur.steps && cur.steps[i]) ? cur.steps[i].body : '');
+  $('f-points').value = cur.points || '';
+  $('new-fields').classList.toggle('hidden', !cur.points);
+  $('old-fields').classList.toggle('hidden', !!cur.points);
   $('preview').href = './#/p/' + encodeURIComponent(cur.slug);
   msg('save-msg', '');
   show('edit');
@@ -216,7 +222,7 @@ async function save(){
     if (!p) throw new Error('この記事が見つかりませんでした。一覧に戻って読み込み直してください。');
     p.status = $('f-status').value;
     p.category = $('f-category').value;
-    ['title','oneliner','about','country','steal','challenge','work','client','agency','production','award'].forEach(k => p[k] = $('f-'+k).value.trim());
+    ['title','oneliner','about','country','work','client','agency','production','award'].forEach(k => p[k] = $('f-'+k).value.trim());
     const img = $('f-image').value.trim(); if (img) p.image = img; else delete p.image;
     const lines = id => $(id).value.split('\n').map(x => x.trim()).filter(Boolean);
     const vids = lines('f-videos').map(parseVideo);
@@ -224,8 +230,12 @@ async function save(){
     if (vids.length) p.videos = vids; else delete p.videos;
     const gal = lines('f-gallery'); if (gal.length) p.gallery = gal; else delete p.gallery;
     p.media_checked = true;
-    const titles = ['課題','狙い','表現のしかけ'];
-    p.steps = [0,1,2].map(i => ({ title: (p.steps && p.steps[i] && p.steps[i].title) || titles[i], body: $('f-s'+i).value.trim() }));
+    if (p.points) { p.points = $('f-points').value.trim().replace(/\n{3,}/g,'\n\n'); }
+    else {
+      ['steal','challenge'].forEach(k => p[k] = $('f-'+k).value.trim());
+      const titles = ['課題','狙い','表現のしかけ'];
+      p.steps = [0,1,2].map(i => ({ title: (p.steps && p.steps[i] && p.steps[i].title) || titles[i], body: $('f-s'+i).value.trim() }));
+    }
     const body = { message: `admin: No.${p.no} を編集`, content: toB64(JSON.stringify(posts, null, 2) + '\n'), sha };
     const r = await fetch(API, { method: 'PUT', headers: { ...headers(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     if (r.status === 409) throw new Error('ちょうど自動更新と重なりました。もう一度「保存する」を押してください。');

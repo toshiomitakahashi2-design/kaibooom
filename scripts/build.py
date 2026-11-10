@@ -14,6 +14,12 @@ def main():
     out.parent.mkdir(exist_ok=True)
     out.write_text(page, encoding="utf-8")
     (ROOT / "docs/admin.html").write_text((ROOT / "site/admin.html").read_text(encoding="utf-8"), encoding="utf-8")
+    # 読みくらべ（ブラインドテスト）のページ。試験データがなければ空のページになる
+    trial_path = ROOT / "data/trial.json"
+    trial = json.loads(trial_path.read_text(encoding="utf-8")) if trial_path.exists() else []
+    test = (ROOT / "site/test.html").read_text(encoding="utf-8")
+    test = test.replace("__TRIAL__", json.dumps(trial, ensure_ascii=False).replace("</", "<\\/"))
+    (ROOT / "docs/test.html").write_text(test, encoding="utf-8")
     print(f"built {out} with {len(live)} posts")
 
 

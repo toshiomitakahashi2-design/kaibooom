@@ -1,7 +1,8 @@
-name: KAIBO refresh
+name: KAIBO rewrite
 
-# 手動で動かす：これまでの記事に「どんな作品？」と写真・動画をまとめて足す。
-# 一度足した記事は次から対象外なので、何度押しても料金はほとんどかからない。
+# 手動で動かす：古い型の記事を、新しい文章エンジンで書き直す。
+# 書き直した記事は次から対象外なので、何度押しても二重には書き直さない。
+# 書き直す前の文章は data/legacy.json に残る。
 on:
   workflow_dispatch:
 
@@ -27,7 +28,7 @@ jobs:
       - run: pip install -r requirements.txt
       - name: ① 写真・動画を探す
         run: python scripts/images.py
-      - name: ② 「どんな作品？」を足す
+      - name: ② 新しいエンジンで書き直す
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/refresh.py
@@ -38,7 +39,7 @@ jobs:
           git config user.name "kaibo-bot"
           git config user.email "kaibo-bot@users.noreply.github.com"
           git add data docs
-          git diff --cached --quiet || git commit -m "refresh: add about and media"
+          git diff --cached --quiet || git commit -m "refresh: rewrite with voice engine"
           git push
       - uses: actions/upload-pages-artifact@v3
         with:
