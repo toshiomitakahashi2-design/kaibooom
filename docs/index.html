@@ -69,22 +69,22 @@ main{max-width:1680px;margin:0 auto;padding:16px 10px 64px}
 .lead{display:flex;align-items:baseline;gap:12px;padding:4px 4px 16px}
 .lead h1{margin:0;font-family:'Zen Old Mincho',serif;font-size:20px;font-weight:700}
 .lead small{font-size:12px;color:var(--sub)}
-.mason{column-count:2;column-gap:10px}
-@media (min-width:720px){.mason{column-count:3;column-gap:16px}}
-@media (min-width:1100px){.mason{column-count:4}}
-@media (min-width:1480px){.mason{column-count:5}}
-.pin{break-inside:avoid;display:block;margin-bottom:18px}
-.pin .ph{position:relative;border-radius:14px;overflow:hidden;background:var(--soft)}
-.pin .ph img{width:100%;height:auto}
+.mason{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 10px}
+@media (min-width:720px){.mason{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 16px}}
+@media (min-width:1100px){.mason{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (min-width:1480px){.mason{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.pin{display:block;min-width:0}
+.pin .ph{position:relative;border-radius:14px;overflow:hidden;background:var(--soft);aspect-ratio:1200/630}
+.pin .ph img{width:100%;height:100%;object-fit:cover}
 .pin .ph::after{content:"";position:absolute;inset:0;background:var(--overlay);opacity:0;transition:opacity .15s}
 .pin:hover .ph::after{opacity:1}
 .pin .no{position:absolute;left:10px;top:10px;z-index:1;font-family:'Archivo',sans-serif;font-stretch:112%;font-weight:700;font-size:11px;color:#fff;opacity:0;transition:opacity .15s}
 .pin:hover .no{opacity:1}
 .pin .vid{position:absolute;right:10px;bottom:10px;z-index:1;width:28px;height:28px;border-radius:99px;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center}
-.pin .txt{display:none;padding:18px 16px 22px;font-family:'Zen Old Mincho',serif;font-size:17px;font-weight:700;line-height:1.6;color:#fff}
-.pin .ph.noimg .txt{display:block}
+.pin .txt{display:none;position:absolute;inset:0;padding:14px;align-items:flex-end;font-family:'Zen Old Mincho',serif;font-size:15px;font-weight:700;line-height:1.5;color:#fff}
+.pin .ph.noimg .txt{display:flex}
 .pin .ph.noimg::after{display:none}
-.pin .t{margin:8px 4px 0;font-size:13.5px;font-weight:700;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pin .t{margin:8px 4px 0;font-size:13.5px;font-weight:700;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:3.1em}
 .pin .m{margin:3px 4px 0;font-size:11.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (prefers-reduced-motion:reduce){.pin .ph::after,.pin .no{transition:none}}
 .empty{padding:72px 16px;text-align:center;color:var(--sub);line-height:1.9}
