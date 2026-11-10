@@ -33,14 +33,35 @@ def fill(template, **values):
     return template
 
 
-def call(client, system, user, max_tokens=3000, model=None):
+def parse_json(text):
+    """返ってきた文章からJSONの部分だけを取り出して読む。段落の改行がそのまま入っていても読めるようにする。"""
+    start, end = text.find("{"), text.rfind("}")
+    if start < 0 or end <= start:
+        raise ValueError("JSONが見つかりません")
+    return json.loads(text[start:end + 1], strict=False)
+
+
+def call(client, system, user, max_tokens=8000, model=None, label=""):
+    """Claudeを1回呼んでJSONを受け取る。文章が途中で切れたら、上限を倍にして1回だけやり直す。"""
     args = {"model": model or CONFIG.get("model_write") or CONFIG["model"], "max_tokens": max_tokens,
             "messages": [{"role": "user", "content": user}]}
     if system:
         args["system"] = system
-    msg = client.messages.create(**args)
-    text = "".join(b.text for b in msg.content if b.type == "text")
-    return json.loads(text[text.find("{"): text.rfind("}") + 1])
+    for attempt in range(2):
+        msg = client.messages.create(**args)
+        text = "".join(b.text for b in msg.content if b.type == "text")
+        try:
+            return parse_json(text)
+        except ValueError as e:
+            stop = getattr(msg, "stop_reason", "?")
+            kinds = [b.type for b in msg.content]
+            used = getattr(getattr(msg, "usage", None), "output_tokens", "?")
+            detail = f"{label}: {e} / stop_reason={stop} / blocks={kinds} / output_tokens={used} / text={text[:150]!r}"
+            if attempt == 0 and stop == "max_tokens":
+                print(f"  途中で切れたので、上限を増やしてやり直します（{label}）")
+                args["max_tokens"] = max_tokens * 2
+                continue
+            raise RuntimeError(detail) from None
 
 
 def post_text(post):
@@ -92,15 +113,16 @@ def lint(data):
 
 def make_post(client, title, url, body, posts, log=print):
     """戻り値: 記事のデータ（dict）。記事にしない場合は {"skip": True}。"""
+    log(f"  出典の本文 {len(body)} 字")
     draft = call(client, VOICE, fill(
         WRITE, recent_titles=recent_titles(posts), buzz_rule=buzz_rule(posts),
-        categories=" / ".join(CONFIG["categories"]), title=title, url=url, body=body))
+        categories=" / ".join(CONFIG["categories"]), title=title, url=url, body=body), label="書く")
     if draft.get("skip"):
         return draft
 
     draft_json = json.dumps(draft, ensure_ascii=False, indent=2)
-    review = call(client, VOICE, fill(CRITIQUE, body=body, draft=draft_json), max_tokens=2500,
-                  model=CONFIG.get("model_critique"))
+    review = call(client, VOICE, fill(CRITIQUE, body=body, draft=draft_json),
+                  model=CONFIG.get("model_critique"), label="赤入れ")
     issues, missing = review.get("issues", []), review.get("missing", "")
     log(f"  赤入れ {len(issues)} 件" + ("＋足りない視点あり" if missing else ""))
 
@@ -119,7 +141,7 @@ def make_post(client, title, url, body, posts, log=print):
             REWRITE, lint_note=note, edit_examples=edit_examples(), body=body,
             draft=json.dumps(final, ensure_ascii=False, indent=2),
             issues=json.dumps(issues, ensure_ascii=False, indent=2) if attempt == 0 else "（前回の赤入れは反映済み）",
-            missing=(missing if attempt == 0 else "") or "（なし）"))
+            missing=(missing if attempt == 0 else "") or "（なし）"), label="書き直す")
     final["points"] = re.sub(r"\n{3,}", "\n\n", str(final.get("points", "")).strip())
     return final
 
