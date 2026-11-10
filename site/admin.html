@@ -112,6 +112,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset
       </div>
       <label for="f-title">見出し</label><input id="f-title" type="text">
       <label for="f-oneliner">ひとことで言うと</label><input id="f-oneliner" type="text">
+      <label for="f-about">どんな作品？</label><textarea id="f-about" style="min-height:120px"></textarea>
       <label for="f-s0">解剖① 課題</label><textarea id="f-s0"></textarea>
       <label for="f-s1">解剖② 狙い</label><textarea id="f-s1"></textarea>
       <label for="f-s2">解剖③ 表現のしかけ</label><textarea id="f-s2" style="min-height:130px"></textarea>
@@ -125,7 +126,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset
         <div><label for="f-production">制作</label><input id="f-production" type="text"></div>
         <div><label for="f-award">受賞</label><input id="f-award" type="text"></div>
       </div>
-      <label for="f-image">画像のURL（空にすると画像なし）</label><input id="f-image" type="text">
+      <div class="grid2">
+        <div><label for="f-country">国・地域</label><input id="f-country" type="text"></div>
+      </div>
+      <h2 style="margin-top:28px">写真・動画</h2>
+      <label for="f-image">メイン画像のURL（空にすると画像なし）</label><input id="f-image" type="text">
+      <label for="f-videos">動画のURL（YouTube・Vimeo。1行に1本）</label><textarea id="f-videos" placeholder="https://www.youtube.com/watch?v=..." style="min-height:70px"></textarea>
+      <label for="f-gallery">追加の写真のURL（1行に1枚）</label><textarea id="f-gallery" style="min-height:90px"></textarea>
     </div>
     <div class="sticky">
       <div class="row"><button class="btn primary" id="save">保存する</button><span style="font-size:13px;color:var(--sub)">保存すると1〜2分でサイトに反映されます</span></div>
@@ -159,6 +166,14 @@ function toB64(str){ const bytes = new TextEncoder().encode(str); let bin = ''; 
 function token(){ return store.get('kaibooom-token'); }
 function headers(){ return { 'Authorization': 'Bearer ' + token(), 'Accept': 'application/vnd.github+json' }; }
 
+function parseVideo(u){
+  let m = u.match(/(?:youtube(?:-nocookie)?\.com\/(?:embed\/|watch\?(?:.*&)?v=|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (m) return { type: 'youtube', id: m[1] };
+  m = u.match(/vimeo\.com\/(?:video\/)?(\d{6,12})/);
+  return m ? { type: 'vimeo', id: m[1] } : null;
+}
+const videoUrl = v => v.type === 'vimeo' ? 'https://vimeo.com/' + v.id : 'https://www.youtube.com/watch?v=' + v.id;
+
 async function load(){
   msg('list-msg', '読み込み中…');
   const r = await fetch(API + '?t=' + Date.now(), { headers: headers(), cache: 'no-store' });
@@ -184,7 +199,9 @@ function openEdit(slug){
   $('e-no').textContent = 'No.' + String(cur.no).padStart(3,'0') + '　' + (cur.client || '');
   $('f-category').innerHTML = [...new Set([...CATS, cur.category])].map(c => `<option${c === cur.category ? ' selected' : ''}>${esc(c)}</option>`).join('');
   $('f-status').value = (cur.status || 'published') === 'published' ? 'published' : 'hidden';
-  ['title','oneliner','steal','challenge','work','client','agency','production','award','image'].forEach(k => $('f-'+k).value = cur[k] || '');
+  ['title','oneliner','about','country','steal','challenge','work','client','agency','production','award','image'].forEach(k => $('f-'+k).value = cur[k] || '');
+  $('f-videos').value = (cur.videos || []).map(videoUrl).join('\n');
+  $('f-gallery').value = (cur.gallery || []).join('\n');
   [0,1,2].forEach(i => $('f-s'+i).value = (cur.steps && cur.steps[i]) ? cur.steps[i].body : '');
   $('preview').href = './#/p/' + encodeURIComponent(cur.slug);
   msg('save-msg', '');
@@ -199,8 +216,14 @@ async function save(){
     if (!p) throw new Error('この記事が見つかりませんでした。一覧に戻って読み込み直してください。');
     p.status = $('f-status').value;
     p.category = $('f-category').value;
-    ['title','oneliner','steal','challenge','work','client','agency','production','award'].forEach(k => p[k] = $('f-'+k).value.trim());
+    ['title','oneliner','about','country','steal','challenge','work','client','agency','production','award'].forEach(k => p[k] = $('f-'+k).value.trim());
     const img = $('f-image').value.trim(); if (img) p.image = img; else delete p.image;
+    const lines = id => $(id).value.split('\n').map(x => x.trim()).filter(Boolean);
+    const vids = lines('f-videos').map(parseVideo);
+    if (vids.includes(null)) throw new Error('動画のURLが読み取れませんでした。YouTubeかVimeoのURLを1行に1本ずつ入れてください。');
+    if (vids.length) p.videos = vids; else delete p.videos;
+    const gal = lines('f-gallery'); if (gal.length) p.gallery = gal; else delete p.gallery;
+    p.media_checked = true;
     const titles = ['課題','狙い','表現のしかけ'];
     p.steps = [0,1,2].map(i => ({ title: (p.steps && p.steps[i] && p.steps[i].title) || titles[i], body: $('f-s'+i).value.trim() }));
     const body = { message: `admin: No.${p.no} を編集`, content: toB64(JSON.stringify(posts, null, 2) + '\n'), sha };

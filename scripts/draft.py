@@ -10,19 +10,16 @@ import urllib.request
 
 import anthropic
 
+from web import article_text, fetch_html
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 PROMPT = (ROOT / "prompts/kaibo.md").read_text(encoding="utf-8")
 POSTS_PATH = ROOT / "data/posts.json"
 
 
-def page_text(url, limit=12000):
-    req = urllib.request.Request(url, headers={"User-Agent": "KAIBO-bot/0.1"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        raw = r.read().decode("utf-8", errors="ignore")
-    raw = re.sub(r"(?is)<(script|style|nav|footer|header|aside)[^>]*>.*?</\1>", " ", raw)
-    text = html.unescape(re.sub(r"(?s)<[^>]+>", " ", raw))
-    return re.sub(r"\s+", " ", text).strip()[:limit]
+def page_text(url):
+    return article_text(fetch_html(url))
 
 
 def slugify(url):
@@ -32,7 +29,7 @@ def slugify(url):
 def ask(client, cand, body):
     prompt = (PROMPT.replace("{categories}", " / ".join(CONFIG["categories"]))
               .replace("{title}", cand["title"]).replace("{url}", cand["link"]).replace("{body}", body))
-    msg = client.messages.create(model=CONFIG["model"], max_tokens=2000,
+    msg = client.messages.create(model=CONFIG["model"], max_tokens=3000,
                                  messages=[{"role": "user", "content": prompt}])
     text = "".join(b.text for b in msg.content if b.type == "text")
     return json.loads(text[text.find("{"): text.rfind("}") + 1])
