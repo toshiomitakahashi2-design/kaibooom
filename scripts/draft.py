@@ -36,7 +36,7 @@ def main():
             break
         print(f"reading: {cand['title']}")
         try:
-            data = make_post(client, cand["title"], cand["link"], page_text(cand["link"]), posts)
+            data, flat = make_post(client, cand["title"], cand["link"], page_text(cand["link"]), posts, with_draft=True)
         except Exception as e:
             print(f"skip {cand['link']}: {e}")
             continue
@@ -52,7 +52,7 @@ def main():
             "source_url": cand["link"],
             "status": "published" if CONFIG["auto_publish"] else "draft",
         })
-        save_original(data["slug"], data)
+        save_original(data["slug"], data, flat)
         posts.append(data)
         next_no += 1
         added += 1
