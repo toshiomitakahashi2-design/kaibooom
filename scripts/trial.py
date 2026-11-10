@@ -36,7 +36,7 @@ def main():
             if engine.get("skip") or not engine.get("points"):
                 print("  出典から書けなかったので、別の記事にします")
                 continue
-            plain = call(client, "", fill(BASELINE, title=p.get("work") or p["title"], url=p["source_url"], body=body))
+            plain = call(client, "", fill(BASELINE, title=p.get("work") or p["title"], url=p["source_url"], body=body), label="ふつうのAI")
         except Exception as e:
             print(f"  skip: {e}")
             continue
@@ -46,6 +46,8 @@ def main():
                     "engine": pick(engine), "plain": pick(plain), "engine_is": random.choice("AB")})
     (ROOT / "data/trial.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"trial: {len(out)} 本")
+    if not out:
+        raise SystemExit("1本も書けませんでした。上の記録に理由が出ています。")
 
 
 if __name__ == "__main__":
