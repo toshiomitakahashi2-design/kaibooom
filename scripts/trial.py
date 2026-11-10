@@ -1,6 +1,7 @@
-"""試験：既存の記事3本を、2通りの書き方で書いて data/trial.json に保存する。
-  ・エンジン版：髙橋俊臣の文章エンジン（書く → 赤入れ → 書き直す）
-  ・ふつうのAI版：考え方・文体のルールを渡さずに、同じ型で1回だけ書かせたもの
+"""試験：既存の記事3本を、2通りで data/trial.json に保存する。
+  ・スパイスなし：フラットに書いただけの文章（エンジンの1段階目）
+  ・スパイスあり：そこに髙橋らしさを少し効かせた文章（エンジンの2段階目まで）
+同じ下書きから出発するので、違いは「髙橋のスパイス」だけになる。
 どちらがどちらかは伏せて、テストページ（docs/test.html）にA・Bとして並べる。
 公開中の記事は書き換えない。環境変数 ANTHROPIC_API_KEY が必要。"""
 import json
@@ -10,10 +11,9 @@ import random
 import anthropic
 
 from draft import page_text
-from engine import CONFIG, PROMPTS, call, fill, make_post
+from engine import CONFIG, make_post
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-BASELINE = (PROMPTS / "baseline.md").read_text(encoding="utf-8")
 PREFER = CONFIG.get("trial_slugs", ["zebra-kaku", "kao-merit"])
 HOW_MANY = 3
 
@@ -32,11 +32,10 @@ def main():
         try:
             body = page_text(p["source_url"])
             others = [x for x in posts if x is not p]
-            engine = make_post(client, p.get("work") or p["title"], p["source_url"], body, others)
+            engine, plain = make_post(client, p.get("work") or p["title"], p["source_url"], body, others, with_draft=True)
             if engine.get("skip") or not engine.get("points"):
                 print("  出典から書けなかったので、別の記事にします")
                 continue
-            plain = call(client, "", fill(BASELINE, title=p.get("work") or p["title"], url=p["source_url"], body=body), label="ふつうのAI")
         except Exception as e:
             print(f"  skip: {e}")
             continue

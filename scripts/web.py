@@ -50,6 +50,10 @@ def article_text(page, limit=20000):
     text = "\n".join(parts)
     if len(text) < 400:  # 段落タグがほとんど無いページ
         text = _strip(block)
+    if len(text) < 600:  # <article> が見出しだけ、などで本文を取りこぼしたとき：ページ全体から読む
+        whole = _strip(re.sub(r"(?is)<(script|style|noscript|svg)[^>]*>.*?</\1>", " ", page))
+        if len(whole) > len(text):
+            text = whole
     desc = meta(page, "og:description", "description")
     head = f"（ページの説明）{desc}\n\n" if desc else ""
     return (head + text)[:limit]

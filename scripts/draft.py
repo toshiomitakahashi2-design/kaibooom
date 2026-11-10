@@ -1,5 +1,5 @@
 """② 下書き：候補記事の本文を読み、髙橋俊臣の文章エンジンで解説記事を書いて data/posts.json に追加する。
-エンジンは「書く → 髙橋の目で赤入れ → 書き直す」の3段階（scripts/engine.py）。
+エンジンは「フラットに書く → 髙橋らしさを少し効かせる」の2段階（scripts/engine.py）。
 環境変数 ANTHROPIC_API_KEY が必要。"""
 import datetime
 import json
