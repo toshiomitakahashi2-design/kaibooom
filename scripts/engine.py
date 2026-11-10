@@ -19,7 +19,7 @@ SPICE = (PROMPTS / "spice.md").read_text(encoding="utf-8")
 
 TEXT_FIELDS = ("title", "oneliner", "about", "points")
 # エンジンの書き方を変えたら数字を上げる。古い版で書いた記事は「KAIBO rewrite」で書き直される
-ENGINE_VERSION = 2
+ENGINE_VERSION = 3
 POINTS_MAX = 480
 
 # なるべく使わない定番ワード（5本につき2回くらいまで）
@@ -138,6 +138,11 @@ def ending_run(text):
     return best, word
 
 
+def taigen_count(text):
+    """体言止め（ひらがな以外で終わる文）の数。かぎかっこで終わる文は数えない。"""
+    return sum(1 for x in sentences(text) if re.search(r"[^ぁ-ん」）)？?!！]。$", x))
+
+
 SPICE_ENDS = ["と想像します", "と考えます", "と思います", "はずです", "ように見えます", "かもしれません"]
 
 
@@ -191,9 +196,13 @@ def add_spice(client, draft, body, log=print):
         too_long = after > max(before * 1.1, 1) or after > POINTS_MAX
         run, word = ending_run(final.get("points", ""))
         used_ban = [w for w in banned if any(w in s for s in spice_sentences(draft, final))]
-        if not found and hedges <= HEDGE_MAX and not too_long and run < 3 and not used_ban:
+        taigen = taigen_count(final.get("points", ""))
+        if not found and hedges <= HEDGE_MAX and not too_long and run < 3 and not used_ban and taigen >= 1:
             break
         notes = []
+        if taigen == 0:
+            notes.append("- 前回は体言止めが1回もありませんでした。「大切なのは、体験。」のような一文を2〜3回入れます（続けては使いません）。")
+            log("  体言止めがなかった")
         if run >= 3:
             notes.append(f"- 前回は「〜{word}。」で終わる文が{run}文続きました。同じ文末は2文までにします。")
             log(f"  同じ文末が続いた: 〜{word}。×{run}")
