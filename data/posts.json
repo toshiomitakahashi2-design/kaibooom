@@ -29,7 +29,14 @@
     ],
     "steal": "商品を映したくなったら、一度「映さない」案を考えてみる。モノを消すと、その会社が本当に売っている価値が浮かび上がってくる。",
     "challenge": "消しゴムを一度も映さずに、消しゴムメーカーのブランドムービーを5カットの絵コンテで考えてみよう。",
-    "image": "https://digitalpr.jp/simg/2819/146032/715_400_202610151529486ad072dcd3e83.jpg"
+    "image": "https://digitalpr.jp/simg/2819/146032/715_400_202610151529486ad072dcd3e83.jpg",
+    "videos": [
+      {
+        "type": "youtube",
+        "id": "cCBjHXYhV2Y"
+      }
+    ],
+    "media_checked": true
   },
   {
     "slug": "kao-merit",
@@ -61,7 +68,24 @@
     ],
     "steal": "タイトルの型を決めると、シリーズは量産できる。「〇〇した日」というひとつのフォーマットで、エピソードは何本でもつくれる。",
     "challenge": "「〇〇した日」の型で、地元のパン屋さんのCMを3本分、タイトルとあらすじ（各2行）で考えてみよう。",
-    "image": "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-26f004bc85086c5fe348544d9265cc22-547x308.jpg?format=jpeg&auto=webp&fit=bounds&width=2400&height=1260"
+    "image": "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-26f004bc85086c5fe348544d9265cc22-547x308.jpg?format=jpeg&auto=webp&fit=bounds&width=2400&height=1260",
+    "gallery": [
+      "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-26f004bc85086c5fe348544d9265cc22-547x308.jpg?width=1950&height=1350&quality=85&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-9c8d5c7977013800d94a17d5e001b43e-713x305.jpg?width=1950&height=1350&quality=85&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-565d423e62c6db06cea50f413529a51d-1779x998.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-81e5e31a36bd2c6a9306a18ec2311573-247x239.jpg?width=1950&height=1350&quality=85&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-26f004bc85086c5fe348544d9265cc22-547x308.jpg?format=jpeg&auto=webp&fit=bounds&width=720&height=480",
+      "https://prcdn.freetls.fastly.net/release_image/192919/1/192919-1-9c8d5c7977013800d94a17d5e001b43e-713x305.jpg?format=jpeg&auto=webp&fit=bounds&width=720&height=480"
+    ],
+    "videos": [
+      {
+        "type": "youtube",
+        "id": "6UpaiMoxd3c"
+      }
+    ],
+    "media_checked": true,
+    "about": "花王のシャンプーmerit（メリット）の60秒アニメCM。春夏秋冬、父と娘は手をつないで歩く。キリンやトンボに目を輝かせ、夜道では肩車をねだる娘。春、新しい友だちができた娘は父の手を離し、友だちと手をつないで走っていく。父は寂しさをこらえて笑顔で見送り、家に帰れば親子でお風呂へ。絵はイラストレーターのニシワキタダシさん、曲は椎名林檎「ギブス」のカバー。",
+    "country": "日本"
   },
   {
     "slug": "mcd-tsukimi-tabemi",
@@ -93,7 +117,10 @@
     ],
     "steal": "売りたい条件（期間限定、季節など）をキャラクターの名前や設定に埋め込む。説明しなくても、勝手に伝わる。",
     "challenge": "冬だけの商品（おでん、肉まんなど）に、条件を名前に埋め込んだ宣伝隊長キャラをつくってみよう。名前・モチーフ・決めゼリフをひとつずつ。",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2025/09/tsukimitabebi_ogp2.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2025/09/tsukimitabebi_ogp2.jpg",
+    "media_checked": true,
+    "about": "9月3日に秋の限定商品が始まるのに合わせ、日本マクドナルドがX・Instagram・TikTokで公開したショート動画。月夜を舞台に、かぐや姫をモチーフにしたキャラクター「いまだけ月見食べ美」が、歌に合わせて表情豊かに踊る。イラストはイラストレーターのはまふぐ氏。実写とアニメを組み合わせた映像もあり、見る人は短い曲とダンスを何度も見たくなる。昨年のダブチ食べ美は、多くの二次創作を生んだ。",
+    "country": "日本"
   },
   {
     "slug": "suntory-nope",
@@ -125,7 +152,10 @@
     ],
     "steal": "弱点や後ろめたさは、消すより人格にする。ツッコまれる余白を、わざと残しておく。",
     "challenge": "「カロリーが高い」お菓子を、それを隠さずに魅力として売る広告コピーを3案考えてみよう。",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/09/suntory_nope_over-100-million-sold_ogp.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/09/suntory_nope_over-100-million-sold_ogp.jpg",
+    "media_checked": true,
+    "about": "3月24日に発売されたサントリーの炭酸飲料「ギルティ炭酸 NOPE（ノープ）」の発売施策。テレビCM「ギルティ監獄」篇では、生田斗真、鈴鹿央士、アントニーが囚人服姿で、欲望のままに商品を飲む。パッケージは炭酸売り場で見かけないブラックとマゼンタ。街では、サントリーを代表するBOSSの自販機のロゴがNOPEに上書きされ、見つけた人がSNSに投稿する。見る人はCMにツッコミを入れ、自販機を探して拡散する側に回る。日本のSNS文化を前提にした仕掛け。",
+    "country": "日本"
   },
   {
     "slug": "mangalogue-hinotori",
@@ -157,7 +187,16 @@
     ],
     "steal": "体験を分解して、要素ごとに別のメディアへ置き換えてみる。視線はカメラに、ページは時間に、というふうに。",
     "challenge": "「絵本を読む」体験を分解して、図書館で行うライブイベントに組み立て直そう。要素ごとに何へ置き換えるか、表にしてみよう。",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/04/OGP-1-2.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/04/OGP-1-2.jpg",
+    "videos": [
+      {
+        "type": "youtube",
+        "id": "DL1hkuPNN-I"
+      }
+    ],
+    "media_checked": true,
+    "about": "4月22日から5月16日まで、高輪ゲートウェイシティの複合ミュージアム「MoN Takanawa」内のシアター「Box1000」で開かれるライブ公演。観客は巨大LEDに映る手塚治虫「火の鳥 未来編」の原稿やコマを見つめ、ロボットアーム「鉄腕アーム」がカメラのようにコマを追う動きに視線を預けて物語を進む。山寺宏一や夏木マリらの声に加え、松任谷由実のAI音声も登場し、又吉直樹ら案内役が観客と旅をする。",
+    "country": "日本"
   },
   {
     "category": "体験",
@@ -190,7 +229,8 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261106/article563356/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/kodansha-media-conf2026_media-awards2026_ceremony_ogp.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/kodansha-media-conf2026_media-awards2026_ceremony_ogp.jpg",
+    "media_checked": true
   },
   {
     "category": "広告",
@@ -223,7 +263,8 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261106/article563310/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/pizzala-drstone_ogp.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/pizzala-drstone_ogp.jpg",
+    "media_checked": true
   },
   {
     "category": "映像",
@@ -256,7 +297,16 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261105/article563192/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/venex01.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/venex01.jpg",
+    "videos": [
+      {
+        "type": "youtube",
+        "id": "XtGq0cJjDsc"
+      }
+    ],
+    "media_checked": true,
+    "about": "30秒のテレビCM。ホイッスルの音とともに「STOP」のアイコンが画面に現れ、その奥からVENEXのウェアを着た本田圭佑が登場します。リカバリーウェアを買おうとしている人に「すぐに買わないでください」と語りかけ、「衝動買いはよくないですね」と続けます。最後はナレーションで独自のPHT繊維を紹介し、本田がブランド名を力強く言って終わります。商品の選択肢が増えた日本のリカバリーウェア市場で流れるCMです。",
+    "country": "日本"
   },
   {
     "category": "SNS",
@@ -289,7 +339,10 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261106/article563322/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/the-white-house_official-x_remake_the-legend-of-zelda_ogp1.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/the-white-house_official-x_remake_the-legend-of-zelda_ogp1.jpg",
+    "media_checked": true,
+    "about": "米国時間11月5日、「ゼルダの伝説 時のオカリナ」リメイク版の発売日に、ホワイトハウスが公式Xへ投稿した44秒の動画。タイトル画面「THE LEGEND OF TRUMP」から始まり、赤い帽子をかぶったローポリ調のトランプ大統領が、妖精ナビィ風の相棒と森を進む。ハート型の体力ゲージや地図も出て、「薬価設定を発見した」など政権の実績が文字で現れる。最後は執務室で署名する姿で終わる。",
+    "country": "アメリカ"
   },
   {
     "category": "体験",
@@ -322,7 +375,10 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261105/article563157/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/karcher_proj_shibuya_hachiko-paw-prints_thx-hands_ogp.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/karcher_proj_shibuya_hachiko-paw-prints_thx-hands_ogp.jpg",
+    "media_checked": true,
+    "about": "ハロウィーンの週末が明けた渋谷で、高圧洗浄機を使い、汚れを落とした跡を絵にした。足跡の形に抜いたパネルを地面に当てて水を吹きかけると、汚れが落ちた部分だけが足跡になって浮かぶ。待ち合わせの名所ハチ公前広場から宮下公園の階段まで「ハチ公の散歩道」が続く。閉店前のハンズ渋谷店では、一般参加者も加わって屋上に感謝の文字を洗い出した。",
+    "country": "日本"
   },
   {
     "category": "映像",
@@ -355,7 +411,16 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261104/article563101/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/suntory_the-dry_cm_sns_ogp.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/suntory_the-dry_cm_sns_ogp.jpg",
+    "videos": [
+      {
+        "type": "youtube",
+        "id": "6485HrkbDCU"
+      }
+    ],
+    "media_checked": true,
+    "about": "10月16日から流れる30秒のテレビCM。真っ暗な空間に、プロレスの入場曲として日本中に知られるアントニオ猪木のテーマが、「ドライ、ボンバイエ」と響く。坂口憲二がゆっくり顔を上げ、緑のタオルを首にかけ、チューハイを飲む。ノドに刺激を感じた次の瞬間、猪木の掛け声と同じ「ダァー!!」を力いっぱい叫ぶ。ビールの「くぅーっ」にあたる「ノドのうなり」を、日本のプロレスの記憶で見せる一本だ。",
+    "country": "日本"
   },
   {
     "category": "体験",
@@ -388,7 +453,13 @@
     "source_name": "電通報",
     "source_url": "https://dentsu-ho.com/articles/9906",
     "status": "published",
-    "image": "https://cdn.dentsu-ho.com/408ff208-7596-4f3f-b2c1-807e40740b9c/OGP%EF%BC%9A1200%C3%97630.jpg"
+    "image": "https://cdn.dentsu-ho.com/408ff208-7596-4f3f-b2c1-807e40740b9c/OGP%EF%BC%9A1200%C3%97630.jpg",
+    "gallery": [
+      "https://dentsu-ho.com/articles/9906"
+    ],
+    "media_checked": true,
+    "about": "電通本社ビルで開かれたベビーロス（流産・死産などで赤ちゃんを亡くす喪失）の講演会の最後に、参加者へ配られたカード型ツール。カードの表には、当事者が上司に送る「流産をしたので、少し休暇をいただけませんか」という一言だけが書かれている。参加者は上司になったつもりで受け取った気持ちを考え、そのあとシールを剥がす。すると、言葉にできなかった本音が現れる。裏面には声かけの例と、自分の言葉を書く空欄がある。オンライン参加者も画面越しに体験した。",
+    "country": "日本"
   },
   {
     "category": "広告",
@@ -421,7 +492,10 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261106/article563296/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/spotif_hits-japan2016_award-ceremony_ogp.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/spotif_hits-japan2016_award-ceremony_ogp.jpg",
+    "media_checked": true,
+    "about": "就職活動中の学生が、面接前の不安をしずめようとSpotifyで音楽を聴く。その時間に、東京駅前のオフィス街・丸の内の「街」が語りかける音声広告が流れる。内容は就活経験者や社員の実体験がもとで、多くの就活生を見守ってきた街の視点から応援を届ける。丸の内を歩けば屋外広告が目に入り、カフェでは「就活生割」が使える。耳で聞いた応援が、街の中でも続いていく。",
+    "country": "日本"
   },
   {
     "category": "体験",
@@ -454,7 +528,15 @@
     "source_name": "電通報",
     "source_url": "https://dentsu-ho.com/articles/9898",
     "status": "published",
-    "image": "https://cdn.dentsu-ho.com/c2de385c-462a-4806-89fd-0a4953c56077/ai-ueo-lab_ogp.jpg"
+    "image": "https://cdn.dentsu-ho.com/c2de385c-462a-4806-89fd-0a4953c56077/ai-ueo-lab_ogp.jpg",
+    "gallery": [
+      "https://cdn.speedsize.com/e7df76a9-4406-40f5-bc97-57e7c2c2d99d/https://cdn.dentsu-ho.com/dc034943-534c-400a-99d3-ee50864a100c/hara-misaki_pr.jpg/f_auto,w_3840",
+      "https://cdn.speedsize.com/e7df76a9-4406-40f5-bc97-57e7c2c2d99d/https://cdn.dentsu-ho.com/9cbd4d14-1b9d-46f9-86fa-724f654e743c/iida02%E3%81%AE%E3%82%B3%E3%83%92%E3%82%9A%E3%83%BC.jpg/f_auto,w_3840",
+      "https://dentsu-ho.com/articles/9898"
+    ],
+    "media_checked": true,
+    "about": "9月、東京都立川市の屋内キッズパークPLAY! PARKに、巨大なたまごが登場。子どもたちは「ころころ」「もふもふ」「とげとげ」といった要素の素材をたまごに貼っていく。すると天井のカメラが素材の割合を読み取り、AIが30種類の生き物の声をもとに鳴き声を作って、たまごの奥から鳴らす。何の生き物かは教えてくれない。子どもは音を聞いて「おなかの音？」と想像し、絵に描く。約6500名が訪れた。",
+    "country": "日本"
   },
   {
     "category": "広告",
@@ -487,7 +569,8 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261105/article563143/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/workman_xshelter_masahiro-matsuoka_cm_ogp.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/11/workman_xshelter_masahiro-matsuoka_cm_ogp.jpg",
+    "media_checked": true
   },
   {
     "category": "体験",
@@ -501,18 +584,18 @@
     "steps": [
       {
         "title": "課題",
-        "body": "本文に課題の明記はありません。私の読みでは、買い物AIは「アプリを開いて話しかける」手間があり、欲しいと思った瞬間はメモやチャットなど別の場所にいる、というズレが壁だったはずです。"
+        "body": "Amazonのモバイルショッピング担当VP、Rajiv Mehta氏によると、人は必要なものを思いついた瞬間にメモやメッセージ、グループチャットへ書き留める。買い物アプリを開いて探す手間の手前で、購買の入口が別の場所にあった。"
       },
       {
         "title": "狙い",
-        "body": "Amazonのラジブ・メータ氏は声明で、人は必要なものを思いついた瞬間にメモやメッセージ、グループチャットへ書き留めると述べています。その「思いついた瞬間」を逃さず、書いた流れのまま買い物へつなげる狙いと読めます。"
+        "body": "「あ、あれ切れてる」と思った瞬間の気持ちを逃さず、そのまま買い物につなげることが狙い。CEOのAndy Jassy氏は、Alexa for Shoppingの利用者は非利用者より支出が50%多いと語っている。会話型の買い物を広げる価値は、すでに数字で見えている。"
       },
       {
         "title": "表現のしかけ",
-        "body": "新しい画面を覚えさせず、いつものメッセージ欄を入口にしたのが要点です。招待もテキストで届きます。商品探し、カート作成、購入、配送連絡までが一本の会話で完結します。広告もこの会話内で試され、当初は掲載料を取らないと報じられています。広告の見せ方の詳細は本文では不明です。"
+        "body": "新しいアプリや画面を覚えさせず、すでに毎日使っているメッセージの中に入り込んだ。招待もメッセージで届くので、入口から体験が始まっている。探す、カート、購入、配送連絡までを会話ひとつにまとめて、操作を「書く」だけに減らした。広告は当面無料で載せ、広告主に試してもらう段階にとどめている。"
       }
     ],
-    "steal": "新しい場所に人を呼ぶ前に、相手が今すでに言葉を書いている場所を探す。入口を相手の習慣に合わせると、使う手間が一気に減ります。",
+    "steal": "新しい場所に人を呼ぶより、人がすでにいる場所に入る。自分の企画も「相手が今どこで何を書いているか」から考えると、入口が見つかる。",
     "challenge": "学食や図書館など身近なサービスを1つ選び、LINEのトーク画面だけで完結する利用の流れを5コマで描いてみよう。",
     "slug": "pg-customers-text-its-shopping-assistant",
     "no": 16,
@@ -520,7 +603,10 @@
     "source_name": "Adweek",
     "source_url": "https://www.adweek.com/commerce/amazon-is-letting-customers-text-its-shopping-assistant/",
     "status": "published",
-    "image": "https://static-www.adweek.com/wp-content/uploads/2026/11/iMessage.jpg?w=600&h=315&crop=1"
+    "image": "https://static-www.adweek.com/wp-content/uploads/2026/11/iMessage.jpg?w=600&h=315&crop=1",
+    "media_checked": true,
+    "about": "アメリカでAmazonが招待制で始めた、AIショッピングアシスタント「Alexa for Shopping」のテキスト機能。対象になったごく一部の顧客に、試してみないかというメッセージが届く。ふだん友人にメッセージを送る感覚で欲しいものを文字で送ると、AIが商品を探し、カートを作り、購入まで進め、配送状況も知らせてくれる。この体験の途中には広告も試験的に表示される。",
+    "country": "アメリカ"
   },
   {
     "category": "体験",
@@ -554,7 +640,8 @@
     "source_name": "AdverTimes.",
     "source_url": "https://www.advertimes.com/20261109/article561086/?utm_source=feed",
     "status": "published",
-    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/10/omoshiro-ad-20_yamaoka_ogp.jpg"
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/10/omoshiro-ad-20_yamaoka_ogp.jpg",
+    "media_checked": true
   },
   {
     "category": "デザイン",
@@ -587,6 +674,12 @@
     "source_name": "Cannes Lions",
     "source_url": "https://www.canneslions.com/news/cannes-lions-international-festival-of-creativity-announces-lion-winners-on-day-three",
     "status": "published",
-    "image": "https://images.ctfassets.net/vjs6vfoxg7y6/4opCcrk7JYjMCKvmvacrmm/260c0f614f4f5c17ebba85ea5eab3fe6/Open_Graph_Image_home.png"
+    "image": "https://images.ctfassets.net/vjs6vfoxg7y6/4opCcrk7JYjMCKvmvacrmm/260c0f614f4f5c17ebba85ea5eab3fe6/Open_Graph_Image_home.png",
+    "gallery": [
+      "https://images.ctfassets.net/vjs6vfoxg7y6/4vUHr6p8gyBVFocrNdDaQi/60c4d78fc1ea8a8fec0b9a80b0b576a6/Winners_1_-_Hero.png?w=1920&q=75&fm=webp"
+    ],
+    "media_checked": true,
+    "about": "ペルーの銀行BCPが作った、スマホを盗まれた人のための仕組み。被害に遭った人は、ふだん支払いに使われている普通のPOS端末（カード決済の機械）を、口座をブロックする場所として使える。スマホが手元になく、いちばん無防備になる瞬間に、見慣れた端末が「助けを求める場所」に変わる。この取り組みは3,400万人以上のペルー人に届いた。",
+    "country": "ペルー"
   }
 ]
