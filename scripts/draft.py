@@ -8,7 +8,7 @@ import re
 
 import anthropic
 
-from engine import CONFIG, make_post, save_original
+from engine import CONFIG, ENGINE_VERSION, make_post, save_original
 from web import article_text, fetch_html
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -51,6 +51,7 @@ def main():
             "source_name": cand.get("source") or cand["link"].split("/")[2],
             "source_url": cand["link"],
             "status": "published" if CONFIG["auto_publish"] else "draft",
+            "engine": ENGINE_VERSION,
         })
         save_original(data["slug"], data, flat)
         posts.append(data)
