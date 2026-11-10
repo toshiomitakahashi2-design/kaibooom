@@ -46,8 +46,8 @@ h1{font-family:'Zen Old Mincho',serif;font-size:24px;margin:20px 0 8px}
 <div class="wrap">
   <a class="logo" href="./">KAIBOOOM</a>
   <h1>読みくらべ</h1>
-  <p class="lead">同じ広告について、2通りの記事を並べています。片方は「髙橋俊臣の文章エンジン」、もう片方は考え方や文体のルールを渡していない、ふつうのAIが書きました。どちらがどちらかは伏せてあります。</p>
-  <p class="lead">3本それぞれで「髙橋が書いたように読めるほう」を選んでください。3本とも選ぶと、答え合わせができます。</p>
+  <p class="lead">同じ広告について、2通りの記事を並べています。片方はフラットに書いただけの文章、もう片方はそこに「髙橋のスパイス」を少し効かせた文章です。どちらがどちらかは伏せてあります。</p>
+  <p class="lead">3本それぞれで「KAIBOOOMに載せたいほう」を選んでください。3本とも選ぶと、答え合わせができます。</p>
   <div id="rounds"></div>
 </div>
 <div class="bar"><div class="bar-in"><span id="status" role="status"></span><button class="reveal" id="reveal" disabled>答え合わせをする</button></div></div>
@@ -64,10 +64,10 @@ function render(){
   el.innerHTML = T.map((r, i) => `<section class="round"><h2>${i+1}本目　${esc(r.client)}</h2><div class="w">${esc(r.work)}</div><div class="pair">` +
     ['A','B'].map(ab => { const v = side(r, ab); const on = picks[i] === ab;
       return `<article class="ver${on?' picked':''}"><div class="ab">${ab}</div><h3>${esc(v.title)}</h3><h4>なんの広告？</h4>${paras(v.about)}<h4>アイデア、ポイント</h4>${paras(v.points)}` +
-        (revealed ? `<div class="who">${r.engine_is===ab?'髙橋俊臣の文章エンジン':'ふつうのAI'}</div>` : `<button class="pick" data-i="${i}" data-ab="${ab}" aria-pressed="${on}">${on?'こちらを選びました':'こちらが髙橋らしい'}</button>`) + `</article>`; }).join('') + `</div></section>`).join('');
+        (revealed ? `<div class="who">${r.engine_is===ab?'スパイスあり':'スパイスなし'}</div>` : `<button class="pick" data-i="${i}" data-ab="${ab}" aria-pressed="${on}">${on?'こちらを選びました':'こちらを載せたい'}</button>`) + `</article>`; }).join('') + `</div></section>`).join('');
   el.querySelectorAll('.pick').forEach(b => b.onclick = () => { picks[b.dataset.i] = b.dataset.ab; const y = window.scrollY; render(); window.scrollTo(0, y); });
   const n = Object.keys(picks).length, st = document.getElementById('status'), btn = document.getElementById('reveal');
-  if (revealed) { const hit = T.filter((r, i) => picks[i] === r.engine_is).length; st.textContent = `${T.length}本中 ${hit}本で、エンジンのほうを「髙橋らしい」と選びました。`; btn.hidden = true; }
+  if (revealed) { const hit = T.filter((r, i) => picks[i] === r.engine_is).length; st.textContent = `${T.length}本中 ${hit}本で、スパイスありのほうを選びました。`; btn.hidden = true; }
   else { st.textContent = `${n} / ${T.length} 本を選びました`; btn.disabled = n < T.length; }
 }
 document.getElementById('reveal').onclick = () => { revealed = true; render(); };

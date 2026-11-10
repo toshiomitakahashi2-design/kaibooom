@@ -1,6 +1,7 @@
 """髙橋俊臣の文章エンジン。
-1本の記事を「書く → 髙橋の目で赤入れ → 書き直す」の3段階でつくる。
-考え方・文体・AI臭のルールは prompts/voice/ の3つのファイルに書いてある。"""
+1本の記事を「フラットに書く → 髙橋らしさをスパイスとして少し効かせる」の2段階でつくる。
+基本はフラットな解説文。髙橋の考え方・文体・AI臭のルール（prompts/voice/ の3つのファイル）は、
+2段階目で「作り手の目を1か所入れる」「評論家の席の文を直す」ために使う。"""
 import json
 import pathlib
 import re
@@ -14,8 +15,7 @@ VOICE = "\n\n---\n\n".join(
     for name in ("kangaekata.md", "buntai.md", "ai-shu.md")
 )
 WRITE = (PROMPTS / "write.md").read_text(encoding="utf-8")
-CRITIQUE = (PROMPTS / "critique.md").read_text(encoding="utf-8")
-REWRITE = (PROMPTS / "rewrite.md").read_text(encoding="utf-8")
+SPICE = (PROMPTS / "spice.md").read_text(encoding="utf-8")
 
 TEXT_FIELDS = ("title", "oneliner", "about", "points")
 
@@ -24,7 +24,10 @@ BUZZ = ["刺さる", "刺さり", "エモい", "世界観", "インサイト", "
 # 機械的に見つけられるAI臭。残っていたら、もう一度だけ書き直させる
 LINT = ["見事に", "見事な", "絶妙", "巧みに", "巧みな", "秀逸", "圧巻", "唯一無二", "と言えるでしょう", "といえるでしょう",
         "——", "してみよう", "してみましょう", "マネでき", "真似でき", "盗め", "本文には", "記事からは", "私の読みでは",
-        "胸を打"]
+        "胸を打", "見逃せません", "学べるのは", "学びがあります", "若手のみなさん", "核だと読め"]
+# 一歩引いた言い方。多すぎると癖が強くなるので数える
+HEDGES = ["と考えます", "と思います", "と想像します", "のではないでしょうか", "かもしれません"]
+HEDGE_MAX = 5
 
 
 def fill(template, **values):
@@ -111,39 +114,52 @@ def lint(data):
     return [w for w in LINT if w in text]
 
 
-def make_post(client, title, url, body, posts, log=print):
-    """戻り値: 記事のデータ（dict）。記事にしない場合は {"skip": True}。"""
-    log(f"  出典の本文 {len(body)} 字")
-    draft = call(client, VOICE, fill(
+def hedge_count(data):
+    text = str(data.get("about", "")) + str(data.get("points", ""))
+    return sum(text.count(w) for w in HEDGES)
+
+
+def write_flat(client, title, url, body, posts):
+    """1段階目：フラットな解説文を書く。記事にしない場合は {"skip": True}。"""
+    return call(client, "", fill(
         WRITE, recent_titles=recent_titles(posts), buzz_rule=buzz_rule(posts),
         categories=" / ".join(CONFIG["categories"]), title=title, url=url, body=body), label="書く")
-    if draft.get("skip"):
-        return draft
 
-    draft_json = json.dumps(draft, ensure_ascii=False, indent=2)
-    review = call(client, VOICE, fill(CRITIQUE, body=body, draft=draft_json),
-                  model=CONFIG.get("model_critique"), label="赤入れ")
-    issues, missing = review.get("issues", []), review.get("missing", "")
-    log(f"  赤入れ {len(issues)} 件" + ("＋足りない視点あり" if missing else ""))
 
-    final = draft
+def add_spice(client, draft, body, log=print):
+    """2段階目：髙橋らしさを少しだけ効かせる。癖が強すぎたり、禁止の言い回しが残ったら1回だけやり直す。"""
+    final, note = draft, ""
     for attempt in range(2):
-        found = lint(final)
-        if attempt == 0 and not issues and not missing and not found:
-            break
-        if attempt == 1 and not found:
-            break
-        note = ""
-        if found:
-            note = "- 次の言葉・言い回しは使いません。別の書き方に直します：" + "、".join(f"「{w}」" for w in found)
-            log(f"  禁止の言い回しを検出: {found}")
         final = call(client, VOICE, fill(
-            REWRITE, lint_note=note, edit_examples=edit_examples(), body=body,
-            draft=json.dumps(final, ensure_ascii=False, indent=2),
-            issues=json.dumps(issues, ensure_ascii=False, indent=2) if attempt == 0 else "（前回の赤入れは反映済み）",
-            missing=(missing if attempt == 0 else "") or "（なし）"), label="書き直す")
+            SPICE, lint_note=note, edit_examples=edit_examples(), body=body,
+            draft=json.dumps(draft, ensure_ascii=False, indent=2)), label="スパイス")
+        found, hedges = lint(final), hedge_count(final)
+        if not found and hedges <= HEDGE_MAX:
+            break
+        notes = []
+        if found:
+            notes.append("- 次の言い回しは使いません。別の書き方に直します：" + "、".join(f"「{w}」" for w in found))
+            log(f"  禁止の言い回しを検出: {found}")
+        if hedges > HEDGE_MAX:
+            notes.append(f"- 前回は一歩引いた言い方（〜と考えます、〜と思います など）が{hedges}回あり、癖が強すぎました。全体で3回までにします。")
+            log(f"  一歩引いた言い方が多すぎ: {hedges}回")
+        note = "\n# 前回の失敗（今回は必ず直す）\n" + "\n".join(notes) + "\n"
+    for k, v in draft.items():  # クレジットなど、スパイスで欠けた項目は下書きから補う
+        final.setdefault(k, v)
     final["points"] = re.sub(r"\n{3,}", "\n\n", str(final.get("points", "")).strip())
     return final
+
+
+def make_post(client, title, url, body, posts, log=print, with_draft=False):
+    """戻り値: 記事のデータ（dict）。記事にしない場合は {"skip": True}。
+    with_draft=True のときは (記事, スパイス前の下書き) の組を返す。"""
+    log(f"  出典の本文 {len(body)} 字")
+    draft = write_flat(client, title, url, body, posts)
+    if draft.get("skip"):
+        return (draft, draft) if with_draft else draft
+    draft["points"] = re.sub(r"\n{3,}", "\n\n", str(draft.get("points", "")).strip())
+    final = add_spice(client, draft, body, log)
+    return (final, draft) if with_draft else final
 
 
 def save_original(slug, data):
