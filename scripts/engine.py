@@ -19,7 +19,7 @@ SPICE = (PROMPTS / "spice.md").read_text(encoding="utf-8")
 
 TEXT_FIELDS = ("title", "oneliner", "about", "points")
 # エンジンの書き方を変えたら数字を上げる。古い版で書いた記事は「KAIBO rewrite」で書き直される
-ENGINE_VERSION = 3
+ENGINE_VERSION = 4
 POINTS_MAX = 480
 
 # なるべく使わない定番ワード（5本につき2回くらいまで）
@@ -143,6 +143,19 @@ def taigen_count(text):
     return sum(1 for x in sentences(text) if re.search(r"[^ぁ-ん」）)？?!！]。$", x))
 
 
+POLITE_END = re.compile(r"(ます|です|ました|ません|でした|ますか|ですか|でしょうか)[。？]?[」）)]?$")
+
+
+def blunt_paragraph_ends(text):
+    """段落の最後の文が「です・ます」で終わっていない段落（体言止めや言い切りで終わる段落）の、最後の文。"""
+    out = []
+    for para in re.split(r"\n{2,}", str(text).strip()):
+        ss = sentences(para)
+        if ss and not POLITE_END.search(ss[-1]):
+            out.append(ss[-1])
+    return out
+
+
 SPICE_ENDS = ["と想像します", "と考えます", "と思います", "はずです", "ように見えます", "かもしれません"]
 
 
@@ -197,9 +210,14 @@ def add_spice(client, draft, body, log=print):
         run, word = ending_run(final.get("points", ""))
         used_ban = [w for w in banned if any(w in s for s in spice_sentences(draft, final))]
         taigen = taigen_count(final.get("points", ""))
-        if not found and hedges <= HEDGE_MAX and not too_long and run < 3 and not used_ban and taigen >= 1:
+        blunt = blunt_paragraph_ends(final.get("points", ""))
+        if not found and hedges <= HEDGE_MAX and not too_long and run < 3 and not used_ban and taigen >= 1 and not blunt:
             break
         notes = []
+        if blunt:
+            notes.append("- 前回は、段落の最後の文が体言止め（または言い切り）でした：" + "、".join(f"「{b}」" for b in blunt)
+                         + "。段落の最後は「です・ます」で終えます。体言止めは段落の途中に移します。")
+            log(f"  段落の最後が体言止め: {len(blunt)}か所")
         if taigen == 0:
             notes.append("- 前回は体言止めが1回もありませんでした。「大切なのは、体験。」のような一文を2〜3回入れます（続けては使いません）。")
             log("  体言止めがなかった")
