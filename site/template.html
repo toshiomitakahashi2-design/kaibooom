@@ -161,6 +161,12 @@ main{max-width:1680px;margin:0 auto;padding:16px 10px 64px}
 .eb-btn:disabled{opacity:.5}
 .eb-msg{font-size:13px;margin-top:4px;min-height:1em}
 .eb-msg.ng,#pin-msg{color:#C4321F}
+.bar{flex-wrap:wrap}
+mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;border-radius:3px;padding:1px 0;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.orig{margin:10px 0 0;font-size:13px;color:var(--sub)}
+.orig summary{cursor:pointer;font-weight:700;width:fit-content}
+.orig p{margin:8px 0 0;line-height:1.85;padding-left:12px;border-left:2px solid var(--line)}
+.ed-badge{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:99px;background:var(--cut);color:var(--cut-ink);font-size:10.5px;font-weight:700}
 .saved-note{margin:0 0 14px;padding:10px 14px;border-radius:10px;background:#E7F5EC;color:#14532D;font-size:13px;font-weight:700}
 </style>
 </head>
@@ -202,7 +208,7 @@ function pins(list){
     const ph = p.image
       ? `<div class="ph"><img src="${esc(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-c="${color(p.category)}" onerror="${noimg}"><span class="txt">${esc(p.oneliner)}</span>`
       : `<div class="ph noimg" style="background:${color(p.category)}"><span class="txt">${esc(p.oneliner)}</span>`;
-    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${no3(p.no)}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${meta(p)}</div></a>`;
+    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${no3(p.no)}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
   }).join('') + '</div>';
 }
 
@@ -251,21 +257,49 @@ function fromB64(b64){ const bin = atob(b64.replace(/\s/g,'')); return new TextD
 function toB64(str){ const bytes = new TextEncoder().encode(str); let bin = ''; for (let i = 0; i < bytes.length; i += 8192) bin += String.fromCharCode(...bytes.subarray(i, i + 8192)); return btoa(bin); }
 const gh = () => ({ 'Authorization': 'Bearer ' + ls('kaibooom-token'), 'Accept': 'application/vnd.github+json' });
 
+/* ---------- 編集したところの表示（鍵を登録した端末だけ。ふつうの読者には何も出ない） ---------- */
+let ORIG = null, showMarks = true;
+const norm = t => String(t ?? '').trim();
+const sents = t => (String(t ?? '').match(/[^。？！\n]+[。？！]?/g) || []).map(x => x.trim()).filter(Boolean);
+const edited = (p, f) => { const o = ORIG && ORIG[p.slug]; return !!(o && norm(o[f]) && norm(o[f]) !== norm(p[f])); };
+const editedFields = p => ['title','oneliner','about','points'].filter(f => edited(p, f));
+function marked(p, f){
+  // 髙橋が直した文に印をつけたHTMLを返す。印をつけないときは null
+  if (editing || !showMarks || !edited(p, f)) return null;
+  const old = new Set(sents(ORIG[p.slug][f]));
+  return String(p[f] ?? '').split(/\n{2,}/).map(para =>
+    sents(para).map(x => old.has(x) ? esc(x) : `<mark class="ed">${esc(x)}</mark>`).join('')).filter(Boolean);
+}
+const origBox = (p, f) => (!editing && showMarks && edited(p, f))
+  ? `<details class="orig"><summary>AIが書いた元の文</summary>${esc(ORIG[p.slug][f]).split(/\n{2,}/).map(x => `<p>${x}</p>`).join('')}</details>` : '';
+async function loadOrig(){
+  if (!canEdit()) return;
+  try {
+    const r = await fetch(API.replace('posts.json', 'originals.json'), { headers: gh() });
+    if (!r.ok) return;
+    ORIG = JSON.parse(fromB64((await r.json()).content));
+    route();
+  } catch(e) {}
+}
+
 function post(slug){
   const p = POSTS.find(x=>x.slug===slug);
   if(!p){ editing=false; go(''); return; }
   const on = saved.includes(p.slug);
-  const editBtn = canEdit() && !editing ? `<button class="edit-btn" id="edit-start">${PEN}編集</button>` : '';
+  const nEd = ORIG ? editedFields(p).length : 0;
+  const markBtn = nEd && !editing ? `<button class="edit-btn" id="mark-toggle" aria-pressed="${showMarks}">${showMarks ? '編集したところを隠す' : '編集したところを見る'}</button>` : '';
+  const editBtn = markBtn + (canEdit() && !editing ? `<button class="edit-btn" id="edit-start">${PEN}編集</button>` : '');
+  const one = f => { const m = marked(p, f); return m ? m.join('') : esc(p[f]); };
   const vids = (p.videos||[]).map(videoFrame).join('');
   const gal = (p.gallery||[]).length ? `<div class="gal">${p.gallery.map(g=>`<a href="${esc(g)}" target="_blank" rel="noopener"><img src="${esc(g)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></a>`).join('')}</div>` : '';
   const cover = p.image
     ? `<div class="cover"><img src="${esc(p.image)}" alt="${esc(p.work)}" referrerpolicy="no-referrer" data-c="${color(p.category)}" onerror="this.parentNode.classList.add('noimg');this.parentNode.style.background=this.dataset.c;this.parentNode.textContent=${esc(JSON.stringify(p.work))}"></div>`
     : `<div class="cover noimg" style="background:${color(p.category)}">${esc(p.work)}</div>`;
   const hasMedia = p.image || vids || gal;
-  const about = p.about || editing ? `<section class="about"><h2>なんの広告？</h2><p${E('about')}>${esc(p.about)}</p></section>` : '';
+  const about = p.about || editing ? `<section class="about"><h2>なんの広告？</h2><p${E('about')}>${one('about')}</p>${origBox(p,'about')}</section>` : '';
   const paras = t => esc(t).split(/\n{2,}/).map(x => `<p>${x.replace(/\n/g,'<br>')}</p>`).join('');
   const body = p.points
-    ? about + `<section class="sec pts"><h2>アイデア、ポイント</h2>` + (editing ? `<div class="pts-edit"${E('points')}>${esc(p.points)}</div>` : paras(p.points)) + `</section>`
+    ? about + `<section class="sec pts"><h2>アイデア、ポイント</h2>` + (editing ? `<div class="pts-edit"${E('points')}>${esc(p.points)}</div>` : (marked(p,'points') ? marked(p,'points').map(x => `<p>${x}</p>`).join('') : paras(p.points))) + origBox(p,'points') + `</section>`
     : about +
       `<section class="sec"><h2>解剖</h2><ol class="steps">${(p.steps||[]).map((s,i)=>`<li class="step"><span class="num">${i+1}</span><div><h3>${esc(s.title)}</h3><p${E('s'+i)}>${esc(s.body)}</p></div></li>`).join('')}</ol></section>` +
       `<section class="sec steal"><h2>ここを盗め</h2><p${E('steal')}>${esc(p.steal)}</p></section>` +
@@ -279,8 +313,8 @@ function post(slug){
     `<div class="wrap${editing?' editing':''}"><div class="media">${cover}${vids}${gal}` +
     (hasMedia ? `<div class="credit-img">写真・動画：<a href="${esc(p.source_url)}" target="_blank" rel="noopener">${esc(p.source_name)}</a>ほか公式より</div>` : '') +
     `</div><article class="txtcol">` +
-    `<div class="k">${meta(p)}</div><h1${E('title')}>${esc(p.title)}</h1>` +
-    `<p class="one"${E('oneliner')}>${esc(p.oneliner)}</p>` +
+    `<div class="k">${meta(p)}</div><h1${E('title')}>${one('title')}</h1>${origBox(p,'title')}` +
+    `<p class="one"${E('oneliner')}>${one('oneliner')}</p>${origBox(p,'oneliner')}` +
     body +
     `<div class="actions"><a class="go" href="${esc(p.source_url)}" target="_blank" rel="noopener">元の記事を読む（${esc(p.source_name)}）</a><button class="save" id="save" aria-label="${on?'保存を外す':'保存する'}" aria-pressed="${on}">${bm(on)}</button></div>` +
     `<dl class="credit">${credit}</dl>` +
@@ -299,6 +333,8 @@ function post(slug){
     saved = saved.includes(p.slug) ? saved.filter(s=>s!==p.slug) : [...saved, p.slug];
     persist(); post(slug);
   };
+  const mt = document.getElementById('mark-toggle');
+  if (mt) mt.onclick = () => { showMarks = !showMarks; const y = window.scrollY; post(slug); window.scrollTo(0, y); };
   const st = document.getElementById('edit-start');
   if (st) st.onclick = () => startEdit(slug);
   if (editing) {
@@ -369,6 +405,7 @@ document.getElementById('home-link').onclick = e => { e.preventDefault(); cat='�
 document.getElementById('nav-saved').onclick = () => { mode = mode==='saved' ? 'home' : 'saved'; lastScroll=0; go(''); };
 window.addEventListener('hashchange', route);
 route();
+loadOrig();
 </script>
 </body>
 </html>
