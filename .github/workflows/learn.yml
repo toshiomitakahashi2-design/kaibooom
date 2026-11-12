@@ -1,0 +1,32 @@
+name: KAIBO learn
+
+# 手動で動かす：これまでの手直しから、髙橋の直し方の法則をまとめ直す。
+# 結果は prompts/voice/learned.md に書かれ、次の記事から使われる。記事そのものは変わらない。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: 手直しを記録する
+        run: python scripts/learn.py
+      - name: 手直しから法則をまとめる
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/distill.py --force
+      - name: 保存
+        run: |
+          git config user.name "kaibo-bot"
+          git config user.email "kaibo-bot@users.noreply.github.com"
+          git add data prompts/voice
+          git diff --cached --quiet || git commit -m "learn: update rules from edits"
+          git push

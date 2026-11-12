@@ -10,9 +10,18 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 PROMPTS = ROOT / "prompts"
 
+LEARNED_PATH = PROMPTS / "voice" / "learned.md"
+
+
+def learned_rules():
+    """髙橋の手直しから自動でつくった法則（prompts/voice/learned.md）。まだなければ空。"""
+    return LEARNED_PATH.read_text(encoding="utf-8") if LEARNED_PATH.exists() else ""
+
+
 VOICE = "\n\n---\n\n".join(
-    (PROMPTS / "voice" / name).read_text(encoding="utf-8")
-    for name in ("kangaekata.md", "buntai.md", "ai-shu.md")
+    [(PROMPTS / "voice" / name).read_text(encoding="utf-8") for name in ("kangaekata.md", "buntai.md", "ai-shu.md")]
+    + ([learned_rules() + "\n\n上の「学んだ法則」は髙橋の実際の手直しから来ています。ほかの資料と食い違うときは、こちらを優先します。"]
+       if learned_rules() else [])
 )
 WRITE = (PROMPTS / "write.md").read_text(encoding="utf-8")
 SPICE = (PROMPTS / "spice.md").read_text(encoding="utf-8")
@@ -99,18 +108,37 @@ def recent_titles(posts, n=8):
     return "\n".join(f"- {p['title']}" for p in recent) or "（まだありません）"
 
 
-def edit_examples(n=6, limit=400):
-    """髙橋が管理ページで実際に直した例を、書き直しの手本として渡す。"""
+def changed_sentences(ai, human):
+    """AIの文と髙橋の文を文ごとに比べ、変わったところだけを (AIの文, 髙橋の文) の組で返す。"""
+    import difflib
+    a, b = sentences(ai), sentences(human)
+    out = []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b).get_opcodes():
+        if op == "equal":
+            continue
+        if i2 - i1 == j2 - j1:  # 同じ数の文が入れ替わったときは、1文ずつ組にする
+            out += [(x, y) for x, y in zip(a[i1:i2], b[j1:j2]) if x != y]
+        else:
+            out.append(("".join(a[i1:i2]), "".join(b[j1:j2])))
+    return out
+
+
+def edit_examples(n=12, limit=160):
+    """髙橋が実際に直した文（変わったところだけ）を、書き直しの手本として渡す。"""
     path = ROOT / "data/edits.json"
     if not path.exists():
         return ""
-    edits = json.loads(path.read_text(encoding="utf-8"))[-n:]
-    if not edits:
+    pairs = []
+    for e in json.loads(path.read_text(encoding="utf-8"))[::-1]:
+        pairs += changed_sentences(e["ai"], e["human"])
+        if len(pairs) >= n:
+            break
+    if not pairs:
         return ""
     lines = ["", "# 髙橋が実際に直した例（この直し方にならう）"]
-    for e in edits:
-        lines.append(f"AIの文：{e['ai'][:limit]}")
-        lines.append(f"髙橋の文：{e['human'][:limit]}")
+    for ai, human in pairs[:n]:
+        lines.append(f"AI：{ai[:limit] or '（なし）'}")
+        lines.append(f"髙橋：{human[:limit] or '（削除）'}")
         lines.append("")
     return "\n".join(lines)
 
@@ -140,7 +168,8 @@ def ending_run(text):
 
 def taigen_count(text):
     """体言止め（ひらがな以外で終わる文）の数。かぎかっこで終わる文は数えない。"""
-    return sum(1 for x in sentences(text) if re.search(r"[^ぁ-ん」）)？?!！]。$", x))
+    return sum(1 for x in sentences(text) if x.endswith("。") and not re.search(
+        r"(ます|です|ました|ません|でした|でしょう|た|だ|る|う|く|す|つ|ぬ|ぶ|む|ぐ|い|ない|[」）)？?!！])。$", x))
 
 
 POLITE_END = re.compile(r"(ます|です|ました|ません|でした|ますか|ですか|でしょうか)[。？]?[」）)]?$")
@@ -191,7 +220,7 @@ def hedge_count(data):
 def write_flat(client, title, url, body, posts):
     """1段階目：フラットな解説文を書く。記事にしない場合は {"skip": True}。"""
     return call(client, "", fill(
-        WRITE, recent_titles=recent_titles(posts), buzz_rule=buzz_rule(posts),
+        WRITE, learned=learned_rules() or "（まだありません）", recent_titles=recent_titles(posts), buzz_rule=buzz_rule(posts),
         categories=" / ".join(CONFIG["categories"]), title=title, url=url, body=body), label="書く")
 
 
