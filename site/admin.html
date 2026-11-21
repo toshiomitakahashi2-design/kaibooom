@@ -110,6 +110,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset
       <h1 style="margin:0">記事の一覧 <span id="count" style="font-size:13px;color:var(--sub);font-weight:400"></span></h1>
       <button class="btn" id="reload">最新を読み込む</button>
     </div>
+    <details class="card" id="imp" style="margin-bottom:14px">
+      <summary style="cursor:pointer;font-weight:700">Gensparkの記事を取り込む</summary>
+      <p class="help" style="margin-top:10px">Gensparkが書いた記事のJSON（コードブロックの「Copy」でコピーしたもの）を貼り付けます。新しい記事は「承認待ち」に、既存の記事（slugが同じもの）は「修正案」として入ります。公開はされません。</p>
+      <textarea id="imp-text" style="min-height:120px;font-size:12px;font-family:ui-monospace,monospace" placeholder='[{"title": "...", "points": "..."}]'></textarea>
+      <div class="row" style="margin-top:10px"><button class="btn primary" id="imp-go">取り込む</button></div>
+      <div class="msg" id="imp-msg" role="status" style="white-space:pre-wrap"></div>
+    </details>
     <div class="tabs" id="tabs" role="tablist"></div>
     <div class="list" id="list"></div>
     <div class="msg" id="list-msg" role="status"></div>
@@ -379,6 +386,66 @@ $('prop-use').onclick = () => {
   useProp = true; msg('save-msg', '修正案を入れました。手直ししてから保存してください。', 'ok');
 };
 $('prop-drop').onclick = dropProposal;
+// ---- Gensparkの記事を取り込む（scripts/import_inbox.py と同じ決まり）----
+const TEXT = ['title','oneliner','about','points'];
+const META = ['work','client','agency','production','award','country','source_name','source_url','image','date_released'];
+const normUrl = u => String(u || '').trim().replace(/[?#].*$/, '').replace(/\/+$/, '').toLowerCase();
+const slugFrom = u => 'g-' + (normUrl(u).split('//').pop().replace(/[^0-9a-z]+/g, '-').slice(-40).replace(/^-+|-+$/g, '') || 'post');
+function parseImport(text){
+  let t = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '');
+  const a = t.indexOf('['), o = t.indexOf('{');
+  if (a >= 0 && (o < 0 || a < o)) t = t.slice(a, t.lastIndexOf(']') + 1);
+  let j = JSON.parse(t);
+  if (!Array.isArray(j)) j = j.articles || j.posts || [j];
+  return j;
+}
+async function importPosts(){
+  const btn = $('imp-go'); btn.disabled = true; msg('imp-msg', '取り込み中…');
+  try {
+    const items = parseImport($('imp-text').value);
+    await load();
+    const today = new Date().toISOString().slice(0,10);
+    const bySlug = new Map(posts.map(p => [p.slug, p]));
+    const byUrl = new Map(posts.filter(p => p.source_url).map(p => [normUrl(p.source_url), p]));
+    const byWork = new Map(posts.map(p => [(p.client + '|' + p.work).toLowerCase(), p]));
+    let no = Math.max(0, ...posts.map(p => p.no)) + 1;
+    const log = []; let added = 0, proposed = 0;
+    for (const raw of items) {
+      const it = Object.fromEntries(Object.entries(raw).map(([k,v]) => [k, typeof v === 'string' ? v.trim() : v]));
+      if (it.points) it.points = it.points.replace(/\n{3,}/g, '\n\n');
+      const target = it.slug && bySlug.get(it.slug);
+      if (target) {
+        const prop = Object.fromEntries(TEXT.filter(k => it[k] && it[k] !== target[k]).map(k => [k, it[k]]));
+        if (!Object.keys(prop).length) { log.push(`No.${target.no}：変更なし`); continue; }
+        target.proposal = { ...prop, by: it.by || 'Genspark', date: today, ...(it.note ? { note: it.note } : {}) };
+        proposed++; log.push(`No.${target.no}：修正案を置きました`); continue;
+      }
+      const miss = ['title','oneliner','about','points','work','client','source_url'].filter(k => !it[k]);
+      if (miss.length) { log.push(`スキップ（${miss.join('・')}がない）：${it.title || '?'}`); continue; }
+      const dup = byUrl.get(normUrl(it.source_url)) || byWork.get((it.client + '|' + it.work).toLowerCase());
+      if (dup) { log.push(`スキップ（No.${dup.no}と同じ作品）：${it.title}`); continue; }
+      let slug = slugFrom(it.source_url), base = slug, n = 2;
+      while (bySlug.has(slug)) slug = `${base}-${n++}`;
+      const p = { slug, no: no++, date: today, category: CATS.includes(it.category) ? it.category : '広告' };
+      TEXT.forEach(k => p[k] = it[k]);
+      META.forEach(k => { if (it[k]) p[k] = it[k]; });
+      p.source_name = p.source_name || it.source_url.split('/')[2];
+      ['agency','production','award'].forEach(k => { if (!p[k]) p[k] = '—'; });
+      if (Array.isArray(it.videos) && it.videos.length) p.videos = it.videos.filter(v => v && v.id && (v.type === 'youtube' || v.type === 'vimeo'));
+      if (p.videos && !p.videos.length) delete p.videos;
+      p.status = 'draft'; p.engine = it.by || 'Genspark';
+      p.ai_base = Object.fromEntries(TEXT.map(k => [k, p[k]]));  // 手直しから学ぶための元の文
+      posts.push(p); bySlug.set(slug, p); byUrl.set(normUrl(p.source_url), p); byWork.set((p.client + '|' + p.work).toLowerCase(), p);
+      added++; log.push(`No.${p.no}：承認待ちに追加　${p.title}`);
+    }
+    if (added || proposed) await put(`admin: Gensparkから取り込み（新規${added}・修正案${proposed}）`);
+    msg('imp-msg', `新しい下書き ${added} 本／修正案 ${proposed} 本\n` + log.join('\n'), 'ok');
+    $('imp-text').value = ''; tab = 'wait'; renderList();
+  } catch(e) { msg('imp-msg', '読み取れませんでした：' + e.message, 'ng'); }
+  btn.disabled = false;
+}
+$('imp-go').onclick = importPosts;
+
 $('forget').onclick = () => { store.del('kaibooom-token'); store.del('kaibooom-unlocked'); location.reload(); };
 
 if (store.get('kaibooom-unlocked', true)) { token() ? enterList() : show('token'); } else { show('lock'); $('pin').focus(); }

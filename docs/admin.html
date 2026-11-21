@@ -51,6 +51,22 @@ input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset
 .steps ol{padding-left:20px;font-size:13px;line-height:1.9;color:var(--sub);margin:0 0 8px}
 .steps b{color:var(--ink)}
 .hidden{display:none}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tab{min-height:36px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:700;cursor:pointer}
+.tab[aria-selected=true]{background:var(--inv);color:var(--inv-ink);border-color:var(--inv)}
+.tab .n{font-family:'Outfit',sans-serif;margin-left:4px;opacity:.7}
+.item .s.draft{color:#B26A00;border-color:#B26A00}
+.item .s.prop{color:#2F6BFF;border-color:#2F6BFF}
+.item .s.rej{text-decoration:line-through}
+.notice{background:var(--card);border:1px solid #2F6BFF;border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.notice h2{color:#2F6BFF}
+.notice .cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;font-size:13px;line-height:1.8;max-height:360px;overflow:auto}
+@media (max-width:560px){.notice .cmp{grid-template-columns:minmax(0,1fr)}}
+.notice .cmp div{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:10px 12px}
+.notice .cmp b{display:block;font-size:12px;color:var(--sub);margin-bottom:4px}
+.stage{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid var(--line);margin-left:8px;vertical-align:2px}
+.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.btn.ng{color:var(--ng);border-color:var(--ng)}
 .link{background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;font-size:13px;color:var(--sub)}
 </style>
 </head>
@@ -94,6 +110,14 @@ input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset
       <h1 style="margin:0">記事の一覧 <span id="count" style="font-size:13px;color:var(--sub);font-weight:400"></span></h1>
       <button class="btn" id="reload">最新を読み込む</button>
     </div>
+    <details class="card" id="imp" style="margin-bottom:14px">
+      <summary style="cursor:pointer;font-weight:700">Gensparkの記事を取り込む</summary>
+      <p class="help" style="margin-top:10px">Gensparkが書いた記事のJSON（コードブロックの「Copy」でコピーしたもの）を貼り付けます。新しい記事は「承認待ち」に、既存の記事（slugが同じもの）は「修正案」として入ります。公開はされません。</p>
+      <textarea id="imp-text" style="min-height:120px;font-size:12px;font-family:ui-monospace,monospace" placeholder='[{"title": "...", "points": "..."}]'></textarea>
+      <div class="row" style="margin-top:10px"><button class="btn primary" id="imp-go">取り込む</button></div>
+      <div class="msg" id="imp-msg" role="status" style="white-space:pre-wrap"></div>
+    </details>
+    <div class="tabs" id="tabs" role="tablist"></div>
     <div class="list" id="list"></div>
     <div class="msg" id="list-msg" role="status"></div>
     <div style="margin-top:28px"><button class="link" id="forget">この端末の登録を解除する</button></div>
@@ -104,10 +128,20 @@ input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset
       <button class="btn" id="back">← 一覧へ</button>
       <a id="preview" href="./" target="_blank" rel="noopener" style="font-size:13px">サイトで見る ↗</a>
     </div>
+    <div class="notice hidden" id="prop">
+      <h2>修正案がとどいています</h2>
+      <p class="help" id="prop-help"></p>
+      <div class="cmp" id="prop-cmp"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="prop-use">修正案を下の欄に入れる</button>
+        <button class="btn ng" id="prop-drop">修正案を捨てる</button>
+      </div>
+      <p class="help" style="margin:10px 0 0">「下の欄に入れる」を押しても、まだ保存はされません。手直ししてから「保存する」で反映されます。</p>
+    </div>
     <div class="card">
       <h2 id="e-no"></h2>
       <div class="grid2">
-        <div><label for="f-status">公開</label><select id="f-status"><option value="published">公開する</option><option value="hidden">非公開にする</option></select></div>
+        <div><label for="f-status">状態</label><select id="f-status"><option value="draft">承認待ち（下書き）</option><option value="published">公開する</option><option value="hidden">非公開にする</option><option value="rejected">見送り</option></select></div>
         <div><label for="f-category">カテゴリ</label><select id="f-category"></select></div>
       </div>
       <label for="f-title">見出し</label><input id="f-title" type="text">
@@ -138,7 +172,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid #2F6BFF;outline-offset
       <label for="f-gallery">追加の写真のURL（1行に1枚）</label><textarea id="f-gallery" style="min-height:90px"></textarea>
     </div>
     <div class="sticky">
-      <div class="row"><button class="btn primary" id="save">保存する</button><span style="font-size:13px;color:var(--sub)">保存すると1〜2分でサイトに反映されます</span></div>
+      <div class="row" id="draft-actions"><button class="btn ok" id="approve">承認して公開する</button><button class="btn" id="save-draft">下書きのまま保存</button><button class="btn ng" id="reject">見送る</button></div>
+      <div class="row" id="normal-actions"><button class="btn primary" id="save">保存する</button><span style="font-size:13px;color:var(--sub)">保存すると1〜2分でサイトに反映されます</span></div>
       <div class="msg" id="save-msg" role="status"></div>
     </div>
   </section>
@@ -187,13 +222,37 @@ async function load(){
   msg('list-msg', '');
 }
 
+const STAGE = {
+  draft:     { label: '承認待ち', cls: 'draft' },
+  published: { label: '公開中',   cls: 'pub' },
+  hidden:    { label: '非公開',   cls: '' },
+  rejected:  { label: '見送り',   cls: 'rej' }
+};
+const stage = p => STAGE[p.status] ? p.status : 'published';
+const waiting = p => stage(p) === 'draft' || !!p.proposal;
+const TABS = [
+  ['wait', '承認待ち', waiting],
+  ['published', '公開中', p => stage(p) === 'published'],
+  ['hidden', '非公開', p => stage(p) === 'hidden'],
+  ['rejected', '見送り', p => stage(p) === 'rejected'],
+  ['all', 'すべて', () => true]
+];
+let tab = null;
+
 function renderList(){
-  const sorted = [...posts].sort((a,b) => b.no - a.no);
+  if (!tab) tab = posts.some(waiting) ? 'wait' : 'published';
   $('count').textContent = '全 ' + posts.length + ' 本';
-  $('list').innerHTML = sorted.map(p => {
-    const pub = (p.status || 'published') === 'published';
-    return `<button class="item" data-slug="${esc(p.slug)}"><span class="no">No.${String(p.no).padStart(3,'0')}</span><span class="t">${esc(p.title)}</span><span class="s${pub ? ' pub' : ''}">${pub ? '公開中' : '非公開'}</span></button>`;
-  }).join('');
+  $('tabs').innerHTML = TABS.map(([k, label, f]) =>
+    `<button class="tab" role="tab" data-k="${k}" aria-selected="${k === tab}">${label}<span class="n">${posts.filter(f).length}</span></button>`).join('');
+  $('tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => { tab = b.dataset.k; renderList(); });
+  const f = TABS.find(t => t[0] === tab)[2];
+  const sorted = posts.filter(f).sort((a,b) => (waiting(b) - waiting(a)) || (b.no - a.no));
+  $('list').innerHTML = sorted.length ? sorted.map(p => {
+    const st = STAGE[stage(p)];
+    const badge = p.proposal && stage(p) !== 'draft'
+      ? `<span class="s prop">修正案あり</span>` : `<span class="s ${st.cls}">${st.label}</span>`;
+    return `<button class="item" data-slug="${esc(p.slug)}"><span class="no">No.${String(p.no).padStart(3,'0')}</span><span class="t">${esc(p.title)}</span>${badge}</button>`;
+  }).join('') : '<p class="help">ここに入る記事はありません。</p>';
   $('list').querySelectorAll('.item').forEach(b => b.onclick = () => openEdit(b.dataset.slug));
 }
 
@@ -201,7 +260,11 @@ function openEdit(slug){
   cur = posts.find(p => p.slug === slug); if (!cur) return;
   $('e-no').textContent = 'No.' + String(cur.no).padStart(3,'0') + '　' + (cur.client || '');
   $('f-category').innerHTML = [...new Set([...CATS, cur.category])].map(c => `<option${c === cur.category ? ' selected' : ''}>${esc(c)}</option>`).join('');
-  $('f-status').value = (cur.status || 'published') === 'published' ? 'published' : 'hidden';
+  $('f-status').value = stage(cur);
+  const isDraft = stage(cur) === 'draft';
+  $('draft-actions').classList.toggle('hidden', !isDraft);
+  $('normal-actions').classList.toggle('hidden', isDraft);
+  renderProposal();
   ['title','oneliner','about','country','steal','challenge','work','client','agency','production','award','image'].forEach(k => $('f-'+k).value = cur[k] || '');
   $('f-videos').value = (cur.videos || []).map(videoUrl).join('\n');
   $('f-gallery').value = (cur.gallery || []).join('\n');
@@ -214,13 +277,28 @@ function openEdit(slug){
   show('edit');
 }
 
-async function save(){
-  const btn = $('save'); btn.disabled = true; msg('save-msg', '保存中…');
+const PROP_FIELDS = [['title','見出し'],['oneliner','ひとことで言うと'],['about','なんの広告？'],['points','アイデア、ポイント']];
+let useProp = false;  // 「修正案を下の欄に入れる」を押したか（保存時に学習用の元の文として残す）
+
+function renderProposal(){
+  useProp = false;
+  const pr = cur.proposal;
+  $('prop').classList.toggle('hidden', !pr);
+  if (!pr) return;
+  $('prop-help').textContent = (pr.date || '') + (pr.by ? '　' + pr.by + ' より' : '') + (pr.note ? '　' + pr.note : '');
+  $('prop-cmp').innerHTML = PROP_FIELDS.filter(([k]) => pr[k] && pr[k] !== cur[k]).map(([k, label]) =>
+    `<div><b>いま：${label}</b>${esc(cur[k] || '')}</div><div><b>修正案：${label}</b>${esc(pr[k])}</div>`).join('')
+    || '<div>いまの文章と同じです。</div>';
+}
+
+async function save(nextStatus){
+  const btns = ['save','approve','save-draft','reject'].map($);
+  btns.forEach(b => b.disabled = true); msg('save-msg', '保存中…');
   try {
     await load();  // 自動更新で記事が増えていても消さないように、最新を読み直してから書き換える
     const p = posts.find(x => x.slug === cur.slug);
     if (!p) throw new Error('この記事が見つかりませんでした。一覧に戻って読み込み直してください。');
-    p.status = $('f-status').value;
+    p.status = nextStatus || $('f-status').value;
     p.category = $('f-category').value;
     ['title','oneliner','about','country','work','client','agency','production','award'].forEach(k => p[k] = $('f-'+k).value.trim());
     const img = $('f-image').value.trim(); if (img) p.image = img; else delete p.image;
@@ -230,20 +308,48 @@ async function save(){
     if (vids.length) p.videos = vids; else delete p.videos;
     const gal = lines('f-gallery'); if (gal.length) p.gallery = gal; else delete p.gallery;
     p.media_checked = true;
-    if (p.points) { p.points = $('f-points').value.trim().replace(/\n{3,}/g,'\n\n'); }
+    if (p.points || $('f-points').value.trim()) { p.points = $('f-points').value.trim().replace(/\n{3,}/g,'\n\n'); }
     else {
       ['steal','challenge'].forEach(k => p[k] = $('f-'+k).value.trim());
       const titles = ['課題','狙い','表現のしかけ'];
       p.steps = [0,1,2].map(i => ({ title: (p.steps && p.steps[i] && p.steps[i].title) || titles[i], body: $('f-s'+i).value.trim() }));
     }
-    const body = { message: `admin: No.${p.no} を編集`, content: toB64(JSON.stringify(posts, null, 2) + '\n'), sha };
-    const r = await fetch(API, { method: 'PUT', headers: { ...headers(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (r.status === 409) throw new Error('ちょうど自動更新と重なりました。もう一度「保存する」を押してください。');
-    if (!r.ok) throw new Error('保存に失敗しました（' + r.status + '）');
-    sha = (await r.json()).content.sha; cur = p;
-    msg('save-msg', '保存しました。1〜2分でサイトに反映されます。', 'ok');
+    if (useProp && p.proposal) {
+      // 修正案を採用したら、その文を「AIの元の文」として残す。ここからの手直しが学習に使われる
+      p.ai_base = Object.fromEntries(PROP_FIELDS.map(([k]) => [k, p.proposal[k] || p[k] || '']));
+      delete p.proposal;
+    }
+    if (p.status === 'published' && !p.approved) p.approved = new Date().toISOString().slice(0,10);
+    const verb = { published: '公開', draft: '下書き保存', hidden: '非公開', rejected: '見送り' }[p.status] || '編集';
+    await put(`admin: No.${p.no} を${verb}`);
+    cur = p;
+    const done = { published: (nextStatus ? '公開しました' : '保存しました') + '。1〜2分でサイトに反映されます。', draft: '下書きのまま保存しました。', hidden: '非公開で保存しました。', rejected: '見送りにしました。' }[p.status];
+    msg('save-msg', done, 'ok');
+    if (nextStatus) { renderList(); openEdit(p.slug); msg('save-msg', done, 'ok'); }
+    else renderProposal();
   } catch(e) { msg('save-msg', e.message, 'ng'); }
-  btn.disabled = false;
+  btns.forEach(b => b.disabled = false);
+}
+
+async function put(message){
+  const body = { message, content: toB64(JSON.stringify(posts, null, 2) + '\n'), sha };
+  const r = await fetch(API, { method: 'PUT', headers: { ...headers(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (r.status === 409) throw new Error('ちょうど自動更新と重なりました。もう一度押してください。');
+  if (!r.ok) throw new Error('保存に失敗しました（' + r.status + '）');
+  sha = (await r.json()).content.sha;
+}
+
+async function dropProposal(){
+  if (!cur.proposal) return;
+  $('prop-drop').disabled = true; msg('save-msg', '修正案を捨てています…');
+  try {
+    await load();
+    const p = posts.find(x => x.slug === cur.slug);
+    delete p.proposal;
+    await put(`admin: No.${p.no} の修正案を捨てる`);
+    cur = p; renderProposal(); msg('save-msg', '修正案を捨てました。本文はそのままです。', 'ok');
+  } catch(e) { msg('save-msg', e.message, 'ng'); }
+  $('prop-drop').disabled = false;
 }
 
 async function enterList(){
@@ -270,7 +376,76 @@ $('token-go').onclick = async () => {
 $('token').oninput = () => msg('token-msg', '');
 $('reload').onclick = enterList;
 $('back').onclick = () => { renderList(); show('list'); };
-$('save').onclick = save;
+$('save').onclick = () => save();
+$('approve').onclick = () => save('published');
+$('save-draft').onclick = () => save('draft');
+$('reject').onclick = () => save('rejected');
+$('prop-use').onclick = () => {
+  PROP_FIELDS.forEach(([k]) => { if (cur.proposal[k]) $('f-'+k).value = cur.proposal[k]; });
+  $('new-fields').classList.remove('hidden'); $('old-fields').classList.add('hidden');
+  useProp = true; msg('save-msg', '修正案を入れました。手直ししてから保存してください。', 'ok');
+};
+$('prop-drop').onclick = dropProposal;
+// ---- Gensparkの記事を取り込む（scripts/import_inbox.py と同じ決まり）----
+const TEXT = ['title','oneliner','about','points'];
+const META = ['work','client','agency','production','award','country','source_name','source_url','image','date_released'];
+const normUrl = u => String(u || '').trim().replace(/[?#].*$/, '').replace(/\/+$/, '').toLowerCase();
+const slugFrom = u => 'g-' + (normUrl(u).split('//').pop().replace(/[^0-9a-z]+/g, '-').slice(-40).replace(/^-+|-+$/g, '') || 'post');
+function parseImport(text){
+  let t = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '');
+  const a = t.indexOf('['), o = t.indexOf('{');
+  if (a >= 0 && (o < 0 || a < o)) t = t.slice(a, t.lastIndexOf(']') + 1);
+  let j = JSON.parse(t);
+  if (!Array.isArray(j)) j = j.articles || j.posts || [j];
+  return j;
+}
+async function importPosts(){
+  const btn = $('imp-go'); btn.disabled = true; msg('imp-msg', '取り込み中…');
+  try {
+    const items = parseImport($('imp-text').value);
+    await load();
+    const today = new Date().toISOString().slice(0,10);
+    const bySlug = new Map(posts.map(p => [p.slug, p]));
+    const byUrl = new Map(posts.filter(p => p.source_url).map(p => [normUrl(p.source_url), p]));
+    const byWork = new Map(posts.map(p => [(p.client + '|' + p.work).toLowerCase(), p]));
+    let no = Math.max(0, ...posts.map(p => p.no)) + 1;
+    const log = []; let added = 0, proposed = 0;
+    for (const raw of items) {
+      const it = Object.fromEntries(Object.entries(raw).map(([k,v]) => [k, typeof v === 'string' ? v.trim() : v]));
+      if (it.points) it.points = it.points.replace(/\n{3,}/g, '\n\n');
+      const target = it.slug && bySlug.get(it.slug);
+      if (target) {
+        const prop = Object.fromEntries(TEXT.filter(k => it[k] && it[k] !== target[k]).map(k => [k, it[k]]));
+        if (!Object.keys(prop).length) { log.push(`No.${target.no}：変更なし`); continue; }
+        target.proposal = { ...prop, by: it.by || 'Genspark', date: today, ...(it.note ? { note: it.note } : {}) };
+        proposed++; log.push(`No.${target.no}：修正案を置きました`); continue;
+      }
+      const miss = ['title','oneliner','about','points','work','client','source_url'].filter(k => !it[k]);
+      if (miss.length) { log.push(`スキップ（${miss.join('・')}がない）：${it.title || '?'}`); continue; }
+      const dup = byUrl.get(normUrl(it.source_url)) || byWork.get((it.client + '|' + it.work).toLowerCase());
+      if (dup) { log.push(`スキップ（No.${dup.no}と同じ作品）：${it.title}`); continue; }
+      let slug = slugFrom(it.source_url), base = slug, n = 2;
+      while (bySlug.has(slug)) slug = `${base}-${n++}`;
+      const p = { slug, no: no++, date: today, category: CATS.includes(it.category) ? it.category : '広告' };
+      TEXT.forEach(k => p[k] = it[k]);
+      META.forEach(k => { if (it[k]) p[k] = it[k]; });
+      p.source_name = p.source_name || it.source_url.split('/')[2];
+      ['agency','production','award'].forEach(k => { if (!p[k]) p[k] = '—'; });
+      if (Array.isArray(it.videos) && it.videos.length) p.videos = it.videos.filter(v => v && v.id && (v.type === 'youtube' || v.type === 'vimeo'));
+      if (p.videos && !p.videos.length) delete p.videos;
+      p.status = 'draft'; p.engine = it.by || 'Genspark';
+      p.ai_base = Object.fromEntries(TEXT.map(k => [k, p[k]]));  // 手直しから学ぶための元の文
+      posts.push(p); bySlug.set(slug, p); byUrl.set(normUrl(p.source_url), p); byWork.set((p.client + '|' + p.work).toLowerCase(), p);
+      added++; log.push(`No.${p.no}：承認待ちに追加　${p.title}`);
+    }
+    if (added || proposed) await put(`admin: Gensparkから取り込み（新規${added}・修正案${proposed}）`);
+    msg('imp-msg', `新しい下書き ${added} 本／修正案 ${proposed} 本\n` + log.join('\n'), 'ok');
+    $('imp-text').value = ''; tab = 'wait'; renderList();
+  } catch(e) { msg('imp-msg', '読み取れませんでした：' + e.message, 'ng'); }
+  btn.disabled = false;
+}
+$('imp-go').onclick = importPosts;
+
 $('forget').onclick = () => { store.del('kaibooom-token'); store.del('kaibooom-unlocked'); location.reload(); };
 
 if (store.get('kaibooom-unlocked', true)) { token() ? enterList() : show('token'); } else { show('lock'); $('pin').focus(); }
