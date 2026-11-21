@@ -275,6 +275,7 @@
     }
     hideNav(false);
     if (!tab) tab = POSTS.some(waiting) ? 'wait' : 'published';
+    A.ready = true;
     route(); loadOrig();
   }
 

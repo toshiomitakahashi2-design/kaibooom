@@ -462,6 +462,7 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
     }
     hideNav(false);
     if (!tab) tab = POSTS.some(waiting) ? 'wait' : 'published';
+    A.ready = true;
     route(); loadOrig();
   }
 
@@ -503,7 +504,7 @@ const noimg = "this.parentNode.classList.add('noimg');this.parentNode.style.back
 const meta = p => [dash(p.client), dash(p.country) && p.country !== '日本' ? p.country : '', p.category].filter(Boolean).map(esc).join('　');
 
 function pins(list){
-  if(!list.length) return '<div class="empty">保存した記事はまだありません。<br>記事ページのしおりボタンで保存できます。</div>';
+  if(!list.length) return window.KB_ADMIN ? '<div class="empty">ここに入る記事はありません。</div>' : '<div class="empty">保存した記事はまだありません。<br>記事ページのしおりボタンで保存できます。</div>';
   return '<div class="mason">' + list.map(p => {
     const ph = p.image
       ? `<div class="ph"><img src="${esc(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-c="${color(p.category)}" onerror="${noimg}"><span class="txt">${esc(p.oneliner)}</span>`
@@ -698,6 +699,7 @@ async function saveEdit(p){
 let lastScroll = 0;
 function go(hash){ if (location.hash.replace(/^#/,'') === hash) route(); else location.hash = hash; }
 function route(){
+  if (window.KB_ADMIN && !KB_ADMIN.ready) return;  // 管理ページは、合鍵と読み込みが済むまで描かない
   editing = false;
   const m = location.hash.match(/^#\/p\/(.+)$/);
   if (m) { if (!app.querySelector('.art')) lastScroll = window.scrollY; post(decodeURIComponent(m[1])); window.scrollTo(0,0); }
