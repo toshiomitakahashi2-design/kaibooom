@@ -2087,7 +2087,7 @@
         "id": "R6xE9Gv605o"
       }
     ],
-    "status": "draft",
+    "status": "published",
     "engine": "Genspark",
     "image": "https://france.publicisgroupe.com/wp-content/uploads/2025/03/ee1ca9b40defd9e063629f7f99df837e.png",
     "gallery": [
@@ -2095,7 +2095,8 @@
       "https://publicis.epresspack.me/storage/clients/46/anddomesticviolence_hd_1743510366.png",
       "https://publicis.epresspack.me/storage/clients/46/1185_1750_AXA_RELOGEMENT_URGENCE_CADRE_111565_HR_1743418064.jpg"
     ],
-    "media_checked": true
+    "media_checked": true,
+    "approved": "2026-11-21"
   },
   {
     "slug": "g-ww-advertimes-com-20250813-article508287",
