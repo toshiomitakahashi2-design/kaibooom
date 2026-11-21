@@ -208,7 +208,7 @@ function pins(list){
     const ph = p.image
       ? `<div class="ph"><img src="${esc(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-c="${color(p.category)}" onerror="${noimg}"><span class="txt">${esc(p.oneliner)}</span>`
       : `<div class="ph noimg" style="background:${color(p.category)}"><span class="txt">${esc(p.oneliner)}</span>`;
-    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${no3(p.no)}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
+    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${no3(p.no)}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${window.KB_ADMIN ? KB_ADMIN.badge(p) : ''}${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
   }).join('') + '</div>';
 }
 
@@ -229,8 +229,9 @@ function home(){
     app.innerHTML = `<div class="lead"><h1>保存した解剖</h1><small>${list.length} 本</small></div>` + pins(list);
     return;
   }
-  const list = POSTS.filter(p=>cat==='すべて'||p.category===cat);
-  app.innerHTML = `<div class="lead"><h1>${cat==='すべて'?'新着の解剖':esc(cat)}</h1><small>${list.length} 本</small></div>` + pins(list);
+  const A = window.KB_ADMIN;
+  const list = POSTS.filter(p=>(!A||A.filter(p)) && (cat==='すべて'||p.category===cat));
+  app.innerHTML = (A ? A.lead(list) : `<div class="lead"><h1>${cat==='すべて'?'新着の解剖':esc(cat)}</h1><small>${list.length} 本</small></div>`) + pins(list);
 }
 
 function videoFrame(v){
@@ -345,6 +346,7 @@ function post(slug){
     document.getElementById('eb-cancel').onclick = () => { editing = false; post(slug); };
     document.getElementById('eb-save').onclick = () => saveEdit(p);
   }
+  if (window.KB_ADMIN) KB_ADMIN.post(p);
 }
 
 function startEdit(slug){
@@ -379,14 +381,15 @@ async function saveEdit(p){
     if (t.points) { if (edits.points) t.points = edits.points; }
     else { t.steal = edits.steal; t.challenge = edits.challenge;
       t.steps = [0,1,2].map(i => ({ title: (t.steps && t.steps[i] && t.steps[i].title) || ['課題','狙い','表現のしかけ'][i], body: edits.bodies[i] })); }
-    t.status = edits.hide ? 'hidden' : 'published';
+    t.status = edits.hide ? 'hidden' : (window.KB_ADMIN ? KB_ADMIN.statusOnSave(t) : 'published');
+    if (window.KB_ADMIN) KB_ADMIN.beforeSave(t, p);
     const put = await fetch(API, { method: 'PUT', headers: { ...gh(), 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: `edit: No.${t.no} をサイト上で編集`, content: toB64(JSON.stringify(all, null, 2) + '\n'), sha: j.sha }) });
     if (put.status === 409) throw new Error('ちょうど自動更新と重なりました。もう一度「保存する」を押してください。');
     if (!put.ok) throw new Error('保存に失敗しました（' + put.status + '）');
     Object.assign(p, t);  // この画面にもすぐ反映
     editing = false;
-    if (edits.hide) { POSTS.splice(POSTS.indexOf(p), 1); location.hash = ''; return; }
+    if (edits.hide && !window.KB_ADMIN) { POSTS.splice(POSTS.indexOf(p), 1); location.hash = ''; return; }
     post(p.slug);
     document.querySelector('.bar').insertAdjacentHTML('afterend', '<div class="saved-note" role="status">保存しました。公開中のサイトには1〜2分で反映されます。</div>');
   } catch(e) { m.className = 'eb-msg ng'; m.textContent = e.message; btn.disabled = false; }

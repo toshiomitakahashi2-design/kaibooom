@@ -13,7 +13,15 @@ def main():
     out = ROOT / "docs/index.html"
     out.parent.mkdir(exist_ok=True)
     out.write_text(page, encoding="utf-8")
-    (ROOT / "docs/admin.html").write_text((ROOT / "site/admin.html").read_text(encoding="utf-8"), encoding="utf-8")
+    # 管理ページ：サイトと同じテンプレートに、管理のしくみ（site/admin.js）を差し込む。記事は開いたあとGitHubから読む
+    tpl = (ROOT / "site/template.html").read_text(encoding="utf-8")
+    admin_js = (ROOT / "site/admin.js").read_text(encoding="utf-8").replace("</", "<\\/")
+    admin = (tpl.replace("__POSTS__", "[]")
+                .replace("<head>", '<head>\n<meta name="robots" content="noindex, nofollow">', 1)
+                .replace('<script id="data"', "<script>" + admin_js + "</script>\n<script id=\"data\"", 1))
+    admin = admin.replace("<title>", "<title>管理｜", 1)
+    (ROOT / "docs/admin.html").write_text(admin, encoding="utf-8")
+    (ROOT / "docs/admin-classic.html").write_text((ROOT / "site/admin-classic.html").read_text(encoding="utf-8"), encoding="utf-8")
     # 読みくらべ（ブラインドテスト）のページ。試験データがなければ空のページになる
     trial_path = ROOT / "data/trial.json"
     trial = json.loads(trial_path.read_text(encoding="utf-8")) if trial_path.exists() else []
