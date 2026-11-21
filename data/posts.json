@@ -739,7 +739,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://m.itsnicethat.com/original_images/isle-of-any-film-itsnicethat-5.png?class=w1440",
+    "gallery": [
+      "https://m.itsnicethat.com/original_images/isle-of-any-film-itsnicethat-7.png?class=w1080",
+      "https://m.itsnicethat.com/original_images/isle-of-any-film-itsnicethat-8.png?class=w1080",
+      "https://m.itsnicethat.com/original_images/isle-of-any-film-itsnicethat-6.png?class=w1080",
+      "https://m.itsnicethat.com/original_images/isle-of-any-film-itsnicethat-5.png?class=w1080",
+      "https://m.itsnicethat.com/original_images/NBB-Product-Photos-front.jpg?class=w1080",
+      "https://m.itsnicethat.com/original_images/jim-henson-exhibition-itsnicethat-3.jpg?class=w1080"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-gramado-pacaembu-grand-prix-cannes-2026",
@@ -760,7 +770,19 @@
     "source_url": "https://www.b9.com.br/mercado-livre-gramado-pacaembu-grand-prix-cannes-2026/",
     "date_released": "2025年7月",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://storage.ghost.io/c/b8/a4/b8a4ba23-e08d-42f7-b459-b1bcab5b8867/content/images/size/w1200/2026/06/cannes-2026-mercado-livre-barfield.png",
+    "gallery": [
+      "https://storage.ghost.io/c/b8/a4/b8a4ba23-e08d-42f7-b459-b1bcab5b8867/content/images/size/w600/format/webp/2026/11/amazon-joy-2026.jpg",
+      "https://storage.ghost.io/c/b8/a4/b8a4ba23-e08d-42f7-b459-b1bcab5b8867/content/images/size/w600/format/webp/2026/06/cannes-26-gp-media.png"
+    ],
+    "videos": [
+      {
+        "type": "youtube",
+        "id": "tOZsrXjjyLI"
+      }
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-worldwide-en-newsroom-detail-0000001210",
@@ -787,7 +809,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.hyundai.com/content/dam/hyundai/ww/en/images/newsroom/news-image/2026/06/0629-2/news-list-thumbnail-0629.jpg",
+    "gallery": [
+      "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001210",
+      "https://www.hyundai.com/content/dam/hyundai/ww/en/images/newsroom/news-image/news-release-basic.jpg",
+      "https://www.hyundai.com/content/dam/hyundai/ww/en/images/newsroom/news-image/2026/06/0629-2/mk/mk-thumbnail-0629-01.jpg",
+      "https://www.hyundai.com/content/dam/hyundai/ww/en/images/newsroom/news-image/2026/06/0629-2/mk/mk-thumbnail-0629-02.jpg",
+      "https://www.hyundai.com/content/dam/hyundai/ww/en/images/newsroom/news-image/2026/06/0629-2/mk/mk-thumbnail-0629-03.jpg",
+      "https://www.hyundai.com/content/dam/hyundai/ww/en/images/newsroom/news-image/2026/06/0629-2/mk/mk-thumbnail-0629-04.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-nd-prix-industry-craft-cannes-lions-2026",
@@ -814,7 +846,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.reasonwhy.es/media/cache/destacada/lola-delonghi-cannes-lions-2026.jpg",
+    "gallery": [
+      "https://www.reasonwhy.es/media/library/ikea-industry-craft-hope.jpg",
+      "https://www.reasonwhy.es/media/library/ikea-industry-craft-mornings.jpg",
+      "https://www.reasonwhy.es/media/library/ikea-industry-craft-picky.jpg",
+      "https://www.reasonwhy.es/media/library/moving-landscapes-snow.jpg",
+      "https://www.reasonwhy.es/media/library/moving-landscapes-forest.jpg",
+      "https://www.reasonwhy.es/media/library/moving-landscapes-dehesa.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-winners-557808c184874de2aaaedc15f6f3ca8c",
@@ -841,7 +883,16 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "gallery": [
+      "https://cdn.builder.io/api/v1/image/assets%2F1e8574dde0344e78be7badd3d8cbc1bb%2F0ac682f49bee48a8a980a09f615c9b90?quality=85&width=1024&height=576&format=webp&fit=cover&position=center",
+      "https://cdn.builder.io/api/v1/image/assets%2F1e8574dde0344e78be7badd3d8cbc1bb%2Fc51230b791dc4de59f45ffe057f2b5e2?quality=85&width=1024&height=576&format=webp&fit=cover&position=center",
+      "https://cdn.builder.io/api/v1/image/assets%2F1e8574dde0344e78be7badd3d8cbc1bb%2Fd7bc7266ee6a4698b0c73bfdf5ba7555?quality=85&width=1024&height=576&format=webp&fit=cover&position=center",
+      "https://cdn.builder.io/api/v1/image/assets%2F1e8574dde0344e78be7badd3d8cbc1bb%2F30c94e19e4ca4ed580ce8969e345364e?quality=85&width=1024&height=576&format=webp&fit=cover&position=center",
+      "https://cdn.builder.io/api/v1/image/assets%2F1e8574dde0344e78be7badd3d8cbc1bb%2F704be518230142259a8168fe6adc2029?quality=85&width=1024&height=576&format=webp&fit=cover&position=center",
+      "https://cdn.builder.io/api/v1/image/assets%2F1e8574dde0344e78be7badd3d8cbc1bb%2F6619b2e44ec0439997a98bf0a8db3f3b?quality=85&width=1024&height=576&format=webp&fit=cover&position=center"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-www-akagi-com-news-2025-250220-html",
@@ -868,7 +919,14 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "gallery": [
+      "https://www.akagi.com/news/2025/common/img/news/2025/250220/img01.png",
+      "https://www.akagi.com/news/2025/common/img/news/2025/250220/img02.png",
+      "https://www.akagi.com/news/2025/common/img/news/2025/250220/img03.png",
+      "https://www.akagi.com/news/2025/common/img/news/2025/250220/img04.png"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-prsj-or-jp-case-study-gold2025013",
@@ -895,7 +953,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://prsj.or.jp/wp/wp-content/uploads/2026/02/kinryu_boad_A3_PRA_250913-1.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-dentsu-ho-com-articles-8783",
@@ -916,7 +976,14 @@
     "source_url": "https://dentsu-ho.com/articles/8783",
     "date_released": "2023年12月",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.dentsu-ho.com/2841b219-69a2-4789-b1bf-0520edc5d6d2/1703230564-image1_ogp.jpg",
+    "gallery": [
+      "https://cdn.dentsu-ho-dev.com/887bb6d0-c33c-4693-86aa-0d1bdc0d49b3/content_image2.png",
+      "https://cdn.dentsu-ho-dev.com/4260be2c-2c42-423c-8122-e088112780d5/content_image3.jpg",
+      "https://cdn.dentsu-ho-dev.com/085bd54a-a502-4b6e-81c8-c536c4b0fa18/content_image4.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-main-html-rd-p-000000002-000155936-html",
@@ -943,7 +1010,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://prcdn.freetls.fastly.net/release_image/155936/2/155936-2-62fdb52711d8794bf95893aefe36bc0c-3900x2194.jpg?format=jpeg&auto=webp&fit=bounds&width=2400&height=1260",
+    "gallery": [
+      "https://prcdn.freetls.fastly.net/release_image/155936/2/155936-2-66a376ef651f11c0f12fa3ff58f678a2-1920x1080.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/155936/2/155936-2-62fdb52711d8794bf95893aefe36bc0c-3900x2194.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/155936/2/155936-2-3dd37beb2ea0f03d66b127db43f5f731-1280x720.png?width=1950&height=1350&quality=85%2C75&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/155936/2/155936-2-f437c40dac757d61ae473ec9a09b4aba-1920x1080.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/155936/2/155936-2-5fa092729f5d849319dad031c1f174c7-1280x720.png?width=1950&height=1350&quality=85%2C75&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/155936/2/155936-2-6bfb5ff9dbc5deb48538002d13fb77a2-1920x1080.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-topic-girlsauditionproject2024-nonogirls",
@@ -970,7 +1047,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://bmsg.tokyo/img/ogp.png",
+    "media_checked": true
   },
   {
     "slug": "g-ww-advertimes-com-20240809-article470428",
@@ -991,7 +1070,9 @@
     "source_url": "https://www.advertimes.com/20240809/article470428/",
     "date_released": "2024年8月9日",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2024/08/ngsknewsp_ogp.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-02qq000000000000000w00o10201qq000025122a",
@@ -1012,7 +1093,16 @@
     "source_url": "https://withnews.jp/article/f0220927002qq000000000000000W00o10201qq000025122A",
     "date_released": "2022年5月",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://withnews.jp/storage/2022/09/25/3/33/3335c3bb-l.jpg",
+    "gallery": [
+      "https://withnews.jp/storage/2021/04/06/d/ac/dac5dbae-m.jpg",
+      "https://withnews.jp/storage/2022/09/25/0/75/0752f98d-sl.jpg",
+      "https://withnews.jp/storage/2022/09/25/b/60/b60f858d-sl.jpg",
+      "https://withnews.jp/storage/2022/09/25/4/63/463790b9-sl.jpg",
+      "https://withnews.jp/storage/2022/09/25/0/e9/0e96821c-p.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-main-html-rd-p-000000630-000000288-html",
@@ -1039,7 +1129,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://prcdn.freetls.fastly.net/release_image/288/630/288-630-f13631efffabbff4b583060a4ac4c536-764x229.jpg?format=jpeg&auto=webp&fit=bounds&width=2400&height=1260",
+    "gallery": [
+      "https://prcdn.freetls.fastly.net/release_image/288/630/288-630-f13631efffabbff4b583060a4ac4c536-764x229.jpg?width=1950&height=1350&quality=85&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/288/630/288-630-007fb2c6b14f9bc778081e70f0159cab-3900x3900.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/288/630/288-630-5d006c918359924ab44a0d83b0ff764b-1920x1080.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/288/630/288-630-69c248d87217d342e72d74c47d07128f-1920x1080.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/288/630/288-630-d8ec04aa68a87499a99c01884b70c314-1920x1080.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/288/630/288-630-bea9ba4f757f85960a524fa76b75d5c3-1920x1080.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-www-youtube-com-watch",
@@ -1066,7 +1166,8 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "media_checked": true
   },
   {
     "slug": "g-ww-advertimes-com-20251028-article519787",
@@ -1087,7 +1188,9 @@
     "source_url": "https://www.advertimes.com/20251028/article519787/",
     "date_released": "2025年10月14日",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2025/10/expo_ogp-1.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-www-yojiya-co-jp-archives-3660",
@@ -1115,7 +1218,8 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "media_checked": true
   },
   {
     "slug": "g-blicity-release-2025-202510-251029a-html",
@@ -1136,7 +1240,15 @@
     "source_url": "https://newsroom.mazda.com/ja/publicity/release/2025/202510/251029a.html",
     "date_released": "2025年10月29日",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://newsroom.mazda.com/ja/resource/img/ogp_default.jpg",
+    "gallery": [
+      "https://newsroom.mazda.com/ja/publicity/release/2025/202510/251029a.jpg",
+      "https://newsroom.mazda.com/ja/publicity/release/2025/202510/251029aa.jpg",
+      "https://newsroom.mazda.com/ja/publicity/release/2025/202510/251029ab.jpg",
+      "https://newsroom.mazda.com/ja/publicity/release/2025/202510/251029ac.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-ne-com-news-blue-diamond-almonds-rebrand",
@@ -1178,7 +1290,9 @@
     "source_url": "https://www.printmag.com/branding-identity-design/coca-cola-unveils-a-new-global-brand-identity/",
     "date_released": "2026年7月20日",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.printmag.com/wp-content/uploads/2026/07/3_cctm-icon-pack-family-scaled.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-nd-refresh-as-it-expands-internationally",
@@ -1226,7 +1340,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.dandad.org/images/social.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-rk-d-ad-awards-archive-vaseline-verified",
@@ -1253,7 +1369,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.dandad.org/images/social.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-d-ad-awards-archive-gulf-of-mexico-bar-2",
@@ -1280,7 +1398,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.dandad.org/images/social.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-ad-awards-archive-penguin-inclusive-sans",
@@ -1307,7 +1427,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.dandad.org/images/social.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-rds-theoneshow-award-64248-fertilizer-25",
@@ -1328,7 +1450,12 @@
     "source_url": "https://www.oneclub.org/awards/theoneshow/-award/64248/fertilizer-25/",
     "date_released": "2025年1〜5月に実施",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://d2z00kf51ll94q.cloudfront.net//archive/2026/thumbs/OS26_GP001E.jpg",
+    "gallery": [
+      "https://d2z00kf51ll94q.cloudfront.net//archive/2026/large/OS26_GP001E_1.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-com-marketing-media-hansokukaigi-032767",
@@ -1355,7 +1482,14 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://images.microcms-assets.io/assets/9c883224793c4361bfa991c4e6710e04/92b3fabd5d55446e944483b60a7e703d/026_ogp2.png",
+    "gallery": [
+      "https://images.microcms-assets.io/assets/9c883224793c4361bfa991c4e6710e04/fe14ab8854e34eec9626e3bccd94f089/hk202508.jpg",
+      "https://images.microcms-assets.io/assets/9c883224793c4361bfa991c4e6710e04/0255df73ab124fc4b342e239d2370b1e/facebook.png",
+      "https://images.microcms-assets.io/assets/9c883224793c4361bfa991c4e6710e04/4151ec5c4b4b4e1a90b584bd33858e35/X.png"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-main-html-rd-p-000001012-000001735-html",
@@ -1390,7 +1524,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://prcdn.freetls.fastly.net/release_image/1735/1012/1735-1012-f46302681f6b113b2addfefbd3ad18df-1190x841.jpg?format=jpeg&auto=webp&fit=bounds&width=2400&height=1260",
+    "gallery": [
+      "https://prcdn.freetls.fastly.net/release_image/1735/1012/1735-1012-f46302681f6b113b2addfefbd3ad18df-1190x841.jpg?width=1950&height=1350&quality=85%2C75&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/1735/1012/1735-1012-63dc1c1ca55821a729ddf446886450a3-3900x1128.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/1735/1012/1735-1012-2aaa489c2e3f4f2553e6d2dd0f82f85d-3900x3886.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/1735/1012/1735-1012-9c6c325244010c61cefd1bc326396798-2970x2227.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/1735/1012/1735-1012-24d23891b0d0484f51e716a41c185642-2510x1789.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/1735/1012/1735-1012-a6abc82bcbbd39a16afbbb688bd43d22-2044x164.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-ww-advertimes-com-20250905-article511091",
@@ -1411,7 +1555,9 @@
     "source_url": "https://www.advertimes.com/20250905/article511091/",
     "date_released": "2025年8月22日",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2025/09/nissin_ogp.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-ww-advertimes-com-20260525-article544431",
@@ -1438,7 +1584,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/05/gov-online_forever-anzen-cycling_ogp.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-main-html-rd-p-000000049-000100857-html",
@@ -1465,7 +1613,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://prcdn.freetls.fastly.net/release_image/100857/49/100857-49-f7debca58a562ec1acdc17838e0086aa-1384x779.png?format=jpeg&auto=webp&fit=bounds&width=2400&height=1260",
+    "gallery": [
+      "https://prcdn.freetls.fastly.net/release_image/100857/49/100857-49-f7debca58a562ec1acdc17838e0086aa-1384x779.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prtimes.jp/main/html/rd/p/000000049.000100857.html",
+      "https://prcdn.freetls.fastly.net/release_image/100857/49/100857-49-1d1501fae48ea740cb6ccd1d4883fb9f-3840x2160.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/100857/49/100857-49-c4146483c0136396b98675d98996c55f-3840x2160.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/100857/49/100857-49-b2dafca58283509904bb83e51e9e9efe-3840x2160.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/100857/49/100857-49-7d4908de7a9452b5c71fce567eaf7435-3840x2160.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-www-vml-com-work-phone-break",
@@ -1507,7 +1665,9 @@
     "source_url": "https://www.advertimes.com/20250313/article491887/",
     "date_released": "2025年3月17〜23日",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2025/03/ooh_ogp.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-o-le-florist-puts-covent-garden-in-bloom",
@@ -1549,7 +1709,17 @@
     "source_url": "https://prtimes.jp/main/html/rd/p/000000406.000044879.html",
     "date_released": "2025年1月24日〜2月24日",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://prcdn.freetls.fastly.net/release_image/44879/406/44879-406-b9ffc635bed0abce4cb7138e2b423032-900x900.png?format=jpeg&auto=webp&fit=bounds&width=2400&height=1260",
+    "gallery": [
+      "https://prcdn.freetls.fastly.net/release_image/44879/406/44879-406-b9ffc635bed0abce4cb7138e2b423032-900x900.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/44879/406/44879-406-8a0a5a767f85771a26cefbffe8ad7d08-1500x1200.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/44879/406/44879-406-e03e85d857e9a6c850b2e445ba19ee59-2200x1501.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/44879/406/44879-406-1ef63aa23a2fd8b484ed930070c70546-454x340.png?width=1950&height=1350&quality=85&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/44879/406/44879-406-96dff52166020e562ee70ee70b0c632d-1500x1200.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+      "https://prcdn.freetls.fastly.net/release_image/44879/406/44879-406-220425dbaab7bafc37b83a0bbccb1d84-1500x1200.png?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-space-media-jp-news-detail-6449",
@@ -1576,7 +1746,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://space-media.jp/image/news/6449/1/1/6449.jpeg",
+    "gallery": [
+      "https://space-media.jp/image/news/6449/1/1/6449.jpeg?1754282544",
+      "https://space-media.jp/js/ckfinder/userfiles/images/IMG_2690.JPG",
+      "https://space-media.jp/js/ckfinder/userfiles/images/IMG_2688%202(1).JPG",
+      "https://space-media.jp/image/media/6497/1/3/6497.jpeg?1755221765",
+      "https://space-media.jp/image/media/6469/1/3/6469.jpeg?1745227232",
+      "https://space-media.jp/image/media/6478/1/3/6478.jpeg?1744280059"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-bowl-lx-spot-polar-bear-blind-taste-test",
@@ -1603,7 +1783,12 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://digitalassets.pepsico.com/transform/a08482a8-e819-4970-91ff-20795979eccb/PEP-2026-TheChoice-PRKV",
+    "gallery": [
+      "https://digitalassets.pepsico.com/transform/a08482a8-e819-4970-91ff-20795979eccb/PEP-2026-TheChoice-PRKV?w=3840&q=75"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-ys-super-bowl-ads-last-harvest-challenge",
@@ -1630,7 +1815,12 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://digitalassets.pepsico.com/transform/70430e81-fc97-4256-942a-a790c2b0c424/Last-Harvest-Hero-Still-Lay-s-Super-Bowl-LX",
+    "gallery": [
+      "https://digitalassets.pepsico.com/transform/70430e81-fc97-4256-942a-a790c2b0c424/Last-Harvest-Hero-Still-Lay-s-Super-Bowl-LX?w=3840&q=75"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-big-game-commercial-starring-elijah-wood",
@@ -1657,7 +1847,12 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.mars.com/sites/g/files/dfsbuz106/files/styles/cropped_crop_16_9/public/2026-01/Skittles_DTR_Frame1_HighRes%20%281%29_0.jpg?h=8536ec78&v=c8d7f56a&itok=PJhVM1Qp",
+    "gallery": [
+      "https://www.mars.com/sites/g/files/dfsbuz106/files/2026-01/Skittles_DTR_Frame1_HighRes%20resized.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-g-sweet-caroline-super-bowl-neil-diamond",
@@ -1711,7 +1906,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "http://static1.squarespace.com/static/4f6792f624ac778428aca39d/4f760d4b6a9b61f6cc2748c3/69816493a522f703398daed6/1770214536133/H001_Q126_SB26_Newsroom_2500x1523.png?format=1500w",
+    "media_checked": true
   },
   {
     "slug": "g-ww-advertimes-com-20260410-article540958",
@@ -1732,7 +1929,9 @@
     "source_url": "https://www.advertimes.com/20260410/article540958/",
     "date_released": "2026年4月",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/04/nike_shinjuku4010_open_ec_ogp.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-ww-advertimes-com-20260513-article543242",
@@ -1763,7 +1962,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2026/05/otsuka_calorie-mate-jelly_ooh_ogp.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-www-ndc-co-jp-projects-muji-ad-2025",
@@ -1790,7 +1991,17 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://images.microcms-assets.io/assets/e1792d85c6294bf7a4758eaa4c992c03/951234540d5c4eefb195e94282e9158d/muji-mizu-ya-kuki-no-youni-2025_%20main.jpg?w=1200&h=630&fit=crop",
+    "gallery": [
+      "https://images.microcms-assets.io/assets/e1792d85c6294bf7a4758eaa4c992c03/951234540d5c4eefb195e94282e9158d/muji-mizu-ya-kuki-no-youni-2025_%20main.jpg?w=1920&fm=webp",
+      "https://images.microcms-assets.io/assets/e1792d85c6294bf7a4758eaa4c992c03/488e4fffbf044ab287182b0c948ed242/muji-mizu-ya-kuki-no-youni-2025_%20graphic_01.jpg?w=1920&fm=webp",
+      "https://images.microcms-assets.io/assets/e1792d85c6294bf7a4758eaa4c992c03/c8218f5a1c96409c97f582e07d2a3776/muji-mizu-ya-kuki-no-youni-2025_%20graphic_02.jpg?w=1920&fm=webp",
+      "https://images.microcms-assets.io/assets/e1792d85c6294bf7a4758eaa4c992c03/521e54485522405c85f67de7a746090d/muji-mizu-ya-kuki-no-youni-2025_%20graphic_03.jpg?w=1920&fm=webp",
+      "https://images.microcms-assets.io/assets/e1792d85c6294bf7a4758eaa4c992c03/098c107057184c17b9afd06bc80c5081/muji-mizu-ya-kuki-no-youni-2025_%20graphic_04.jpg?w=1920&fm=webp",
+      "https://images.microcms-assets.io/assets/e1792d85c6294bf7a4758eaa4c992c03/0f7043e749a24536a45edb781378eae6/muji-mizu-ya-kuki-no-youni-2025_%20graphic_05.jpg?w=1920&fm=webp"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-www-8brandingdesign-com-works-sazae",
@@ -1817,7 +2028,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.8brandingdesign.com/assets/img/ogp/ogp.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-www-ginzasonypark-com-about",
@@ -1838,7 +2051,17 @@
     "source_url": "https://www.ginzasonypark.com/about/",
     "date_released": "2025年1月（グランドオープン）",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://www.ginzasonypark.com/img/ogp/about.jpg",
+    "gallery": [
+      "https://www.ginzasonypark.com/img/about/1.jpg",
+      "https://www.ginzasonypark.com/img/about/2.jpg",
+      "https://www.ginzasonypark.com/img/about/3.jpg",
+      "https://www.ginzasonypark.com/img/about/4.jpg",
+      "https://www.ginzasonypark.com/img/about/5.jpg",
+      "https://www.ginzasonypark.com/img/about/6.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-nce-as-a-risk-in-home-insurance-policies",
@@ -1865,7 +2088,14 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://france.publicisgroupe.com/wp-content/uploads/2025/03/ee1ca9b40defd9e063629f7f99df837e.png",
+    "gallery": [
+      "https://france.publicisgroupe.com/wp-content/themes/publicis/assets/img//picto/delimiter.png",
+      "https://publicis.epresspack.me/storage/clients/46/anddomesticviolence_hd_1743510366.png",
+      "https://publicis.epresspack.me/storage/clients/46/1185_1750_AXA_RELOGEMENT_URGENCE_CADRE_111565_HR_1743418064.jpg"
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-ww-advertimes-com-20250813-article508287",
@@ -1886,7 +2116,9 @@
     "source_url": "https://www.advertimes.com/20250813/article508287/",
     "date_released": "2025年",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://cdn.advertimes.com/wp-content/uploads/2025/08/captionwithintention_ogp.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-x-for-telstra-better-on-a-better-network",
@@ -1913,7 +2145,9 @@
       }
     ],
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://wa.campaignbrief.com/wp-content/uploads/sites/3/2025/06/TNC_1805_POfUCnJQ.jpg",
+    "media_checked": true
   },
   {
     "slug": "g-s-the-cannes-lions-innovation-grand-prix",
@@ -1934,7 +2168,15 @@
     "source_url": "https://www.akqa.com/news/sounds-right-wins-the-cannes-lions-innovation-grand-prix/",
     "date_released": "2024年4月18日",
     "status": "draft",
-    "engine": "Genspark"
+    "engine": "Genspark",
+    "image": "https://images.ctfassets.net/feazk3r7m969/Farhif0wMLGfEWziBSkA5/12d561e99834e4c40eaac6e25cbb872c/Sounds_Right_Card.png?w=1200&h=630&fm=jpg&q=80&fit=fill",
+    "videos": [
+      {
+        "type": "vimeo",
+        "id": "1095924189"
+      }
+    ],
+    "media_checked": true
   },
   {
     "slug": "g-www-vml-com-work-preserved-promos",
