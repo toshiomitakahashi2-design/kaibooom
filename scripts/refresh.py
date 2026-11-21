@@ -1,9 +1,10 @@
 """古い型の記事（課題・狙い・しかけ／ここを盗め／やってみよう）を、
 新しい文章エンジンで「なんの広告なのか／アイデア、ポイント」の型に書き直す。
+書き直した文は記事に直接入れず「修正案」（proposal）として置く。管理ページで承認すると反映される。
 - 古い型の記事と、エンジンの古い版で書いた記事が対象。いまの版で書いた記事は二度書き直さない
 - 髙橋が手直しした記事は書き直さない（手直しを消さないため）
 - 写真・動画・番号・日付はそのまま残す
-- 書き直す前の文章は data/legacy.json に残す
+- 修正案がすでにある記事は飛ばす（承認か却下を待つ）
 環境変数 ANTHROPIC_API_KEY が必要。"""
 import json
 import pathlib
@@ -28,7 +29,9 @@ def main():
     client = anthropic.Anthropic()
     changed = 0
     for p in sorted(posts, key=lambda x: x["no"]):
-        if p.get("points") and p.get("engine", 1) >= ENGINE_VERSION:
+        if p.get("proposal") or p.get("status") in ("draft", "rejected"):
+            continue
+        if p.get("points") and isinstance(p.get("engine", 1), int) and p.get("engine", 1) >= ENGINE_VERSION:
             continue
         orig = originals.get(p["slug"])
         if p.get("points") and orig and any((orig.get(k) or "").strip() != (p.get(k) or "").strip() for k in TEXT_FIELDS):
@@ -44,17 +47,11 @@ def main():
         if data.get("skip") or not data.get("points"):
             print("  出典から書けなかったので、そのままにします")
             continue
-        if p["slug"] not in legacy:  # いちばん最初の文章だけを保管する
-            legacy[p["slug"]] = {k: p[k] for k in ("title", "oneliner", "about") + OLD if k in p}
-        for k in KEEP:
-            if data.get(k) and not (data[k] == "—" and p.get(k)):
-                p[k] = data[k]
-        for k in OLD:
-            p.pop(k, None)
-        p["engine"] = ENGINE_VERSION
-        save_original(p["slug"], p, flat)
+        p["proposal"] = {k: data[k] for k in ("title", "oneliner", "about", "points") if data.get(k)}
+        p["proposal"].update({"by": f"エンジン v{ENGINE_VERSION}", "date": __import__("datetime").date.today().isoformat()})
+        p["engine"] = ENGINE_VERSION  # 二重に修正案を作らない
         changed += 1
-        print(f"  → {p['title']}")
+        print(f"  → 修正案: {p['proposal']['title']}")
         # 途中で止まっても、そこまでの分は残るように毎回保存する
         POSTS_PATH.write_text(json.dumps(posts, ensure_ascii=False, indent=2), encoding="utf-8")
         LEGACY_PATH.write_text(json.dumps(legacy, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -1,0 +1,28 @@
+name: KAIBO media
+
+# 手動で動かす：まだ写真・動画を探していない記事（取り込んだ下書きなど）の写真・動画を出典ページから探す。
+# Claudeは呼ばないので料金はかからない。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: 写真・動画を探す
+        run: python scripts/images.py
+      - name: 保存
+        run: |
+          git config user.name "kaibo-bot"
+          git config user.email "kaibo-bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "media: find photos and videos"
+          git push

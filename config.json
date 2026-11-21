@@ -10,7 +10,7 @@
   "exclude_keywords": ["求人", "セミナー", "講座", "人事", "Entries Now Open", "Webinar", "hiring"],
   "candidates_per_source": 3,
   "posts_per_run": 4,
-  "auto_publish": true,
+  "auto_publish": false,
   "model": "claude-sonnet-5-5",
   "categories": ["映像", "SNS", "ブランディング", "体験", "広告", "コピー", "パッケージ", "デザイン", "ロゴ"]
 }

@@ -22,7 +22,8 @@ def main():
     known = {(e["slug"], e["field"]): e for e in edits}
     added = 0
     for p in posts:
-        orig = originals.get(p["slug"])
+        # 管理ページで修正案を採用した記事は、その修正案を「AIの元の文」として比べる
+        orig = p.get("ai_base") or originals.get(p["slug"])
         if not orig:
             continue
         for f in FIELDS:

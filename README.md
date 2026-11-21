@@ -1,12 +1,12 @@
 # KAIBOOOM（広告解剖）自動化パイプライン
 
-毎週月曜の朝7時に、次の流れが全自動で動きます。
+毎週月曜の朝7時に、次の流れが自動で動きます。書いた記事は**承認待ち（下書き）**に入り、管理ページで承認するまで公開されません。
 
 1. **集める** `scripts/collect.py`：AdverTimes.・電通報・Cannes Lions・Adweek から、広告・デザイン関連の記事を拾います
 2. **学ぶ** `scripts/learn.py`：髙橋が手直しした記事があれば、「AIの文 → 髙橋の文」を記録します
 3. **書く** `scripts/draft.py`：髙橋俊臣の文章エンジンが記事を書きます（作品でないニュースは自動でスキップ）
 4. **写真・動画** `scripts/images.py`：出典ページから画像と動画（YouTube / Vimeo）を探します
-5. **公開** `scripts/build.py`：サイト `docs/index.html` を作り、GitHub Pagesに公開します
+5. **公開** `scripts/build.py`：公開中の記事だけでサイト `docs/index.html` を作り、GitHub Pagesに公開します
 
 ## 髙橋俊臣の文章エンジン
 
@@ -25,10 +25,27 @@
 - `prompts/voice/buntai.md`：文体のルール（良い例・悪い例つき）
 - `prompts/voice/ai-shu.md`：AI臭の禁止リスト
 
+## 二段構造（下書き → 承認 → 公開）
+
+記事の状態は4つです：**承認待ち**（draft）／**公開中**（published）／**非公開**（hidden）／**見送り**（rejected）。
+
+- 新しい記事（毎週の自動更新・Gensparkで書いた記事）は、まず「承認待ち」に入ります
+- 公開中の記事を書き直した文は、本文を変えずに**修正案**（proposal）として置かれます
+- 管理ページ（`/admin.html`）の「承認待ち」タブで、下書きの手直し・承認・見送り、修正案の採用・破棄ができます
+- 修正案を採用すると、その文が「AIの元の文」（ai_base）として残り、そこからの手直しが学習に使われます
+
+## Gensparkで書いた記事を取り込む
+
+1. Gensparkに `prompts/genspark/` の指示書を渡して、記事をJSONで書かせる
+2. そのJSONを `data/inbox/` に置いて `python scripts/import_inbox.py data/inbox/ファイル名.json`
+3. 新しい記事は承認待ちに、既存の記事（slugが同じもの）は修正案として入ります
+4. Actionsの **KAIBO media** で、写真・動画を出典ページから探します
+
 ## 手で動かせるもの（GitHubの「Actions」タブ）
 
 - **KAIBO test**：記事3本を「スパイスなし」と「スパイスあり」の2通りで、読みくらべページ（`/test.html`）に並べます。公開中の記事は変わりません
-- **KAIBO rewrite**：古い型の記事を、新しいエンジンで書き直します。書き直す前の文章は `data/legacy.json` に残ります
+- **KAIBO rewrite**：古い型の記事を、新しいエンジンで書き直し、**修正案**として置きます（承認するまで本文は変わりません）
+- **KAIBO media**：写真・動画がまだない記事（取り込んだ下書きなど）の写真・動画を探します
 - **KAIBO weekly**：毎週の自動更新を、いますぐ動かします
 - **KAIBO learn**：これまでの手直しから、髙橋の直し方の法則をまとめ直します（`prompts/voice/learned.md`）
 
@@ -42,7 +59,7 @@
 ## 調整できるところ
 - `config.json`：拾うサイト、キーワード、1回に書く本数、使うモデル
 - `site/template.html`：サイトのデザイン
-- 管理ページ（`/admin.html`）：記事の手直し、写真・動画の追加、公開・非公開
+- 管理ページ（`/admin.html`）：承認待ちの確認・承認・見送り、修正案の採用、記事の手直し、写真・動画の追加、公開・非公開
 
 ## 記録されるデータ
 - `data/originals.json`：AIが書いたままの文
