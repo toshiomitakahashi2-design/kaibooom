@@ -20,7 +20,7 @@ from engine import BUZZ, LINT, TEXT_FIELDS, save_original
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 POSTS_PATH = ROOT / "data/posts.json"
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
-META = ("category", "work", "client", "agency", "production", "award", "country", "source_name", "source_url", "image")
+META = ("category", "work", "client", "agency", "production", "award", "country", "source_name", "source_url", "image", "date_released")
 REQUIRED = ("title", "oneliner", "about", "points", "work", "client", "source_url")
 
 
