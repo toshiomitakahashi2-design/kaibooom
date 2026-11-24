@@ -1961,10 +1961,11 @@
         "id": "m_bJ41T-MGE"
       }
     ],
-    "status": "draft",
+    "status": "published",
     "engine": "Genspark",
     "image": "https://cdn.advertimes.com/wp-content/uploads/2026/05/otsuka_calorie-mate-jelly_ooh_ogp.jpg",
-    "media_checked": true
+    "media_checked": true,
+    "approved": "2026-11-24"
   },
   {
     "slug": "g-www-ndc-co-jp-projects-muji-ad-2025",
