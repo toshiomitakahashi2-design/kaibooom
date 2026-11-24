@@ -172,6 +172,22 @@ def taigen_count(text):
         r"(ます|です|ました|ません|でした|でしょう|た|だ|る|う|く|す|つ|ぬ|ぶ|む|ぐ|い|ない|[」）)？?!！])。$", x))
 
 
+def bad_fragments(text):
+    """「長い修飾語、＋名詞。」の文（例：競技場を覆う、読み取れる値札。）。日本語として成り立たないので書き直させる。"""
+    out = []
+    for x in sentences(text):
+        if not x.endswith("。") or re.search(r"[」）)]。$", x) or not taigen_like(x):
+            continue
+        head = x.rsplit("、", 1)[0] if "、" in x else ""
+        if len(x) >= 12 and head and not re.search(r"(は|が|も|では|には|とは)$", head):
+            out.append(x)
+    return out
+
+
+def taigen_like(x):
+    return not re.search(r"(ます|です|ました|ません|でした|でしょう|た|だ|る|う|く|す|つ|ぬ|ぶ|む|ぐ|い|ない|[？?!！])。$", x)
+
+
 POLITE_END = re.compile(r"(ます|です|ました|ません|でした|ますか|ですか|でしょうか)[。？]?[」）)]?$")
 
 
@@ -240,16 +256,21 @@ def add_spice(client, draft, body, log=print):
         used_ban = [w for w in banned if any(w in s for s in spice_sentences(draft, final))]
         taigen = taigen_count(final.get("points", ""))
         blunt = blunt_paragraph_ends(final.get("points", ""))
-        if not found and hedges <= HEDGE_MAX and not too_long and run < 3 and not used_ban and taigen >= 1 and not blunt:
+        frags = bad_fragments(final.get("points", ""))
+        if not found and hedges <= HEDGE_MAX and not too_long and run < 3 and not used_ban and taigen <= 2 and not blunt and not frags:
             break
         notes = []
         if blunt:
             notes.append("- 前回は、段落の最後の文が体言止め（または言い切り）でした：" + "、".join(f"「{b}」" for b in blunt)
                          + "。段落の最後は「です・ます」で終えます。体言止めは段落の途中に移します。")
             log(f"  段落の最後が体言止め: {len(blunt)}か所")
-        if taigen == 0:
-            notes.append("- 前回は体言止めが1回もありませんでした。「大切なのは、体験。」のような一文を2〜3回入れます（続けては使いません）。")
-            log("  体言止めがなかった")
+        if frags:
+            notes.append("- 前回は、日本語として成り立たない「長い修飾語、＋名詞。」の文がありました：" + "、".join(f"「{b}」" for b in frags)
+                         + "。動詞で終わる普通の文に書き直します。")
+            log(f"  修飾語＋名詞の文: {len(frags)}か所")
+        if taigen > 2:
+            notes.append(f"- 前回は体言止めが{taigen}回ありました。2回までにします。")
+            log("  体言止めが多い")
         if run >= 3:
             notes.append(f"- 前回は「〜{word}。」で終わる文が{run}文続きました。同じ文末は2文までにします。")
             log(f"  同じ文末が続いた: 〜{word}。×{run}")
