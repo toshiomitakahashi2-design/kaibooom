@@ -186,9 +186,17 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
 <main id="app"></main>
 <script id="data" type="application/json">__POSTS__</script>
 <script>
-// 番号は2つ：管理用の no（全記事の通し番号）と、公開用の pub_no（公開した順の連番）。公開サイトは pub_no を見せる
-const shownNo = p => window.KB_ADMIN ? p.no : (p.pub_no || p.no);
-const POSTS = JSON.parse(document.getElementById('data').textContent).sort((a,b)=>shownNo(b)-shownNo(a));
+// 番号は2つ。
+//  ・管理番号 np001〜：記事（コンテンツ）にひもづく番号。no をそのまま使い、変わらない
+//  ・公開番号 No.001〜：公開の「場所」にひもづく番号。公開した順（pub_no）に並べた位置で決まり、いつも連番になる
+const isPub = p => (p.status || 'published') === 'published';
+const pubOrder = (a, b) => ((a.pub_no || 1e9) - (b.pub_no || 1e9)) || String(a.approved || '').localeCompare(String(b.approved || '')) || (a.no - b.no);
+const slotNo = p => isPub(p) ? POSTS.filter(isPub).sort(pubOrder).indexOf(p) + 1 : 0;
+const npNo = n => 'np' + String(n).padStart(3,'0');
+const idLabel = p => window.KB_ADMIN ? npNo(p.no) : no3(slotNo(p));
+const POSTS = JSON.parse(document.getElementById('data').textContent);
+const sortPosts = () => POSTS.sort((a,b) => window.KB_ADMIN ? b.no - a.no : -pubOrder(a, b));
+sortPosts();
 function nextPubNo(all){ return Math.max(0, ...all.map(x => x.pub_no || 0)) + 1; }
 const COLORS = {'映像':'#28323F','SNS':'#7A3B2E','ブランディング':'#34503A','体験':'#4B3F6B','広告':'#222222','コピー':'#7A5214','パッケージ':'#6B3F5C','デザイン':'#244F66','ロゴ':'#4A4A3A'};
 const color = c => COLORS[c] || '#333333';
@@ -211,7 +219,7 @@ function pins(list){
     const ph = p.image
       ? `<div class="ph"><img src="${esc(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-c="${color(p.category)}" onerror="${noimg}"><span class="txt">${esc(p.oneliner)}</span>`
       : `<div class="ph noimg" style="background:${color(p.category)}"><span class="txt">${esc(p.oneliner)}</span>`;
-    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${no3(shownNo(p))}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${window.KB_ADMIN ? KB_ADMIN.badge(p) : ''}${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
+    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${idLabel(p)}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${window.KB_ADMIN ? KB_ADMIN.badge(p) : ''}${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
   }).join('') + '</div>';
 }
 
@@ -313,7 +321,7 @@ function post(slug){
   const more = POSTS.filter(x => x.slug !== p.slug && x.category === p.category).slice(0, 10);
   const others = more.length >= 4 ? more : POSTS.filter(x => x.slug !== p.slug).slice(0, 10);
   app.innerHTML =
-    `<div class="art"><div class="bar"><button class="ib" aria-label="一覧に戻る" onclick="history.length>1?history.back():go('')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${no3(shownNo(p))}${window.KB_ADMIN && p.pub_no ? `<span style="font-weight:500;margin-left:8px">公開 ${no3(p.pub_no)}</span>` : ''}</span><span class="sp"></span>${editBtn}</div>` +
+    `<div class="art"><div class="bar"><button class="ib" aria-label="一覧に戻る" onclick="history.length>1?history.back():go('')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${idLabel(p)}${window.KB_ADMIN && isPub(p) ? `<span style="font-weight:500;margin-left:8px">公開 ${no3(slotNo(p))}</span>` : ''}</span><span class="sp"></span>${editBtn}</div>` +
     `<div class="wrap${editing?' editing':''}"><div class="media">${cover}${vids}${gal}` +
     (hasMedia ? `<div class="credit-img">写真・動画：<a href="${esc(p.source_url)}" target="_blank" rel="noopener">${esc(p.source_name)}</a>ほか公式より</div>` : '') +
     `</div><article class="txtcol">` +
@@ -388,7 +396,7 @@ async function saveEdit(p){
     if (t.status === 'published' && !t.pub_no) t.pub_no = nextPubNo(all);
     if (window.KB_ADMIN) KB_ADMIN.beforeSave(t, p);
     const put = await fetch(API, { method: 'PUT', headers: { ...gh(), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `edit: No.${t.no} をサイト上で編集`, content: toB64(JSON.stringify(all, null, 2) + '\n'), sha: j.sha }) });
+      body: JSON.stringify({ message: `edit: ${npNo(t.no)} をサイト上で編集`, content: toB64(JSON.stringify(all, null, 2) + '\n'), sha: j.sha }) });
     if (put.status === 409) throw new Error('ちょうど自動更新と重なりました。もう一度「保存する」を押してください。');
     if (!put.ok) throw new Error('保存に失敗しました（' + put.status + '）');
     Object.assign(p, t);  // この画面にもすぐ反映

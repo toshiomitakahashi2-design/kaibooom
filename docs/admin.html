@@ -288,7 +288,7 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
     filter(p){ return (TABS.find(t => t[0] === (tab || 'wait')) || TABS[0])[2](p); },
     badge(p){
       if (p.proposal && stage(p) !== 'draft') return '<span class="st st-prop">修正案あり<\/span>';
-      const s = stage(p); return s === 'published' ? (p.pub_no ? `<span class="st st-pub">公開${no3(p.pub_no)}<\/span>` : '') : `<span class="st ${STAGE[s].cls}">${STAGE[s].label}<\/span>`;
+      const s = stage(p); return s === 'published' ? `<span class="st st-pub">公開${no3(slotNo(p))}<\/span>` : `<span class="st ${STAGE[s].cls}">${STAGE[s].label}<\/span>`;
     },
     lead(list){
       const cur = tab || 'wait';
@@ -335,11 +335,11 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
         catch(e) { msg(e.message, true); document.querySelectorAll('#apanel button').forEach(b => b.disabled = false); }
       };
       const on = (id, f) => { const el = $(id); if (el) el.onclick = f; };
-      on('a-pub', () => run((t, all) => { t.status = 'published'; if (!t.approved) t.approved = today(); if (!t.pub_no) t.pub_no = nextPubNo(all); }, `admin: No.${p.no} を公開`, '公開しました。1〜2分でサイトに反映されます。'));
-      on('a-rej', () => run(t => { t.status = 'rejected'; }, `admin: No.${p.no} を見送り`, '見送りにしました。'));
-      on('a-hide', () => run(t => { t.status = 'hidden'; }, `admin: No.${p.no} を非公開`, '非公開にしました。'));
-      on('a-draft', () => run(t => { t.status = 'draft'; }, `admin: No.${p.no} を承認待ちに戻す`, '承認待ちに戻しました。'));
-      on('a-drop', () => run(t => { delete t.proposal; }, `admin: No.${p.no} の修正案を捨てる`, '修正案を捨てました。本文はそのままです。'));
+      on('a-pub', () => run((t, all) => { t.status = 'published'; if (!t.approved) t.approved = today(); if (!t.pub_no) t.pub_no = nextPubNo(all); }, `admin: ${npNo(p.no)} を公開`, '公開しました。1〜2分でサイトに反映されます。'));
+      on('a-rej', () => run(t => { t.status = 'rejected'; }, `admin: ${npNo(p.no)} を見送り`, '見送りにしました。'));
+      on('a-hide', () => run(t => { t.status = 'hidden'; }, `admin: ${npNo(p.no)} を非公開`, '非公開にしました。'));
+      on('a-draft', () => run(t => { t.status = 'draft'; }, `admin: ${npNo(p.no)} を承認待ちに戻す`, '承認待ちに戻しました。'));
+      on('a-drop', () => run(t => { delete t.proposal; }, `admin: ${npNo(p.no)} の修正案を捨てる`, '修正案を捨てました。本文はそのままです。'));
       on('a-adopt', () => {
         backup = Object.fromEntries(TEXT.map(k => [k, p[k]])); adopt = p.slug;
         TEXT.forEach(k => { if (pr[k]) p[k] = pr[k]; });
@@ -359,7 +359,7 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
           if (vids.length) t.videos = vids; else delete t.videos;
           if (gal.length) t.gallery = gal; else delete t.gallery;
           t.country = country; t.media_checked = true;
-        }, `admin: No.${p.no} の写真・動画を編集`, '写真・動画を保存しました。');
+        }, `admin: ${npNo(p.no)} の写真・動画を編集`, '写真・動画を保存しました。');
       });
     },
     statusOnSave(t){ return STAGE[t.status] ? t.status : 'published'; },
@@ -396,14 +396,14 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
         const target = it.slug && bySlug.get(it.slug);
         if (target) {
           const prop = Object.fromEntries(TEXT.filter(k => it[k] && it[k] !== target[k]).map(k => [k, it[k]]));
-          if (!Object.keys(prop).length) { log.push(`No.${target.no}：変更なし`); continue; }
+          if (!Object.keys(prop).length) { log.push(`${npNo(target.no)}：変更なし`); continue; }
           target.proposal = { ...prop, by: it.by || 'Genspark', date: today(), ...(it.note ? { note: it.note } : {}) };
-          proposed++; log.push(`No.${target.no}：修正案を置きました`); continue;
+          proposed++; log.push(`${npNo(target.no)}：修正案を置きました`); continue;
         }
         const miss = ['title','oneliner','about','points','work','client','source_url'].filter(k => !it[k]);
         if (miss.length) { log.push(`スキップ（${miss.join('・')}がない）：${it.title || '?'}`); continue; }
         const dup = byUrl.get(normUrl(it.source_url)) || byWork.get((it.client + '|' + it.work).toLowerCase());
-        if (dup) { log.push(`スキップ（No.${dup.no}と同じ作品）：${it.title}`); continue; }
+        if (dup) { log.push(`スキップ（${npNo(dup.no)}と同じ作品）：${it.title}`); continue; }
         let slug = slugFrom(it.source_url), base = slug, n = 2;
         while (bySlug.has(slug)) slug = `${base}-${n++}`;
         const p = { slug, no: no++, date: today(), category: CATS.includes(it.category) ? it.category : '広告' };
@@ -416,7 +416,7 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
         p.status = 'draft'; p.engine = it.by || 'Genspark';
         p.ai_base = Object.fromEntries(TEXT.map(k => [k, p[k]]));
         all.push(p); bySlug.set(slug, p); byUrl.set(normUrl(p.source_url), p); byWork.set((p.client + '|' + p.work).toLowerCase(), p);
-        added++; log.push(`No.${p.no}：承認待ちに追加　${p.title}`);
+        added++; log.push(`${npNo(p.no)}：承認待ちに追加　${p.title}`);
       }
       if (added || proposed) await putAll(all, sha, `admin: Gensparkから取り込み（新規${added}・修正案${proposed}）`);
       POSTS.splice(0, POSTS.length, ...all.sort((a, b) => b.no - a.no));
@@ -494,9 +494,17 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
 </script>
 <script id="data" type="application/json">[]</script>
 <script>
-// 番号は2つ：管理用の no（全記事の通し番号）と、公開用の pub_no（公開した順の連番）。公開サイトは pub_no を見せる
-const shownNo = p => window.KB_ADMIN ? p.no : (p.pub_no || p.no);
-const POSTS = JSON.parse(document.getElementById('data').textContent).sort((a,b)=>shownNo(b)-shownNo(a));
+// 番号は2つ。
+//  ・管理番号 np001〜：記事（コンテンツ）にひもづく番号。no をそのまま使い、変わらない
+//  ・公開番号 No.001〜：公開の「場所」にひもづく番号。公開した順（pub_no）に並べた位置で決まり、いつも連番になる
+const isPub = p => (p.status || 'published') === 'published';
+const pubOrder = (a, b) => ((a.pub_no || 1e9) - (b.pub_no || 1e9)) || String(a.approved || '').localeCompare(String(b.approved || '')) || (a.no - b.no);
+const slotNo = p => isPub(p) ? POSTS.filter(isPub).sort(pubOrder).indexOf(p) + 1 : 0;
+const npNo = n => 'np' + String(n).padStart(3,'0');
+const idLabel = p => window.KB_ADMIN ? npNo(p.no) : no3(slotNo(p));
+const POSTS = JSON.parse(document.getElementById('data').textContent);
+const sortPosts = () => POSTS.sort((a,b) => window.KB_ADMIN ? b.no - a.no : -pubOrder(a, b));
+sortPosts();
 function nextPubNo(all){ return Math.max(0, ...all.map(x => x.pub_no || 0)) + 1; }
 const COLORS = {'映像':'#28323F','SNS':'#7A3B2E','ブランディング':'#34503A','体験':'#4B3F6B','広告':'#222222','コピー':'#7A5214','パッケージ':'#6B3F5C','デザイン':'#244F66','ロゴ':'#4A4A3A'};
 const color = c => COLORS[c] || '#333333';
@@ -519,7 +527,7 @@ function pins(list){
     const ph = p.image
       ? `<div class="ph"><img src="${esc(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-c="${color(p.category)}" onerror="${noimg}"><span class="txt">${esc(p.oneliner)}</span>`
       : `<div class="ph noimg" style="background:${color(p.category)}"><span class="txt">${esc(p.oneliner)}</span>`;
-    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${no3(shownNo(p))}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${window.KB_ADMIN ? KB_ADMIN.badge(p) : ''}${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
+    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${idLabel(p)}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${window.KB_ADMIN ? KB_ADMIN.badge(p) : ''}${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
   }).join('') + '</div>';
 }
 
@@ -621,7 +629,7 @@ function post(slug){
   const more = POSTS.filter(x => x.slug !== p.slug && x.category === p.category).slice(0, 10);
   const others = more.length >= 4 ? more : POSTS.filter(x => x.slug !== p.slug).slice(0, 10);
   app.innerHTML =
-    `<div class="art"><div class="bar"><button class="ib" aria-label="一覧に戻る" onclick="history.length>1?history.back():go('')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${no3(shownNo(p))}${window.KB_ADMIN && p.pub_no ? `<span style="font-weight:500;margin-left:8px">公開 ${no3(p.pub_no)}</span>` : ''}</span><span class="sp"></span>${editBtn}</div>` +
+    `<div class="art"><div class="bar"><button class="ib" aria-label="一覧に戻る" onclick="history.length>1?history.back():go('')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${idLabel(p)}${window.KB_ADMIN && isPub(p) ? `<span style="font-weight:500;margin-left:8px">公開 ${no3(slotNo(p))}</span>` : ''}</span><span class="sp"></span>${editBtn}</div>` +
     `<div class="wrap${editing?' editing':''}"><div class="media">${cover}${vids}${gal}` +
     (hasMedia ? `<div class="credit-img">写真・動画：<a href="${esc(p.source_url)}" target="_blank" rel="noopener">${esc(p.source_name)}</a>ほか公式より</div>` : '') +
     `</div><article class="txtcol">` +
@@ -696,7 +704,7 @@ async function saveEdit(p){
     if (t.status === 'published' && !t.pub_no) t.pub_no = nextPubNo(all);
     if (window.KB_ADMIN) KB_ADMIN.beforeSave(t, p);
     const put = await fetch(API, { method: 'PUT', headers: { ...gh(), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `edit: No.${t.no} をサイト上で編集`, content: toB64(JSON.stringify(all, null, 2) + '\n'), sha: j.sha }) });
+      body: JSON.stringify({ message: `edit: ${npNo(t.no)} をサイト上で編集`, content: toB64(JSON.stringify(all, null, 2) + '\n'), sha: j.sha }) });
     if (put.status === 409) throw new Error('ちょうど自動更新と重なりました。もう一度「保存する」を押してください。');
     if (!put.ok) throw new Error('保存に失敗しました（' + put.status + '）');
     Object.assign(p, t);  // この画面にもすぐ反映

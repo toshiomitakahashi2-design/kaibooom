@@ -101,7 +101,7 @@
     filter(p){ return (TABS.find(t => t[0] === (tab || 'wait')) || TABS[0])[2](p); },
     badge(p){
       if (p.proposal && stage(p) !== 'draft') return '<span class="st st-prop">修正案あり</span>';
-      const s = stage(p); return s === 'published' ? (p.pub_no ? `<span class="st st-pub">公開${no3(p.pub_no)}</span>` : '') : `<span class="st ${STAGE[s].cls}">${STAGE[s].label}</span>`;
+      const s = stage(p); return s === 'published' ? `<span class="st st-pub">公開${no3(slotNo(p))}</span>` : `<span class="st ${STAGE[s].cls}">${STAGE[s].label}</span>`;
     },
     lead(list){
       const cur = tab || 'wait';
@@ -148,11 +148,11 @@
         catch(e) { msg(e.message, true); document.querySelectorAll('#apanel button').forEach(b => b.disabled = false); }
       };
       const on = (id, f) => { const el = $(id); if (el) el.onclick = f; };
-      on('a-pub', () => run((t, all) => { t.status = 'published'; if (!t.approved) t.approved = today(); if (!t.pub_no) t.pub_no = nextPubNo(all); }, `admin: No.${p.no} を公開`, '公開しました。1〜2分でサイトに反映されます。'));
-      on('a-rej', () => run(t => { t.status = 'rejected'; }, `admin: No.${p.no} を見送り`, '見送りにしました。'));
-      on('a-hide', () => run(t => { t.status = 'hidden'; }, `admin: No.${p.no} を非公開`, '非公開にしました。'));
-      on('a-draft', () => run(t => { t.status = 'draft'; }, `admin: No.${p.no} を承認待ちに戻す`, '承認待ちに戻しました。'));
-      on('a-drop', () => run(t => { delete t.proposal; }, `admin: No.${p.no} の修正案を捨てる`, '修正案を捨てました。本文はそのままです。'));
+      on('a-pub', () => run((t, all) => { t.status = 'published'; if (!t.approved) t.approved = today(); if (!t.pub_no) t.pub_no = nextPubNo(all); }, `admin: ${npNo(p.no)} を公開`, '公開しました。1〜2分でサイトに反映されます。'));
+      on('a-rej', () => run(t => { t.status = 'rejected'; }, `admin: ${npNo(p.no)} を見送り`, '見送りにしました。'));
+      on('a-hide', () => run(t => { t.status = 'hidden'; }, `admin: ${npNo(p.no)} を非公開`, '非公開にしました。'));
+      on('a-draft', () => run(t => { t.status = 'draft'; }, `admin: ${npNo(p.no)} を承認待ちに戻す`, '承認待ちに戻しました。'));
+      on('a-drop', () => run(t => { delete t.proposal; }, `admin: ${npNo(p.no)} の修正案を捨てる`, '修正案を捨てました。本文はそのままです。'));
       on('a-adopt', () => {
         backup = Object.fromEntries(TEXT.map(k => [k, p[k]])); adopt = p.slug;
         TEXT.forEach(k => { if (pr[k]) p[k] = pr[k]; });
@@ -172,7 +172,7 @@
           if (vids.length) t.videos = vids; else delete t.videos;
           if (gal.length) t.gallery = gal; else delete t.gallery;
           t.country = country; t.media_checked = true;
-        }, `admin: No.${p.no} の写真・動画を編集`, '写真・動画を保存しました。');
+        }, `admin: ${npNo(p.no)} の写真・動画を編集`, '写真・動画を保存しました。');
       });
     },
     statusOnSave(t){ return STAGE[t.status] ? t.status : 'published'; },
@@ -209,14 +209,14 @@
         const target = it.slug && bySlug.get(it.slug);
         if (target) {
           const prop = Object.fromEntries(TEXT.filter(k => it[k] && it[k] !== target[k]).map(k => [k, it[k]]));
-          if (!Object.keys(prop).length) { log.push(`No.${target.no}：変更なし`); continue; }
+          if (!Object.keys(prop).length) { log.push(`${npNo(target.no)}：変更なし`); continue; }
           target.proposal = { ...prop, by: it.by || 'Genspark', date: today(), ...(it.note ? { note: it.note } : {}) };
-          proposed++; log.push(`No.${target.no}：修正案を置きました`); continue;
+          proposed++; log.push(`${npNo(target.no)}：修正案を置きました`); continue;
         }
         const miss = ['title','oneliner','about','points','work','client','source_url'].filter(k => !it[k]);
         if (miss.length) { log.push(`スキップ（${miss.join('・')}がない）：${it.title || '?'}`); continue; }
         const dup = byUrl.get(normUrl(it.source_url)) || byWork.get((it.client + '|' + it.work).toLowerCase());
-        if (dup) { log.push(`スキップ（No.${dup.no}と同じ作品）：${it.title}`); continue; }
+        if (dup) { log.push(`スキップ（${npNo(dup.no)}と同じ作品）：${it.title}`); continue; }
         let slug = slugFrom(it.source_url), base = slug, n = 2;
         while (bySlug.has(slug)) slug = `${base}-${n++}`;
         const p = { slug, no: no++, date: today(), category: CATS.includes(it.category) ? it.category : '広告' };
@@ -229,7 +229,7 @@
         p.status = 'draft'; p.engine = it.by || 'Genspark';
         p.ai_base = Object.fromEntries(TEXT.map(k => [k, p[k]]));
         all.push(p); bySlug.set(slug, p); byUrl.set(normUrl(p.source_url), p); byWork.set((p.client + '|' + p.work).toLowerCase(), p);
-        added++; log.push(`No.${p.no}：承認待ちに追加　${p.title}`);
+        added++; log.push(`${npNo(p.no)}：承認待ちに追加　${p.title}`);
       }
       if (added || proposed) await putAll(all, sha, `admin: Gensparkから取り込み（新規${added}・修正案${proposed}）`);
       POSTS.splice(0, POSTS.length, ...all.sort((a, b) => b.no - a.no));
