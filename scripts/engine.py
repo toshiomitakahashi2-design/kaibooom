@@ -33,7 +33,7 @@ SPICE = (PROMPTS / "spice.md").read_text(encoding="utf-8")
 TEXT_FIELDS = ("title", "oneliner", "about", "points")
 # エンジンの書き方を変えたら数字を上げる。古い版で書いた記事は「KAIBO rewrite」で書き直される
 ENGINE_VERSION = 4
-POINTS_MAX = 480
+POINTS_MAX = 240
 
 # なるべく使わない定番ワード（5本につき2回くらいまで）
 BUZZ = ["刺さる", "刺さり", "エモい", "世界観", "インサイト", "バズる", "バズっ", "ストーリーテリング", "寄り添", "共感を呼"]
