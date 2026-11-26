@@ -68,7 +68,12 @@
 
   async function fetchAll(){
     const r = await fetch(API + '?t=' + Date.now(), { headers: gh(), cache: 'no-store' });
-    if (r.status === 401 || r.status === 403) throw new Error('GitHubの鍵が使えませんでした。期限切れか、権限（Contents: Read and write）が足りないかもしれません。');
+    if (r.status === 401) { const e = new Error('GitHubの鍵が使えませんでした。期限が切れたか、鍵が取り消された可能性があります。新しい鍵を登録してください。'); e.badKey = true; throw e; }
+    if (r.status === 403 || r.status === 429) {
+      const left = r.headers.get('x-ratelimit-remaining');
+      throw new Error(left === '0' ? 'GitHubへのアクセスが一時的に多すぎるようです。数分おいてから読み込み直してください（鍵はそのまま使えます）。'
+        : 'GitHubに断られました（' + r.status + '）。鍵の権限（Contents: Read and write）が足りないか、一時的な不調かもしれません。少しおいて読み込み直してください。');
+    }
     if (!r.ok) throw new Error('読み込みに失敗しました（' + r.status + '）');
     const j = await r.json();
     return { sha: j.sha, all: JSON.parse(fromB64(j.content)) };
@@ -269,8 +274,9 @@
       const { all } = await fetchAll();
       POSTS.splice(0, POSTS.length, ...all.sort((a, b) => b.no - a.no));
     } catch(e) {
-      if (/鍵/.test(e.message)) { try { localStorage.removeItem('kaibooom-token'); } catch(_) {} tokenForm(e.message); }
-      else app.innerHTML = `<div class="empty">${esc(e.message)}</div>`;
+      // 鍵を消すのは、GitHubが「鍵が無効」と答えたとき（401）だけ。一時的なエラーでは消さない
+      if (e.badKey) { try { localStorage.removeItem('kaibooom-token'); } catch(_) {} tokenForm(e.message); }
+      else app.innerHTML = `<div class="empty">${esc(e.message)}<br><br><button class="eb-btn primary" onclick="location.reload()">読み込み直す</button></div>`;
       return;
     }
     hideNav(false);
