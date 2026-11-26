@@ -2175,7 +2175,7 @@
     "source_name": "AdverTimes.（アドタイ）",
     "source_url": "https://www.advertimes.com/20260410/article540958/",
     "date_released": "2026年4月",
-    "status": "draft",
+    "status": "published",
     "engine": "v2-claude",
     "image": "https://cdn.advertimes.com/wp-content/uploads/2026/04/nike_shinjuku4010_open_ec_ogp.jpg",
     "media_checked": true,
@@ -2184,7 +2184,8 @@
       "oneliner": "ナイキ新宿店のロゴとVI",
       "about": "2026年4月10日に開業した「NIKE SHINJUKU」のロゴとVI。佐々木俊氏が、JR新宿駅の警備員としてテープの案内表示「修悦体」を生んだ佐藤修悦氏と共作しました。",
       "points": "工事のたびに通路が変わる新宿駅で、迷いそうになるたび助けられたのが、テープで貼られた案内の文字でした。毎日駅を使う人にとって、修悦体は「新宿の文字」として体に染みついています。ナイキはその文字で店名を名乗りました。通勤途中の人は、見慣れた文字に気づいて思わず足を止めます。テープらしい線をどこまで残し、どこまで整えるか。そこが仕上げの勝負だったはずです。"
-    }
+    },
+    "approved": "2026-11-26"
   },
   {
     "slug": "g-ww-advertimes-com-20260513-article543242",
