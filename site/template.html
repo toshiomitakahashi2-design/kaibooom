@@ -186,7 +186,10 @@ mark.ed{background:color-mix(in srgb,var(--cut) 16%,transparent);color:inherit;b
 <main id="app"></main>
 <script id="data" type="application/json">__POSTS__</script>
 <script>
-const POSTS = JSON.parse(document.getElementById('data').textContent).sort((a,b)=>b.no-a.no);
+// 番号は2つ：管理用の no（全記事の通し番号）と、公開用の pub_no（公開した順の連番）。公開サイトは pub_no を見せる
+const shownNo = p => window.KB_ADMIN ? p.no : (p.pub_no || p.no);
+const POSTS = JSON.parse(document.getElementById('data').textContent).sort((a,b)=>shownNo(b)-shownNo(a));
+function nextPubNo(all){ return Math.max(0, ...all.map(x => x.pub_no || 0)) + 1; }
 const COLORS = {'映像':'#28323F','SNS':'#7A3B2E','ブランディング':'#34503A','体験':'#4B3F6B','広告':'#222222','コピー':'#7A5214','パッケージ':'#6B3F5C','デザイン':'#244F66','ロゴ':'#4A4A3A'};
 const color = c => COLORS[c] || '#333333';
 const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -208,7 +211,7 @@ function pins(list){
     const ph = p.image
       ? `<div class="ph"><img src="${esc(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-c="${color(p.category)}" onerror="${noimg}"><span class="txt">${esc(p.oneliner)}</span>`
       : `<div class="ph noimg" style="background:${color(p.category)}"><span class="txt">${esc(p.oneliner)}</span>`;
-    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${no3(p.no)}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${window.KB_ADMIN ? KB_ADMIN.badge(p) : ''}${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
+    return `<a class="pin" href="#/p/${esc(p.slug)}">${ph}<span class="no">${no3(shownNo(p))}</span>${p.videos&&p.videos.length?`<span class="vid" aria-label="動画あり">${PLAY}</span>`:''}</div><div class="t">${esc(p.title)}</div><div class="m">${window.KB_ADMIN ? KB_ADMIN.badge(p) : ''}${ORIG && editedFields(p).length ? '<span class="ed-badge">編集済み</span>' : ''}${meta(p)}</div></a>`;
   }).join('') + '</div>';
 }
 
@@ -310,7 +313,7 @@ function post(slug){
   const more = POSTS.filter(x => x.slug !== p.slug && x.category === p.category).slice(0, 10);
   const others = more.length >= 4 ? more : POSTS.filter(x => x.slug !== p.slug).slice(0, 10);
   app.innerHTML =
-    `<div class="art"><div class="bar"><button class="ib" aria-label="一覧に戻る" onclick="history.length>1?history.back():go('')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${no3(p.no)}</span><span class="sp"></span>${editBtn}</div>` +
+    `<div class="art"><div class="bar"><button class="ib" aria-label="一覧に戻る" onclick="history.length>1?history.back():go('')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="n">${no3(shownNo(p))}${window.KB_ADMIN && p.pub_no ? `<span style="font-weight:500;margin-left:8px">公開 ${no3(p.pub_no)}</span>` : ''}</span><span class="sp"></span>${editBtn}</div>` +
     `<div class="wrap${editing?' editing':''}"><div class="media">${cover}${vids}${gal}` +
     (hasMedia ? `<div class="credit-img">写真・動画：<a href="${esc(p.source_url)}" target="_blank" rel="noopener">${esc(p.source_name)}</a>ほか公式より</div>` : '') +
     `</div><article class="txtcol">` +
@@ -382,6 +385,7 @@ async function saveEdit(p){
     else { t.steal = edits.steal; t.challenge = edits.challenge;
       t.steps = [0,1,2].map(i => ({ title: (t.steps && t.steps[i] && t.steps[i].title) || ['課題','狙い','表現のしかけ'][i], body: edits.bodies[i] })); }
     t.status = edits.hide ? 'hidden' : (window.KB_ADMIN ? KB_ADMIN.statusOnSave(t) : 'published');
+    if (t.status === 'published' && !t.pub_no) t.pub_no = nextPubNo(all);
     if (window.KB_ADMIN) KB_ADMIN.beforeSave(t, p);
     const put = await fetch(API, { method: 'PUT', headers: { ...gh(), 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: `edit: No.${t.no} をサイト上で編集`, content: toB64(JSON.stringify(all, null, 2) + '\n'), sha: j.sha }) });

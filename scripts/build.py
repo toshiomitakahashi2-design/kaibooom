@@ -8,6 +8,11 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 def main():
     posts = json.loads((ROOT / "data/posts.json").read_text(encoding="utf-8"))
     live = [p for p in posts if p.get("status", "published") == "published"]
+    # 公開番号（pub_no）がまだない公開記事には、公開した順に続きの番号をつける（表示用。データには書き戻さない）
+    nxt = max([p.get("pub_no") or 0 for p in posts] + [0]) + 1
+    for p in sorted([p for p in live if not p.get("pub_no")], key=lambda p: (p.get("approved") or "", p["no"])):
+        p["pub_no"] = nxt
+        nxt += 1
     data = json.dumps(live, ensure_ascii=False).replace("</", "<\\/")
     page = (ROOT / "site/template.html").read_text(encoding="utf-8").replace("__POSTS__", data)
     out = ROOT / "docs/index.html"

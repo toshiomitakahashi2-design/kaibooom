@@ -34,6 +34,7 @@
   .atab.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
   .atab b{font-family:'Archivo',sans-serif;font-weight:700;margin-left:5px;opacity:.75}
   .st{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:99px;font-size:10.5px;font-weight:700;border:1px solid currentColor}
+  .st-pub{color:var(--ink)}
   .st-draft{color:#B26A00}.st-hidden{color:var(--sub)}.st-rej{color:var(--sub);text-decoration:line-through}.st-prop{color:var(--cut)}
   .apanel{margin:0 0 16px;padding:14px 16px;border-radius:14px;background:var(--soft);font-size:13px}
   .apanel .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -89,7 +90,7 @@
     const { sha, all } = await fetchAll();
     const t = all.find(x => x.slug === slug);
     if (!t) throw new Error('この記事が見つかりませんでした。');
-    fn(t);
+    fn(t, all);
     await putAll(all, sha, message);
     const p = POSTS.find(x => x.slug === slug);
     Object.keys(p).forEach(k => { if (!(k in t)) delete p[k]; });
@@ -100,7 +101,7 @@
     filter(p){ return (TABS.find(t => t[0] === (tab || 'wait')) || TABS[0])[2](p); },
     badge(p){
       if (p.proposal && stage(p) !== 'draft') return '<span class="st st-prop">修正案あり</span>';
-      const s = stage(p); return s === 'published' ? '' : `<span class="st ${STAGE[s].cls}">${STAGE[s].label}</span>`;
+      const s = stage(p); return s === 'published' ? (p.pub_no ? `<span class="st st-pub">公開${no3(p.pub_no)}</span>` : '') : `<span class="st ${STAGE[s].cls}">${STAGE[s].label}</span>`;
     },
     lead(list){
       const cur = tab || 'wait';
@@ -147,7 +148,7 @@
         catch(e) { msg(e.message, true); document.querySelectorAll('#apanel button').forEach(b => b.disabled = false); }
       };
       const on = (id, f) => { const el = $(id); if (el) el.onclick = f; };
-      on('a-pub', () => run(t => { t.status = 'published'; if (!t.approved) t.approved = today(); }, `admin: No.${p.no} を公開`, '公開しました。1〜2分でサイトに反映されます。'));
+      on('a-pub', () => run((t, all) => { t.status = 'published'; if (!t.approved) t.approved = today(); if (!t.pub_no) t.pub_no = nextPubNo(all); }, `admin: No.${p.no} を公開`, '公開しました。1〜2分でサイトに反映されます。'));
       on('a-rej', () => run(t => { t.status = 'rejected'; }, `admin: No.${p.no} を見送り`, '見送りにしました。'));
       on('a-hide', () => run(t => { t.status = 'hidden'; }, `admin: No.${p.no} を非公開`, '非公開にしました。'));
       on('a-draft', () => run(t => { t.status = 'draft'; }, `admin: No.${p.no} を承認待ちに戻す`, '承認待ちに戻しました。'));
