@@ -2291,9 +2291,10 @@
     "date": "2026-11-23",
     "source_name": "Adweek",
     "source_url": "https://www.adweek.com/brand-marketing/metas-holiday-ad-pitches-its-smart-glasses-as-the-secret-to-present-parenting/",
-    "status": "draft",
+    "status": "published",
     "engine": 4,
     "image": "https://static-www.adweek.com/wp-content/uploads/2026/11/download.png?w=600&h=315&crop=1",
-    "media_checked": true
+    "media_checked": true,
+    "approved": "2026-11-26"
   }
 ]
